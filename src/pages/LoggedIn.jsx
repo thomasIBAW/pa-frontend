@@ -9,6 +9,7 @@ import TodoPage from "./TodoPage.jsx";
 import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import Footer from "../components/Footer.jsx";
+import Settings from "./Settings.jsx";
 
 function LoggedIn() {
     // const [count, setCount] = useState(0)
@@ -23,7 +24,7 @@ function LoggedIn() {
                 <Route path="/me" element={<MePage/>} />
                 <Route path="/appointments" element={<AppointmentsPage/>} />
                 <Route path="/todos" element={<TodoPage/>} />
-                {/*<Route path="/about" element={<Aboutpage/>} />*/}
+                <Route path="/settings" element={<Settings/>} />
                 {/*<Route path="/account" element={<Accountpage/>} >*/}
                 {/*    <Route path="settings" element={<Settingspage/>} />*/}
                 {/*    <Route path="privacy" element={<Privacypage/>} />*/}
