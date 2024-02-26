@@ -6,6 +6,7 @@ import Login from "./components/Login.jsx";
 import LoggedIn from "./pages/LoggedIn.jsx";
 import React, { useState} from 'react'
 import {Box, SkeletonCircle, SkeletonText} from "@chakra-ui/react";
+import UserContext from "./hooks/Contect.jsx";
 import Loading from "./components/Loading.jsx";
 function App() {
 
@@ -13,20 +14,20 @@ function App() {
     const cookies = new Cookies()
     const user = cookies.get("currentUser")
     const [loggedIn, setLoggedIn] = useState(null)
-
+    const [currentUser, setCurrentUser] = useState({})
     //added timeout to allow page to load //TODO Remove and use something like onLoaded ...
     setTimeout(() => {
         user ? setLoggedIn(true) : setLoggedIn(false)
-        console.log(user, loggedIn)
+       // console.log(user, loggedIn)
     }, 100)
 
-
+    console.log(user, loggedIn, currentUser)
   return (
     <>
+<UserContext.Provider value={{currentUser, setCurrentUser}}>
         {loggedIn == null && <Loading></Loading>}
-
-        {loggedIn != null && (loggedIn ? <LoggedIn user={user}></LoggedIn> : <Login set={setLoggedIn}></Login>)}
-
+        {loggedIn != null && (loggedIn ? <LoggedIn></LoggedIn> : <Login set={setLoggedIn} ></Login>)}
+</UserContext.Provider>
 
     </>
   )

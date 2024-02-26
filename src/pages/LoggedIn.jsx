@@ -15,16 +15,15 @@ function LoggedIn() {
     // const [count, setCount] = useState(0)
     const cookies = new Cookies()
 
-
     return (
         <>
             <Header />
             <Routes>
-                <Route path="/" element={<HomePage/>} />
-                <Route path="/me" element={<MePage/>} />
-                <Route path="/appointments" element={<AppointmentsPage/>} />
-                <Route path="/todos" element={<TodoPage/>} />
-                <Route path="/settings" element={<Settings/>} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/me" element={<MePage />} />
+                <Route path="/appointments" element={<AppointmentsPage />} />
+                <Route path="/todos" element={<TodoPage />} />
+                <Route path="/settings" element={<Settings />} />
                 {/*<Route path="/account" element={<Accountpage/>} >*/}
                 {/*    <Route path="settings" element={<Settingspage/>} />*/}
                 {/*    <Route path="privacy" element={<Privacypage/>} />*/}

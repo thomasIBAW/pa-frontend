@@ -1,9 +1,10 @@
-import React, {useState} from 'react';
-import { Box, FormControl, FormLabel, VStack , Input, Button, Link, Center} from '@chakra-ui/react'
+import React, {useContext, useState} from 'react';
+import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useConst} from '@chakra-ui/react'
 import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
+import UserContext from "../hooks/Contect.jsx";
 
 //TODO change backend URI to the correct one
 const backendURI = 'http://127.0.0.1:3005/login'
@@ -17,7 +18,7 @@ const cookies = new Cookies()
 
 
 function Login({set}) {
-
+    const {currentUser, setCurrentUser} = useContext(UserContext)
     const [api_key, setApi] = useState("")
     const [user, setUser] = useState(null)
     const [error, setError] = useState(null)
@@ -48,7 +49,7 @@ function Login({set}) {
             body: JSON.stringify(formData), // body data type must match "Content-Type" header
         });
 
-        if (response.status != 200) {
+        if (response.status !== 200) {
             setError("incorrect")
             console.log(response.status)
             return
@@ -56,18 +57,20 @@ function Login({set}) {
         const res = await response.json();
         const decoded = await jwtDecode(res.token)
 
-        setUser(decoded)
-        setApi(res.token)
+        // setUser(decoded)
+        // setApi(res.token)
         set(true) //Set loggedIn State in App.jsx to true
 
         cookies.set("jwt_auth", res.token, {
             expires: new Date(decoded.exp * 1000)
         })
-        cookies.set("currentUser", decoded.username , {
+        cookies.set("currentUser", true , {
             expires: new Date(decoded.exp * 1000)
         })
+        setCurrentUser(JSON.stringify(decoded))
         setError(null)
         setFormData({username:"", password:""});
+
 
     }
     async function logout() {
