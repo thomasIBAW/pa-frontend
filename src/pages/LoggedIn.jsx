@@ -8,6 +8,7 @@ import AppointmentsPage from "./AppointmentsPage.jsx";
 import TodoPage from "./TodoPage.jsx";
 import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
+import Footer from "../components/Footer.jsx";
 
 function LoggedIn() {
     // const [count, setCount] = useState(0)
@@ -28,7 +29,7 @@ function LoggedIn() {
                 {/*    <Route path="privacy" element={<Privacypage/>} />*/}
                 {/*</Route>*/}
             </Routes>
-
+            <Footer />
 
         </>
     )
