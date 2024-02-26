@@ -2,7 +2,9 @@ import React from 'react';
 
 function TodoPage() {
     return (
-        <div>TodoPage</div>
+        <center>
+        <h1>TodoPage</h1>
+        </center>
     );
 }
 

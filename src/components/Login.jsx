@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Box, Button} from "@chakra-ui/react";
+import { Box, FormControl, FormLabel, VStack , Input, Button, Link} from '@chakra-ui/react'
+import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode"
 
@@ -14,7 +15,8 @@ const tempCred= {
 const cookies = new Cookies()
 
 
-function Login(props) {
+function Login({set}) {
+
     const [api_key, setApi] = useState("")
     const [user, setUser] = useState(null)
 
@@ -38,6 +40,7 @@ function Login(props) {
 
         setUser(decoded)
         setApi(res.token)
+        set(true) //Set loggedIn State in App.jsx to true
 
         cookies.set("jwt_auth", res.token, {
             expires: new Date(decoded.exp * 1000)
@@ -52,14 +55,36 @@ function Login(props) {
         setApi("")
         cookies.remove("jwt_auth")
         cookies.remove("currentUser")
+        set(false)
     }
 
     return (
-        <div>
-            {user ? <Button onClick={logout}>Logout</Button> : <Button onClick={login}>Login</Button>}
-            {/*{api_key && <Box> Api Key : {api_key}</Box>}*/}
-            {user && <Box>User : {user.username}</Box>}
-        </div>
+
+<>
+        <VStack spacing='24px'>
+            <Box as='h1' lineHeight='1' w='340px' h='131px' fontSize='40px' textAlign='center' mt='48px'>Welcome to the Family Calendar</Box>
+
+            <Box>
+                <FormControl w='250px'>
+                    <FormLabel as='h1' fontSize='14'>Username</FormLabel>
+                    <Input type='text' variant='filled' size='lg' />
+                    <FormLabel as='h1' mt='15px' fontSize='14'>Password</FormLabel>
+                    <Input type='password' variant='filled' size='lg' />
+                    <Button  onClick={login} colorScheme='gray' mt='30px' variant='solid' size='lg' w='250px'>Log in</Button>
+                </FormControl>
+                <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
+                    Forgot your Password?
+                </Box>
+            </Box>
+            <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
+                New to Family Calendar? <Link>Register here</Link>
+            </Box>
+        </VStack>
+
+
+
+
+</>
     );
 }
 

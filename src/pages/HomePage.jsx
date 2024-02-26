@@ -1,17 +1,21 @@
 import React from 'react';
 import {Box, SkeletonCircle, SkeletonText} from "@chakra-ui/react";
 import Login from "../components/Login.jsx";
+import '@fontsource/julius-sans-one';
+import Cookies from "universal-cookie";
+
 
 function HomePage() {
+    const cookies = new Cookies()
+    const user = cookies.get("currentUser")
+
     return (
         <>
-        <h1>Homepage</h1>
-        <Box padding='6' boxShadow='lg' bg='white'>
-            <SkeletonCircle size='10' />
-            <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
-        </Box>
 
-            <Login></Login>
+            <center>
+                <h1>Dashboard</h1>
+                <p>Welcome {user}</p>
+            </center>
         </>
     );
 }

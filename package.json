@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
+    "@fontsource/julius-sans-one": "^5.0.18",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "framer-motion": "^11.0.6",
     "jwt-decode": "^4.0.0",

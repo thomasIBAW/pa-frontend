@@ -1,30 +1,31 @@
 
 import './App.css'
-import {Box} from "@chakra-ui/react";
-import Header from "./components/Header.jsx";
-import {Route, Routes} from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
-import MePage from "./pages/MePage.jsx";
-import AppointmentsPage from "./pages/AppointmentsPage.jsx";
-import TodoPage from "./pages/TodoPage.jsx";
-
+import '@fontsource/julius-sans-one';
+import Cookies from "universal-cookie";
+import Login from "./components/Login.jsx";
+import LoggedIn from "./pages/LoggedIn.jsx";
+import React, { useState} from 'react'
+import {Box, SkeletonCircle, SkeletonText} from "@chakra-ui/react";
+import Loading from "./components/Loading.jsx";
 function App() {
-  // const [count, setCount] = useState(0)
+
+    //Get user Cookie from the browser to check if the user is logged in or not
+    const cookies = new Cookies()
+    const user = cookies.get("currentUser")
+    const [loggedIn, setLoggedIn] = useState(null)
+
+    //added timeout to allow page to load //TODO Remove and use something like onLoaded ...
+    setTimeout(() => {
+        user ? setLoggedIn(true) : setLoggedIn(false)
+        console.log(user, loggedIn)
+    }, 100)
+
 
   return (
     <>
-        <Header />
-            <Routes>
-                <Route path="/" element={<HomePage/>} />
-                <Route path="/me" element={<MePage/>} />
-                <Route path="/appointments" element={<AppointmentsPage/>} />
-                <Route path="/todos" element={<TodoPage/>} />
-                {/*<Route path="/about" element={<Aboutpage/>} />*/}
-                {/*<Route path="/account" element={<Accountpage/>} >*/}
-                {/*    <Route path="settings" element={<Settingspage/>} />*/}
-                {/*    <Route path="privacy" element={<Privacypage/>} />*/}
-                {/*</Route>*/}
-            </Routes>
+        {loggedIn == null && <Loading></Loading>}
+
+        {loggedIn != null && (loggedIn ? <LoggedIn user={user}></LoggedIn> : <Login set={setLoggedIn}></Login>)}
 
 
     </>
