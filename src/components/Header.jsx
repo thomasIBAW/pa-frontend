@@ -8,8 +8,14 @@ import {
 } from '@chakra-ui/react'
 import {Link} from "react-router-dom";
 import '@fontsource/julius-sans-one';
+
+
+
 import Cookies from "universal-cookie";
 
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+}
 
 function Header() {
     const bgColor='#e6c997';
@@ -17,7 +23,7 @@ function Header() {
     const user = cookies.get("currentUser")
 
     return (
-<>
+        <>
         <Box display="flex"  flexWrap="wrap" alignItems="center" justifyContent="space-between" fontFamily='Julius Sans One'>
         <Center bg={bgColor} w='100%' p={2} color='black'>
         <Breadcrumb separator='|'>
@@ -51,9 +57,9 @@ function Header() {
         <Box>|</Box>
         <Box>Family : {user}</Box>
     </Center>
-</>
 
-    );
+        </>
+    )
 }
 
 export default Header;
