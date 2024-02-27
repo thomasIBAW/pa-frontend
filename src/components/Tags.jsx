@@ -1,28 +1,94 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import Cookies from "universal-cookie";
-import {jwtDecode} from "jwt-decode";
-import {Box, Center, VStack} from "@chakra-ui/react";
+import { HexColorPicker } from "react-colorful";
+
+import {
+    Box, Button,
+    Center, FormControl, FormLabel, Input,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent, ModalFooter,
+    ModalHeader,
+    ModalOverlay, useDisclosure,
+    VStack
+} from "@chakra-ui/react";
+import UserContext from "../hooks/Contect.jsx";
+import { PlusIcon } from '@heroicons/react/20/solid'
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-function Tags(props) {
+
+
+
+function Tags() {
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const initialRef = React.useRef(null)
+    const finalRef = React.useRef(null)
+    const [color, setColor] = useState("#aabbcc");
+    const [formData, setFormData] = useState({tagName:"", tagColor:color});
+
+    const handleInputChange = (event) => {
+        const {name, value} = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+
     const [error, setError] = useState(null)
     const [currentTags, setCurrentTags] = useState([])
-    //Get Current user from the jwt token
+
+    //Get currentUser from Context
+    const {currentUser} = useContext(UserContext)
+
+    //Get token from Cookie
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
-    const decodedUser = jwtDecode(apiKey)
-    // console.log(decodedUser.linkedFamily, apiKey)
 
+    const decodedUser = currentUser;
+    //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
+console.log(color)
+    const createTag =  () => {
 
-    //debug
+    setFormData({tagName: FormData.tagName, tagColor:color} )
+    async function writeData() {
+        const response = await fetch(`${backendURI}/api/tags/`, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            // mode: "cors", // no-cors, *cors, same-origin
+            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            // credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",
+                "api_key": apiKey,
+                "family_uuid": decodedUser.linkedFamily
+            },
+            // redirect: "follow", // manual, *follow, error
+            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(formData), // body data type must match "Content-Type" header
+        })
+        if (response.status !== 200) {
+            // setError("incorrect")
+            console.log(response.status)
+            return
+        }
+        const res = await response.json();
 
-        // eslint-disable-next-line no-unexpected-multiline
+        //console.log(res)
+    }
+    writeData()
+}
+
+    // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
         async function fetchData() {
             const response = await fetch(`${backendURI}/api/tags/find`, {
@@ -46,7 +112,7 @@ function Tags(props) {
             }
             const res = await response.json();
             setCurrentTags(res)
-            console.log(res)
+            //console.log(res)
         }
 
         fetchData()
@@ -54,10 +120,17 @@ function Tags(props) {
 
 
     return (
-
+<>
         <VStack mb='20px'>
 
-            <h1>Tags</h1>
+            <h1>Tags
+                <button
+                    type="button" onClick={onOpen}
+                    className="ml-3 rounded-full bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                    <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+            </h1>
 
             <div>
                 <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
@@ -91,9 +164,38 @@ function Tags(props) {
                     ))}
                 </ul>
             </div>
-
-
         </VStack>
+
+    <Modal
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+    >
+        <ModalOverlay />
+        <ModalContent w='300px' alignItems='center'>
+            <ModalHeader className='julius'>Add a new Tag</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={3}>
+                <FormControl w='200px'>
+                    <FormLabel as='h1' fontSize='14'>Tag Name</FormLabel>
+                    <Input type='text' variant='filled' size='lg' name="tagName" value={formData.tagName} onChange={handleInputChange}/>
+                    <FormLabel as='h1' mt='15px' fontSize='14'>Color</FormLabel>
+                    <HexColorPicker color={color} onChange={setColor} />
+                    {/*<Button  onClick={} colorScheme='gray' mt='30px' variant='solid' size='lg' w='250px'>Log in</Button>*/}
+                </FormControl>
+
+            </ModalBody>
+
+            <ModalFooter>
+                <Button colorScheme='blue' mr={3} onClick={createTag}>
+                    Save
+                </Button>
+                <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</>
     );
 }
 
