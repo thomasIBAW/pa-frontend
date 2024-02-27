@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode";
-import {Box} from "@chakra-ui/react";
+import {Box, Center, VStack} from "@chakra-ui/react";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -15,17 +15,17 @@ function Tags(props) {
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
     const decodedUser = jwtDecode(apiKey)
-    console.log(decodedUser.linkedFamily, apiKey)
+    // console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one
-    const backendURI = 'http://127.0.0.1:3005/api/tags/find';
+    const backendURI = 'http://127.0.0.1:3005';
 
     //debug
 
         // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
         async function fetchData() {
-            const response = await fetch(backendURI, {
+            const response = await fetch(`${backendURI}/api/tags/find`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 // mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -55,7 +55,8 @@ function Tags(props) {
 
     return (
 
-        <center>
+        <VStack mb='20px'>
+
             <h1>Tags</h1>
 
             <div>
@@ -67,7 +68,7 @@ function Tags(props) {
                                     'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white'
                                 )}
                             >
-                                {project.tagName}
+                                {/*{project.tagName}*/}
                             </Box>
                             <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
                                 <div className="flex-1 truncate px-4 py-2 text-sm">
@@ -92,7 +93,7 @@ function Tags(props) {
             </div>
 
 
-        </center>
+        </VStack>
     );
 }
 
