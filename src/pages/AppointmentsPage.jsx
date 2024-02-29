@@ -17,6 +17,7 @@ import {
 import UserContext from "../hooks/Contect.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import globalFetch from "../hooks/Connectors.jsx";
+import moment from "moment";
 
 
 function classNames(...classes) {
@@ -196,53 +197,70 @@ function AppointmentsPage() {
                     </button>
                 </h1>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                     {currentCalendar.map((person) => (
+
+                        // shows the appointment
                         <div
                             key={person.uuid}
-                            className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+                            className="relative mx-1 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
                         >
-                            {person.important && (<div>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     strokeWidth={0.8} stroke="red" className="w-10 h-10">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                          d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
-                                </svg>
-                            </div>)}
-                            <div className="min-w-0 flex-1">
+                            {/*shows the date(day) of the appointment*/}
+                            <div className="w-14 px-1 flex-none">
+                                {/*<span className="absolute inset-0" aria-hidden="true" />*/}
+                                <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${person.dateTimeStart}`, "DD.MM.YYYY - HH:mm").format('DD dd')}</p>
+                            </div>
+
+                            {/*show time*/}
+                            <div className="w-14 flex-none px-1 m-0 text-center">
+
+                                <span className="absolute inset-0" aria-hidden="true" />
+                                <p className="text-sm text-gray-900">{moment(`${person.dateTimeStart}`, "DD.MM.YYYY - HH:mm").format('HH:mm')}</p>
+                                <p>-</p>
+                                <p className=" text-sm text-gray-500">{moment(`${person.dateTimeEnd}`, "DD.MM.YYYY - HH:mm").format('HH:mm')}</p>
+
+                            </div>
+                            {/*show an image if Appointment is important*/}
+
+                            {/*{person.important && (<div>*/}
+                            {/*    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"*/}
+                            {/*         strokeWidth={0.8} stroke="red" className="w-10 h-10">*/}
+                            {/*        <path strokeLinecap="round" strokeLinejoin="round"*/}
+                            {/*              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>*/}
+                            {/*    </svg>*/}
+                            {/*</div>)}*/}
+
+                            {/*show the appointment Info like subject and additional informations*/}
+                            <div className="min-w-40 flex-auto ">
                                 <a href="#" className="focus:outline-none">
                                     <span className="absolute inset-0" aria-hidden="true" />
-                                    <p className="text-m font-bold text-gray-900">{person.subject}</p>
-                                    <p className="truncate text-sm text-gray-500">{person.note}</p>
+                                    <p className="text-lg text-center font-bold text-gray-900">{person.subject}</p>
+                                    <p className=" text-center px-3 text-xs text-gray-500">{person.note}</p>
                                 </a>
                             </div>
-                            {/*<div className="min-w-0 flex-1">*/}
 
-                            {/*        <span className="absolute inset-0" aria-hidden="true" />*/}
-                            {/*        <p className="text-m font-medium text-gray-900">{person.dateTimeStart} /</p>*/}
-                            {/*        <p className=" text-sm text-gray-500">{person.dateTimeEnd}</p>*/}
 
+
+                            {/*/!*show Tags*!/*/}
+                            {/*<div className="min-w-0 flex-1 ">*/}
+                            {/*    {person.tags.map((tag, index) => {*/}
+                            {/*        // Move the declaration of tagInfo outside of the return statement.*/}
+                            {/*        const tagInfo = tagNames[tag];*/}
+                            {/*        // Now return the Box component correctly.*/}
+                            {/*        return (*/}
+                            {/*            <Box key={index} bgColor={tagInfo ? tagInfo.color : 'defaultColor'} className="inline-flex items-center rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">*/}
+                            {/*                /!*{tagInfo ? tagInfo.name : 'Unknown Tag'}*!/*/}
+                            {/*            </Box>*/}
+                            {/*        );*/}
+                            {/*    })}*/}
                             {/*</div>*/}
 
-                            {/*show Tags*/}
-                            <div className="min-w-0 flex-1">
-                                {person.tags.map((tag, index) => {
-                                    // Move the declaration of tagInfo outside of the return statement.
-                                    const tagInfo = tagNames[tag];
-                                    // Now return the Box component correctly.
-                                    return (
-                                        <Box key={index} bgColor={tagInfo ? tagInfo.color : 'defaultColor'} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                                            {tagInfo ? tagInfo.name : 'Unknown Tag'}
-                                        </Box>
-                                    );
-                                })}
-                            </div>
                             {/*show Attendees*/}
-                            <div className="min-w-0 flex-1">
+                            <div className="w-16 flex-none">
                                 {person.attendees.map((tag, index) => (
                                     // Move the declaration of tagInfo outside of the return statement.
 
-                                        <Box key={index} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                        <Box key={index} className="inline-flex rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
                                             {eventUsers[tag]}
                                         </Box>
 
