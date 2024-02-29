@@ -13,6 +13,7 @@ import Settings from "./Settings.jsx";
 import {useContext, useEffect} from "react";
 import UserContext from "../hooks/Contect.jsx";
 import {jwtDecode} from "jwt-decode";
+import CalendarPage from "./CalendarPage.jsx";
 
 function LoggedIn() {
     //Get Current user from the jwt token
@@ -127,6 +128,8 @@ const {currentUser, setCurrentUser} = useContext(UserContext)
                 <Route path="/appointments" element={<AppointmentsPage />} />
                 <Route path="/todos" element={<TodoPage />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+
                 {/*<Route path="/account" element={<Accountpage/>} >*/}
                 {/*    <Route path="settings" element={<Settingspage/>} />*/}
                 {/*    <Route path="privacy" element={<Privacypage/>} />*/}

@@ -6,7 +6,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function CalendarPage() {
     const container = useRef(null)
     const containerNav = useRef(null)
     const containerOffset = useRef(null)
@@ -483,11 +483,14 @@ export default function Example() {
                             </div>
 
                             {/* Events */}
+
+                            {/*//TODO dynamically create the list items. Calculat the position on the grid*/}
+
                             <ol
                                 className="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
                                 style={{ gridTemplateRows: '1.75rem repeat(288, minmax(0, 1fr)) auto' }}
                             >
-                                <li className="relative mt-px flex sm:col-start-3" style={{ gridRow: '74 / span 12' }}>
+                                <li className="relative mt-px flex sm:col-start-3" style={{ gridRow: '74 / span 18' }}>
                                     <a
                                         href="#"
                                         className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100"
@@ -498,7 +501,7 @@ export default function Example() {
                                         </p>
                                     </a>
                                 </li>
-                                <li className="relative mt-px flex sm:col-start-3" style={{ gridRow: '92 / span 30' }}>
+                                <li className="relative mt-px flex sm:col-start-2" style={{ gridRow: '92 / span 30' }}>
                                     <a
                                         href="#"
                                         className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs leading-5 hover:bg-pink-100"
