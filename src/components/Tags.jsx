@@ -31,8 +31,7 @@ function Tags() {
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
-    const [color, setColor] = useState("#aabbcc");
-    const [formData, setFormData] = useState({tagName:"", tagColor:color});
+
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -42,10 +41,11 @@ function Tags() {
         }));
     };
 
-
+    const [color, setColor] = useState("#aabbcc");
+    const [formData, setFormData] = useState({tagName:"", tagColor:color});
     const [error, setError] = useState(null)
     const [currentTags, setCurrentTags] = useState([])
-
+    const [newTag, setNewTag] = useState({})
     //Get currentUser from Context
     const {currentUser} = useContext(UserContext)
 
@@ -82,6 +82,7 @@ console.log(color)
             return
         }
         const res = await response.json();
+        setNewTag(res)
 
         //console.log(res)
     }
@@ -116,7 +117,7 @@ console.log(color)
         }
 
         fetchData()
-    },[])
+    },[newTag])
 
 
     return (

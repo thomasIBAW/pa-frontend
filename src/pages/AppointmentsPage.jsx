@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import UserContext from "../hooks/Contect.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
+import globalFetch from "../hooks/Connectors.jsx";
 
 
 function classNames(...classes) {
@@ -32,13 +33,20 @@ function AppointmentsPage() {
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
     const [formData, setFormData] = useState({
-        "firstName":"",
-        "lastName":"",
-        "nickName":"",
-        "dob":"",
-        "email":""
+        "subject": "",
+        "creator": "",
+        "dateTimeStart": "",
+        "dateTimeEnd": "",
+        "attendees": [],
+        "tags": [],
+        "note": "",
+        "fullDay": false,
+        "important": true,
     });
-
+    const [tagNames, setTagNames] = useState({})
+    const [eventUsers, setEventUsers] = useState({})
+    const [error, setError] = useState(null)
+    const [currentCalendar, setCurrentCalendar] = useState([])
     const handleInputChange = (event) => {
         const {name, value} = event.target;
         setFormData((prevData) => ({
@@ -46,10 +54,6 @@ function AppointmentsPage() {
             [name]: value,
         }));
     };
-
-
-    const [error, setError] = useState(null)
-    const [currentPeople, setCurrentPeople] = useState([])
 
     //Get currentUser from Context
     const {currentUser} = useContext(UserContext)
@@ -103,7 +107,7 @@ function AppointmentsPage() {
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
         async function fetchData() {
-            const response = await fetch(`${backendURI}/api/people/find`, {
+            const response = await fetch(`${backendURI}/api/calendar/find`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 // mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -115,7 +119,7 @@ function AppointmentsPage() {
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({linkedFamily:decodedUser.linkedFamily}), // body data type must match "Content-Type" header
+                body: JSON.stringify({}), // body data type must match "Content-Type" header
             })
             if (response.status !== 200) {
                 // setError("incorrect")
@@ -123,13 +127,61 @@ function AppointmentsPage() {
                 return
             }
             const res = await response.json();
-            setCurrentPeople(res)
+            setCurrentCalendar(res)
             console.log(res)
         }
 
         fetchData()
     },[])
 
+
+    useEffect(() => {
+        // Fetches Tags from the Events
+        const fetchTags = async () => {
+            let newTagNames = {};
+
+            for (let event of currentCalendar) {
+                // console.log(event)
+                for (let tag of event.tags) {
+                    // console.log(tag)
+                    // Assuming globalFetch does not duplicate requests for already fetched tags
+                    if (!newTagNames[tag]) {
+                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        // console.log(res)
+                        newTagNames[tag] = {name: res[0].tagName, color: res[0].tagColor}; // Assuming res.tagName is the format of your response
+                    }
+                }
+            }
+            console.log(`setting tagName to ${JSON.stringify(newTagNames)}`)
+            setTagNames(newTagNames);
+        };
+
+        fetchTags();
+    }, [currentCalendar, decodedUser.linkedFamily]);
+
+    useEffect(() => {
+        // fetches Users from the events
+        const fetchUsers = async () => {
+            let newUsers = {};
+
+            for (let event of currentCalendar) {
+                // console.log(event)
+                for (let tag of event.attendees) {
+                    // console.log(tag)
+                    // Assuming globalFetch does not duplicate requests for already fetched tags
+                    if (!newUsers[tag]) {
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        // console.log(res)
+                        newUsers[tag] = res[0].nickName;
+                    }
+                }
+            }
+            console.log(`setting Users to ${JSON.stringify(newUsers)}`)
+            setEventUsers(newUsers);
+        };
+
+        fetchUsers();
+    }, [currentCalendar, decodedUser.linkedFamily]);
 
     return (
         <>
@@ -144,38 +196,63 @@ function AppointmentsPage() {
                     </button>
                 </h1>
 
-                <div>
-                    <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-                        {currentPeople.map((project) => (
-                            <li key={project.uuid} className="col-span-1 flex rounded-md shadow-sm">
-                                <Box
-                                    className={classNames(
-                                        'bg-gray-200 flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white'
-                                    )}
-                                >
-                                    {/*{project.firstName}*/}
-                                </Box>
-                                <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
-                                    <div className="flex-1 truncate px-4 py-2 text-sm">
-                                        {/*<a href={project.href} className="font-medium text-gray-900 hover:text-gray-600">*/}
-                                        {/*    {project.tagName}*/}
-                                        {/*</a>*/}
-                                        <p className="text-gray-500">{project.firstName}</p>
-                                    </div>
-                                    <div className="flex-shrink-0 pr-2">
-                                        <button
-                                            type="button"
-                                            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                        >
-                                            <span className="sr-only">Open options</span>
-                                            <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {currentCalendar.map((person) => (
+                        <div
+                            key={person.uuid}
+                            className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+                        >
+                            {person.important && (<div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     strokeWidth={0.8} stroke="red" className="w-10 h-10">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                          d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
+                                </svg>
+                            </div>)}
+                            <div className="min-w-0 flex-1">
+                                <a href="#" className="focus:outline-none">
+                                    <span className="absolute inset-0" aria-hidden="true" />
+                                    <p className="text-m font-bold text-gray-900">{person.subject}</p>
+                                    <p className="truncate text-sm text-gray-500">{person.note}</p>
+                                </a>
+                            </div>
+                            {/*<div className="min-w-0 flex-1">*/}
+
+                            {/*        <span className="absolute inset-0" aria-hidden="true" />*/}
+                            {/*        <p className="text-m font-medium text-gray-900">{person.dateTimeStart} /</p>*/}
+                            {/*        <p className=" text-sm text-gray-500">{person.dateTimeEnd}</p>*/}
+
+                            {/*</div>*/}
+
+                            {/*show Tags*/}
+                            <div className="min-w-0 flex-1">
+                                {person.tags.map((tag, index) => {
+                                    // Move the declaration of tagInfo outside of the return statement.
+                                    const tagInfo = tagNames[tag];
+                                    // Now return the Box component correctly.
+                                    return (
+                                        <Box key={index} bgColor={tagInfo ? tagInfo.color : 'defaultColor'} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                            {tagInfo ? tagInfo.name : 'Unknown Tag'}
+                                        </Box>
+                                    );
+                                })}
+                            </div>
+                            {/*show Attendees*/}
+                            <div className="min-w-0 flex-1">
+                                {person.attendees.map((tag, index) => (
+                                    // Move the declaration of tagInfo outside of the return statement.
+
+                                        <Box key={index} className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                            {eventUsers[tag]}
+                                        </Box>
+
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
+
+
             </VStack>
 
             <Modal
