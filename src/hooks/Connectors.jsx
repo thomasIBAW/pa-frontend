@@ -1,5 +1,5 @@
 import Cookies from "universal-cookie";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "./Context.jsx";
 import {useContext} from "react";
 import React from 'react';
 
@@ -15,8 +15,7 @@ const backendURI = 'http://127.0.0.1:3005';
 export default async function globalFetch(endpoint, filter, family) {
 
     console.log(`"globalFetch()" received the following params: endpoint: ${endpoint} / filter ${filter} / family_uuid: ${family}`)
-    console.log(`${backendURI}/api/${endpoint}/find`)
-    console.log(typeof filter)
+    //console.log(`${backendURI}/api/${endpoint}/find`)
     const response = await fetch(`${backendURI}/api/${endpoint}/find`, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
@@ -37,7 +36,8 @@ export default async function globalFetch(endpoint, filter, family) {
         return
     }
     const res = await response.json();
-    console.log(res)
+
+    console.log(`Response from "${endpoint}" globalFetch is: `, res)
     return res
     //console.log(res)
 }

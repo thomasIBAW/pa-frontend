@@ -5,7 +5,7 @@ import { HexColorPicker } from "react-colorful";
 
 import {
     Box, Button,
-    Center, FormControl, FormLabel, Input,
+    Center, Checkbox, FormControl, FormLabel, Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -14,10 +14,11 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import globalFetch from "../hooks/Connectors.jsx";
 import moment from "moment";
+import Select from "react-select";
 
 
 function classNames(...classes) {
@@ -55,6 +56,12 @@ function AppointmentsPage() {
             [name]: value,
         }));
     };
+
+    const options = [
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' }
+    ]
 
     //Get currentUser from Context
     const {currentUser} = useContext(UserContext)
@@ -284,17 +291,18 @@ function AppointmentsPage() {
                     <ModalHeader className='julius'>Add a person</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={3}>
-                        <FormControl w='200px'>
-                            <FormLabel as='h1' fontSize='14'>Firstname *</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="firstName" value={formData.firstName} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>LastName</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="lastName" value={formData.lastName} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>NickName</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="nickName" value={formData.nickName} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>Date of Birth</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="dob" value={formData.dob} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>E-Mail Address</FormLabel>
-                            <Input type='email' variant='filled' size='lg' name="email" value={formData.email} onChange={handleInputChange}/>
+                        <FormControl  w='200px'>
+                            <FormLabel as='h1' fontSize='14'>subject *</FormLabel>
+                            <Input type='text' variant='filled' size='lg' name="subject" value={formData.subject} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
+                            <Input type='text' variant='filled' size='lg' name="note" value={formData.note} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>
+                            <Select isMulti={true} options={options} />
+                            <FormLabel as='h1' mt='15px' fontSize='14'>From</FormLabel>
+                            <Input type='date' variant='filled' size='lg' name="from" value={formData.from} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>To</FormLabel>
+                            <Input type='date' variant='filled' size='lg' name="from" value={formData.from} onChange={handleInputChange}/>
+                            <Checkbox size='lg' defaultChecked>Important</Checkbox>
                         </FormControl>
 
                     </ModalBody>

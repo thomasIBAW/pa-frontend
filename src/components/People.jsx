@@ -14,18 +14,16 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
+import globalFetch from "../hooks/Connectors.jsx";
 
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-
-
-
-function Tags() {
+function People() {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -64,6 +62,7 @@ function Tags() {
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
 
+    // Creating a new Person:
     const createPerson =  () => {
 
         async function writeData() {
@@ -102,32 +101,8 @@ function Tags() {
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        async function fetchData() {
-            const response = await fetch(`${backendURI}/api/people/find`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": decodedUser.linkedFamily
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({linkedFamily:decodedUser.linkedFamily}), // body data type must match "Content-Type" header
-            })
-            if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
-            }
-            const res = await response.json();
-            setCurrentPeople(res)
-            console.log(res)
-        }
-
-        fetchData()
+        globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+            .then(res => setCurrentPeople(res))
     },[])
 
 
@@ -216,4 +191,4 @@ function Tags() {
     );
 }
 
-export default Tags;
+export default People;

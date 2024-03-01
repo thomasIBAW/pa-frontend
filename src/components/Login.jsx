@@ -4,7 +4,7 @@ import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 
 //TODO change backend URI to the correct one
 const backendURI = 'http://127.0.0.1:3005/login'

@@ -14,8 +14,9 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
+import globalFetch from "../hooks/Connectors.jsx";
 
 
 function classNames(...classes) {
@@ -31,7 +32,6 @@ function Tags() {
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
-
 
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -57,66 +57,72 @@ function Tags() {
     //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
-console.log(color)
+
+    // creating a new Tag from the for in Add Tag Modal
     const createTag =  () => {
+            setFormData({tagName: FormData.tagName, tagColor:color} )
+            async function writeData() {
+                const response = await fetch(`${backendURI}/api/tags/`, {
+                    method: "POST", // *GET, POST, PUT, DELETE, etc.
+                    // mode: "cors", // no-cors, *cors, same-origin
+                    // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                    // credentials: "same-origin", // include, *same-origin, omit
+                    headers: {
+                        "Content-Type": "application/json",
+                        "api_key": apiKey,
+                        "family_uuid": decodedUser.linkedFamily
+                    },
+                    // redirect: "follow", // manual, *follow, error
+                    // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                    body: JSON.stringify(formData), // body data type must match "Content-Type" header
+                })
+                if (response.status !== 200) {
+                    // setError("incorrect")
+                    console.log(response.status)
+                    return
+                }
+                const res = await response.json();
+                setNewTag(res)
 
-    setFormData({tagName: FormData.tagName, tagColor:color} )
-    async function writeData() {
-        const response = await fetch(`${backendURI}/api/tags/`, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            // mode: "cors", // no-cors, *cors, same-origin
-            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            // credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                "api_key": apiKey,
-                "family_uuid": decodedUser.linkedFamily
-            },
-            // redirect: "follow", // manual, *follow, error
-            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(formData), // body data type must match "Content-Type" header
-        })
-        if (response.status !== 200) {
-            // setError("incorrect")
-            console.log(response.status)
-            return
+                //console.log(res)
+            }
+            writeData()
         }
-        const res = await response.json();
-        setNewTag(res)
-
-        //console.log(res)
-    }
-    writeData()
-}
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        async function fetchData() {
-            const response = await fetch(`${backendURI}/api/tags/find`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": decodedUser.linkedFamily
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({}), // body data type must match "Content-Type" header
-            })
-            if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
-            }
-            const res = await response.json();
-            setCurrentTags(res)
-            //console.log(res)
-        }
+    // Using globalFetch function from connectors:
+        globalFetch("tags", "{}", currentUser.linkedFamily)
+            .then(res=> setCurrentTags(res))
 
-        fetchData()
+    //TODO Remove local fetch function and rely only on the globalFetch function
+   // Local fetch function :
+        // async function fetchData() {
+        //     const response = await fetch(`${backendURI}/api/tags/find`, {
+        //         method: "POST", // *GET, POST, PUT, DELETE, etc.
+        //         // mode: "cors", // no-cors, *cors, same-origin
+        //         // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //         // credentials: "same-origin", // include, *same-origin, omit
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "api_key": apiKey,
+        //             "family_uuid": decodedUser.linkedFamily
+        //         },
+        //         // redirect: "follow", // manual, *follow, error
+        //         // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //         body: JSON.stringify({}), // body data type must match "Content-Type" header
+        //     })
+        //     if (response.status !== 200) {
+        //         // setError("incorrect")
+        //         console.log(response.status)
+        //         return
+        //     }
+        //     const res = await response.json();
+        //     setCurrentTags(res)
+        //     //console.log(res)
+        // }
+        // fetchData()
+
     },[newTag])
 
 

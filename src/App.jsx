@@ -6,7 +6,7 @@ import Login from "./components/Login.jsx";
 import LoggedIn from "./pages/LoggedIn.jsx";
 import React, { useState} from 'react'
 import {Box, SkeletonCircle, SkeletonText} from "@chakra-ui/react";
-import UserContext from "./hooks/Contect.jsx";
+import UserContext from "./hooks/Context.jsx";
 import Loading from "./components/Loading.jsx";
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
        // console.log(user, loggedIn)
     }, 100)
 
-    console.log(user, loggedIn, currentUser)
+    // console.log(user, loggedIn, currentUser)
   return (
     <>
 <UserContext.Provider value={{currentUser, setCurrentUser}}>

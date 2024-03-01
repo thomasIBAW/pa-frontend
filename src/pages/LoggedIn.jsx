@@ -11,7 +11,7 @@ import Cookies from "universal-cookie";
 import Footer from "../components/Footer.jsx";
 import Settings from "./Settings.jsx";
 import {useContext, useEffect} from "react";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 import {jwtDecode} from "jwt-decode";
 import CalendarPage from "./CalendarPage.jsx";
 
@@ -20,7 +20,7 @@ function LoggedIn() {
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
     const decodedUser = jwtDecode(apiKey)
-    console.log(decodedUser)
+    // console.log(decodedUser)
 
 const {currentUser, setCurrentUser} = useContext(UserContext)
 

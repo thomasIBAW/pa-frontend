@@ -1,6 +1,14 @@
-import { Fragment, useEffect, useRef } from 'react'
+import {Fragment, useContext, useEffect, useRef, useState} from 'react'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
 import { Menu, Transition } from '@headlessui/react'
+import moment from "moment";
+import Cookies from "universal-cookie";
+
+
+import UserContext from "../hooks/Context.jsx";
+import { PlusIcon } from '@heroicons/react/20/solid'
+import globalFetch from "../hooks/Connectors.jsx";
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -10,6 +18,33 @@ export default function CalendarPage() {
     const container = useRef(null)
     const containerNav = useRef(null)
     const containerOffset = useRef(null)
+    const today = moment();
+
+    const [tagNames, setTagNames] = useState({})
+    const [eventUsers, setEventUsers] = useState({})
+    const [error, setError] = useState(null)
+    const [currentCalendar, setCurrentCalendar] = useState([])
+    // const handleInputChange = (event) => {
+    //     const {name, value} = event.target;
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         [name]: value,
+    //     }));
+    // };
+
+    //Get currentUser from Context
+    const {currentUser} = useContext(UserContext)
+
+    //Get token from Cookie
+    const cookies = new Cookies()
+    const apiKey = cookies.get("jwt_auth")
+
+    const decodedUser = currentUser;
+    //console.log(decodedUser.linkedFamily, apiKey)
+
+    //TODO change backend URI to the correct one
+    const backendURI = 'http://127.0.0.1:3005';
+
 
     useEffect(() => {
         // Set the container scroll position based on the current time.
@@ -20,11 +55,91 @@ export default function CalendarPage() {
             1440
     }, [])
 
+
+    useEffect( () => {
+        async function fetchData() {
+            const response = await fetch(`${backendURI}/api/calendar/find`, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                // mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                // credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    "api_key": apiKey,
+                    "family_uuid": decodedUser.linkedFamily
+                },
+                // redirect: "follow", // manual, *follow, error
+                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({}), // body data type must match "Content-Type" header
+            })
+            if (response.status !== 200) {
+                // setError("incorrect")
+                console.log(response.status)
+                return
+            }
+            const res = await response.json();
+            setCurrentCalendar(res)
+            console.log(res)
+        }
+
+        fetchData()
+    },[])
+
+
+    useEffect(() => {
+        // Fetches Tags from the Events
+        const fetchTags = async () => {
+            let newTagNames = {};
+
+            for (let event of currentCalendar) {
+                // console.log(event)
+                for (let tag of event.tags) {
+                    // console.log(tag)
+                    // Assuming globalFetch does not duplicate requests for already fetched tags
+                    if (!newTagNames[tag]) {
+                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        // console.log(res)
+                        newTagNames[tag] = {name: res[0].tagName, color: res[0].tagColor}; // Assuming res.tagName is the format of your response
+                    }
+                }
+            }
+            console.log(`setting tagName to ${JSON.stringify(newTagNames)}`)
+            setTagNames(newTagNames);
+        };
+
+        fetchTags();
+    }, [currentCalendar, decodedUser.linkedFamily]);
+
+    useEffect(() => {
+        // fetches Users from the events
+        const fetchUsers = async () => {
+            let newUsers = {};
+
+            for (let event of currentCalendar) {
+                // console.log(event)
+                for (let tag of event.attendees) {
+                    // console.log(tag)
+                    // Assuming globalFetch does not duplicate requests for already fetched tags
+                    if (!newUsers[tag]) {
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        // console.log(res)
+                        newUsers[tag] = res[0].nickName;
+                    }
+                }
+            }
+            console.log(`setting Users to ${JSON.stringify(newUsers)}`)
+            setEventUsers(newUsers);
+        };
+
+        fetchUsers();
+    }, [currentCalendar, decodedUser.linkedFamily]);
+
+
     return (
         <div className="flex h-full flex-col">
             <header className="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
                 <h1 className="text-base font-semibold leading-6 text-gray-900">
-                    <time dateTime="2022-01">January 2022</time>
+                    <time dateTime={today.format('YYYY-MM')} >{today.format('MMMM YYYY')}</time>
                 </h1>
                 <div className="flex items-center">
                     <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
@@ -277,40 +392,40 @@ export default function CalendarPage() {
                             <div className="col-end-1 w-14" />
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Mon <span className="items-center justify-center font-semibold text-gray-900">10</span>
+                  Mon <span className="items-center justify-center font-semibold text-gray-900">{today.format('DD')-2}</span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Tue <span className="items-center justify-center font-semibold text-gray-900">11</span>
+                  Tue <span className="items-center justify-center font-semibold text-gray-900">{today.format('DD')-1}</span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span className="flex items-baseline">
                   Wed{' '}
                     <span className="ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                    12
+                    {today.format('DD')}
                   </span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Thu <span className="items-center justify-center font-semibold text-gray-900">13</span>
+                  Thu <span className="items-center justify-center font-semibold text-gray-900">{today.add(1, 'day').format('DD')}</span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Fri <span className="items-center justify-center font-semibold text-gray-900">14</span>
+                  Fri <span className="items-center justify-center font-semibold text-gray-900">{today.add(1, 'day').format('DD')}</span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Sat <span className="items-center justify-center font-semibold text-gray-900">15</span>
+                  Sat <span className="items-center justify-center font-semibold text-gray-900">{today.add(1, 'day').format('DD')}</span>
                 </span>
                             </div>
                             <div className="flex items-center justify-center py-3">
                 <span>
-                  Sun <span className="items-center justify-center font-semibold text-gray-900">16</span>
+                  Sun <span className="items-center justify-center font-semibold text-gray-900">{today.add(1, 'day').format('DD')}</span>
                 </span>
                             </div>
                         </div>
@@ -490,6 +605,11 @@ export default function CalendarPage() {
                                 className="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
                                 style={{ gridTemplateRows: '1.75rem repeat(288, minmax(0, 1fr)) auto' }}
                             >
+
+
+
+
+
                                 <li className="relative mt-px flex sm:col-start-3" style={{ gridRow: '74 / span 18' }}>
                                     <a
                                         href="#"
@@ -498,28 +618,6 @@ export default function CalendarPage() {
                                         <p className="order-1 font-semibold text-blue-700">Breakfast</p>
                                         <p className="text-blue-500 group-hover:text-blue-700">
                                             <time dateTime="2022-01-12T06:00">6:00 AM</time>
-                                        </p>
-                                    </a>
-                                </li>
-                                <li className="relative mt-px flex sm:col-start-2" style={{ gridRow: '92 / span 30' }}>
-                                    <a
-                                        href="#"
-                                        className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs leading-5 hover:bg-pink-100"
-                                    >
-                                        <p className="order-1 font-semibold text-pink-700">Flight to Paris</p>
-                                        <p className="text-pink-500 group-hover:text-pink-700">
-                                            <time dateTime="2022-01-12T07:30">7:30 AM</time>
-                                        </p>
-                                    </a>
-                                </li>
-                                <li className="relative mt-px hidden sm:col-start-6 sm:flex" style={{ gridRow: '122 / span 24' }}>
-                                    <a
-                                        href="#"
-                                        className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-gray-100 p-2 text-xs leading-5 hover:bg-gray-200"
-                                    >
-                                        <p className="order-1 font-semibold text-gray-700">Meeting with design team at Disney</p>
-                                        <p className="text-gray-500 group-hover:text-gray-700">
-                                            <time dateTime="2022-01-15T10:00">10:00 AM</time>
                                         </p>
                                     </a>
                                 </li>

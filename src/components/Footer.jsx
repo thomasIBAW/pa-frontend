@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Box, Center} from "@chakra-ui/react";
 import Cookies from "universal-cookie";
-import UserContext from "../hooks/Contect.jsx";
+import UserContext from "../hooks/Context.jsx";
 function Footer(props) {
     const bgColor='#e6c997';
     const cookies = new Cookies()
