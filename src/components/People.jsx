@@ -55,8 +55,9 @@ function People() {
     //Get token from Cookie
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
+    const [createdPerson, setCreatedPerson] = useState({})
 
-    const decodedUser = currentUser;
+    // const decodedUser = currentUser;
     //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one
@@ -74,7 +75,7 @@ function People() {
                 headers: {
                     "Content-Type": "application/json",
                     "api_key": apiKey,
-                    "family_uuid": decodedUser.linkedFamily
+                    "family_uuid": currentUser.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -86,6 +87,8 @@ function People() {
                 return
             }
             const res = await response.json();
+            setCreatedPerson(formData)
+
             setFormData({
                 "firstName":"",
                 "lastName":"",
@@ -103,7 +106,7 @@ function People() {
     useEffect( () => {
         globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
             .then(res => setCurrentPeople(res))
-    },[])
+    },[createdPerson])
 
 
     return (
