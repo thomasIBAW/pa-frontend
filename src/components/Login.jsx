@@ -7,12 +7,7 @@ import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://127.0.0.1:3005/login'
-
-const tempCred= {
-    "username": "thomas",
-    "password": "941519"
-}
+const backendURI = 'http://10.10.0.125:3005/login'
 
 const cookies = new Cookies()
 
@@ -35,43 +30,46 @@ function Login({set}) {
     };
 
     async function login() {
+        try {
+            const response = await fetch(backendURI, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                //credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                //redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(formData), // body data type must match "Content-Type" header
+            });
 
-        const response= await fetch( backendURI , {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            // mode: "cors", // no-cors, *cors, same-origin
-            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(formData), // body data type must match "Content-Type" header
-        });
 
-        if (response.status !== 200) {
-            setError("incorrect")
-            console.log(response.status)
-            return
+            if (response.status !== 200) {
+                setError("incorrect")
+                console.log(response.status)
+                return
+            }
+
+            const res = await response.json();
+            const decoded = await jwtDecode(res.token)
+
+            // setUser(decoded)
+            // setApi(res.token)
+            set(true) //Set loggedIn State in App.jsx to true
+
+            cookies.set("jwt_auth", res.token, {
+                expires: new Date(decoded.exp * 1000)
+            })
+            cookies.set("currentUser", true, {
+                expires: new Date(decoded.exp * 1000)
+            })
+            setCurrentUser(JSON.stringify(decoded))
+            setError(null)
+            setFormData({username: "", password: ""});
+        } catch (e) {
+            console.log(e)
         }
-        const res = await response.json();
-        const decoded = await jwtDecode(res.token)
-
-        // setUser(decoded)
-        // setApi(res.token)
-        set(true) //Set loggedIn State in App.jsx to true
-
-        cookies.set("jwt_auth", res.token, {
-            expires: new Date(decoded.exp * 1000)
-        })
-        cookies.set("currentUser", true , {
-            expires: new Date(decoded.exp * 1000)
-        })
-        setCurrentUser(JSON.stringify(decoded))
-        setError(null)
-        setFormData({username:"", password:""});
-
-
     }
     async function logout() {
         setUser(null)

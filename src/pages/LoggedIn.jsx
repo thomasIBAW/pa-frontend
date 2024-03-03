@@ -25,7 +25,7 @@ function LoggedIn() {
 const {currentUser, setCurrentUser} = useContext(UserContext)
 
     //TODO change backend URI to the correct one
-    const backendURI = 'http://127.0.0.1:3005';
+    const backendURI = 'http://10.10.0.125:3005';
 
     useEffect( () => {
         async function fetchData() {

@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
+
 import Cookies from "universal-cookie";
-import { HexColorPicker } from "react-colorful";
+
 
 import {
     Box, Button,
-    Center, Checkbox, FormControl, FormLabel, Input,
+    Checkbox, FormControl, FormLabel, Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -34,37 +34,56 @@ function AppointmentsPage() {
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
+
+    // tagNames are the tags in the Appointments we show
+    const [tagNames, setTagNames] = useState({})
+    // eventUsers are the users in the Appointments we show
+    const [eventUsers, setEventUsers] = useState({})
+
+    const [error, setError] = useState(null)
+    // currentCalendar are all the current Appointments (today+)
+    const [currentCalendar, setCurrentCalendar] = useState([])
+    // allFamilyPeople are all peoples in this Family, used to create new Appoitnments
+    const [allFamilyPeople, setAllFamilyPeople] = useState([])
+    // allFamilyPeople are all peoples in this Family, used to create new Appoitnments
+    const [allFamilyTags, setAllFamilyTags] = useState([])
+
+    // Handels Inputs from the Add Appointment modal
+    const handleInputChange = (eventOrSelectedOption, actionMeta) => {
+        // Check if the input change is coming from React Select
+        if (actionMeta && actionMeta.action) {
+            const { name } = actionMeta;
+            // For multi-select, we get an array of selected options
+            const values = eventOrSelectedOption ? eventOrSelectedOption.map(option => option.value) : [];
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: values, // Store the array of selected values for multi-select
+            }));
+        } else {
+            // Handle standard inputs (e.g., Input component changes)
+            const { name, value } = eventOrSelectedOption.target;
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
+    };
+
+
+    //Get currentUser from Context
+    const {currentUser} = useContext(UserContext)
+    // Defines the data to be used to create a new Appoitment
     const [formData, setFormData] = useState({
         "subject": "",
-        "creator": "",
+        "creator": currentUser.uuid,
         "dateTimeStart": "",
         "dateTimeEnd": "",
         "attendees": [],
         "tags": [],
         "note": "",
         "fullDay": false,
-        "important": true,
+        "important": false,
     });
-    const [tagNames, setTagNames] = useState({})
-    const [eventUsers, setEventUsers] = useState({})
-    const [error, setError] = useState(null)
-    const [currentCalendar, setCurrentCalendar] = useState([])
-    const handleInputChange = (event) => {
-        const {name, value} = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-    ]
-
-    //Get currentUser from Context
-    const {currentUser} = useContext(UserContext)
 
     //Get token from Cookie
     const cookies = new Cookies()
@@ -76,10 +95,10 @@ function AppointmentsPage() {
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
 
-    const createPerson =  () => {
+    const createAppointment =  () => {
 
         async function writeData() {
-            const response = await fetch(`${backendURI}/api/people/`, {
+            const response = await fetch(`${backendURI}/api/calendar/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 // mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -87,7 +106,7 @@ function AppointmentsPage() {
                 headers: {
                     "Content-Type": "application/json",
                     "api_key": apiKey,
-                    "family_uuid": decodedUser.linkedFamily
+                    "family_uuid": currentUser.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -99,13 +118,16 @@ function AppointmentsPage() {
                 return
             }
             const res = await response.json();
-            setFormData({
-                "firstName":"",
-                "lastName":"",
-                "nickName":"",
-                "dob":"",
-                "email":""
-            })
+            // setFormData({
+            //     "subject": "",
+            //     "dateTimeStart": "",
+            //     "dateTimeEnd": "",
+            //     "attendees": [],
+            //     "tags": [],
+            //     "note": "",
+            //     "fullDay": false,
+            //     "important": false,
+            // })
 
             console.log(res)
         }
@@ -123,11 +145,14 @@ function AppointmentsPage() {
                 headers: {
                     "Content-Type": "application/json",
                     "api_key": apiKey,
-                    "family_uuid": decodedUser.linkedFamily
+                    "family_uuid": currentUser.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({}), // body data type must match "Content-Type" header
+                body: JSON.stringify({
+                    dateTimeStart: {
+                        $gte: moment().toISOString() // Convert the current moment to an ISO string
+                    }}) // body data type must match "Content-Type" header
             })
             if (response.status !== 200) {
                 // setError("incorrect")
@@ -142,9 +167,19 @@ function AppointmentsPage() {
         fetchData()
     },[])
 
+    useEffect( () => {
+            globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+                .then(res => setAllFamilyPeople(res))
+        },[]);
 
+    useEffect( () => {
+        globalFetch("tags", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+            .then(res => setAllFamilyTags(res))
+    },[]);
+
+
+    // Fetches Tags from the Events
     useEffect(() => {
-        // Fetches Tags from the Events
         const fetchTags = async () => {
             let newTagNames = {};
 
@@ -167,8 +202,8 @@ function AppointmentsPage() {
         fetchTags();
     }, [currentCalendar, decodedUser.linkedFamily]);
 
+    // fetches Users from the events
     useEffect(() => {
-        // fetches Users from the events
         const fetchUsers = async () => {
             let newUsers = {};
 
@@ -178,7 +213,7 @@ function AppointmentsPage() {
                     // console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newUsers[tag]) {
-                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, currentUser.linkedFamily);
                         // console.log(res)
                         newUsers[tag] = res[0].nickName;
                     }
@@ -189,7 +224,7 @@ function AppointmentsPage() {
         };
 
         fetchUsers();
-    }, [currentCalendar, decodedUser.linkedFamily]);
+    }, [currentCalendar, currentUser.linkedFamily]);
 
     return (
         <>
@@ -205,26 +240,26 @@ function AppointmentsPage() {
                 </h1>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    {currentCalendar.map((person) => (
+                    {currentCalendar.map((event) => (
 
                         // shows the appointment
                         <div
-                            key={person.uuid}
+                            key={event.uuid}
                             className="relative mx-1 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
                         >
                             {/*shows the date(day) of the appointment*/}
                             <div className="w-14 px-1 flex-none">
                                 {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${person.dateTimeStart}`, "DD.MM.YYYY - HH:mm").format('DD dd')}</p>
+                                <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
                             </div>
 
                             {/*show time*/}
                             <div className="w-14 flex-none px-1 m-0 text-center">
 
                                 <span className="absolute inset-0" aria-hidden="true" />
-                                <p className="text-sm text-gray-900">{moment(`${person.dateTimeStart}`, "DD.MM.YYYY - HH:mm").format('HH:mm')}</p>
+                                <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:MM')}</p>
                                 <p>-</p>
-                                <p className=" text-sm text-gray-500">{moment(`${person.dateTimeEnd}`, "DD.MM.YYYY - HH:mm").format('HH:mm')}</p>
+                                <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:MM')}</p>
 
                             </div>
                             {/*show an image if Appointment is important*/}
@@ -241,8 +276,8 @@ function AppointmentsPage() {
                             <div className="min-w-40 flex-auto ">
                                 <a href="#" className="focus:outline-none">
                                     <span className="absolute inset-0" aria-hidden="true" />
-                                    <p className="text-lg text-center font-bold text-gray-900">{person.subject}</p>
-                                    <p className=" text-center px-3 text-xs text-gray-500">{person.note}</p>
+                                    <p className="text-lg text-center font-bold text-gray-900">{event.subject}</p>
+                                    <p className=" text-center px-3 text-xs text-gray-500">{event.note}</p>
                                 </a>
                             </div>
 
@@ -264,7 +299,7 @@ function AppointmentsPage() {
 
                             {/*show Attendees*/}
                             <div className="w-16 flex-none">
-                                {person.attendees.map((tag, index) => (
+                                {event.attendees.map((tag, index) => (
                                     // Move the declaration of tagInfo outside of the return statement.
 
                                         <Box key={index} className="inline-flex rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
@@ -288,7 +323,7 @@ function AppointmentsPage() {
             >
                 <ModalOverlay />
                 <ModalContent w='300px' alignItems='center'>
-                    <ModalHeader className='julius'>Add a person</ModalHeader>
+                    <ModalHeader className='julius'>Add an appointment</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={3}>
                         <FormControl  w='200px'>
@@ -297,18 +332,30 @@ function AppointmentsPage() {
                             <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
                             <Input type='text' variant='filled' size='lg' name="note" value={formData.note} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>
-                            <Select isMulti={true} options={options} />
+                            <Select
+                                isMulti
+                                name="attendees"
+                                options={allFamilyPeople.map(person => ({ value: person.uuid, label: person.firstName }))}
+                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'attendees' })}
+                            />
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Tags</FormLabel>
+                            <Select
+                                isMulti
+                                name="tags"
+                                options={allFamilyTags.map(tag => ({ value: tag.uuid, label: tag.tagName }))}
+                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'tags' })}
+                            />
                             <FormLabel as='h1' mt='15px' fontSize='14'>From</FormLabel>
-                            <Input type='date' variant='filled' size='lg' name="from" value={formData.from} onChange={handleInputChange}/>
+                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeStart" value={formData.dateTimeStart} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>To</FormLabel>
-                            <Input type='date' variant='filled' size='lg' name="from" value={formData.from} onChange={handleInputChange}/>
-                            <Checkbox size='lg' defaultChecked>Important</Checkbox>
+                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeEnd" value={formData.dateTimeEnd} onChange={handleInputChange}/>
+                            <Checkbox size='lg'  >Important</Checkbox>
                         </FormControl>
 
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={createPerson}>
+                        <Button colorScheme='blue' mr={3} onClick={createAppointment}>
                             Save
                         </Button>
                         <Button onClick={onClose}>Cancel</Button>
