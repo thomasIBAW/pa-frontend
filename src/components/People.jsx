@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
-import globalFetch from "../hooks/Connectors.jsx";
+import {globalFetch} from "../hooks/Connectors.jsx";
 
 
 function classNames(...classes) {

@@ -14,7 +14,7 @@ function MePage() {
 
     return (
         <center>
-        <h1>that's me</h1>
+        <h1>This is me</h1>
 
             <p>Username : {currentUser.username}</p>
             <p>linked Person : {currentUser.linkedPerson}</p>
@@ -23,6 +23,7 @@ function MePage() {
             <p>Family Admin : {currentUser.isFamilyAdmin ? "Yes": "NO"}</p>
             <p>USer Uuid : {currentUser.uuid}</p>
             <p>Registered : {currentUser.created}</p>
+            <p>Token created : {moment("1970-01-20 ").add(decodedUser.iat * 1000).format('DD.MM.YYYY')} </p>
             <p>Valid until : {moment("1970-01-20 ").add(decodedUser.exp * 1000).format('DD.MM.YYYY')} </p>
             <p></p>
             <h1>Cookie</h1>

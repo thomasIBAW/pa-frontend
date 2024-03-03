@@ -9,10 +9,10 @@ const apiKey = cookies.get("jwt_auth")
 
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://10.10.0.125:3005';
+const backendURI = 'http://localhost:3005';
 
 
-export default async function globalFetch(endpoint, filter, family) {
+export async function globalFetch(endpoint, filter, family) {
 
     console.log(`"globalFetch()" received the following params: endpoint: ${endpoint} / filter ${filter} / family_uuid: ${family}`)
     //console.log(`${backendURI}/api/${endpoint}/find`)
@@ -39,10 +39,9 @@ export default async function globalFetch(endpoint, filter, family) {
 
     console.log(`Response from "${endpoint}" globalFetch is: `, res)
     return res
-    //console.log(res)
-}
+    }
 
-async function globalWrite(endpoint, body, family) {
+export async function globalWrite(endpoint, body, family) {
 
     console.log(`"globalWrite()" received the following params: endpoint: ${endpoint} / filter ${body} / family_uuid: ${family}`)
     //console.log(`${backendURI}/api/${endpoint}/find`)

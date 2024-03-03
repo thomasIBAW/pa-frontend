@@ -7,7 +7,7 @@ import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://10.10.0.125:3005/login'
+const backendURI = 'http://localhost:3005/login'
 
 const cookies = new Cookies()
 
@@ -70,13 +70,6 @@ function Login({set}) {
         } catch (e) {
             console.log(e)
         }
-    }
-    async function logout() {
-        setUser(null)
-        setApi("")
-        cookies.remove("jwt_auth")
-        cookies.remove("currentUser")
-        set(false)
     }
 
     return (

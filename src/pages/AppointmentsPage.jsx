@@ -1,8 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-
 import Cookies from "universal-cookie";
-
-
 import {
     Box, Button,
     Checkbox, FormControl, FormLabel, Input,
@@ -16,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
-import globalFetch from "../hooks/Connectors.jsx";
+import {globalWrite, globalFetch} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import Select from "react-select";
 
@@ -24,9 +21,6 @@ import Select from "react-select";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
-
-
 
 function AppointmentsPage() {
 
@@ -39,16 +33,14 @@ function AppointmentsPage() {
     const [tagNames, setTagNames] = useState({})
     // eventUsers are the users in the Appointments we show
     const [eventUsers, setEventUsers] = useState({})
-
-    const [error, setError] = useState(null)
-    // currentCalendar are all the current Appointments (today+)
+    // currentCalendar has all the current Appointments (today+)
     const [currentCalendar, setCurrentCalendar] = useState([])
-    // allFamilyPeople are all peoples in this Family, used to create new Appoitnments
+    // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyPeople, setAllFamilyPeople] = useState([])
-    // allFamilyPeople are all peoples in this Family, used to create new Appoitnments
+    // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyTags, setAllFamilyTags] = useState([])
 
-    // Handels Inputs from the Add Appointment modal
+    // Handles Inputs from the Add Appointment modal
     const handleInputChange = (eventOrSelectedOption, actionMeta) => {
         // Check if the input change is coming from React Select
         if (actionMeta && actionMeta.action) {
@@ -69,10 +61,9 @@ function AppointmentsPage() {
         }
     };
 
-
     //Get currentUser from Context
     const {currentUser} = useContext(UserContext)
-    // Defines the data to be used to create a new Appoitment
+    // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
         "subject": "",
         "creator": currentUser.uuid,
@@ -90,13 +81,11 @@ function AppointmentsPage() {
     const apiKey = cookies.get("jwt_auth")
 
     const decodedUser = currentUser;
-    //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
 
     const createAppointment =  () => {
-
         async function writeData() {
             const response = await fetch(`${backendURI}/api/calendar/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -136,36 +125,12 @@ function AppointmentsPage() {
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        async function fetchData() {
-            const response = await fetch(`${backendURI}/api/calendar/find`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": currentUser.linkedFamily
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({
-                    dateTimeStart: {
-                        $gte: moment().toISOString() // Convert the current moment to an ISO string
-                    }}) // body data type must match "Content-Type" header
-            })
-            if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
-            }
-            const res = await response.json();
-            setCurrentCalendar(res)
-            console.log(res)
-        }
-
-        fetchData()
-    },[])
+         globalFetch("calendar",JSON.stringify({
+                        dateTimeStart: {
+                            $gte: moment().toISOString() // Convert the current moment to an ISO string
+                        }}) ,currentUser.linkedFamily )
+            .then(res => setCurrentCalendar(res))
+     },[])
 
     useEffect( () => {
             globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )

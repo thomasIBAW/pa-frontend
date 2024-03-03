@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
 import '@fontsource/julius-sans-one';
-import Cookies from "universal-cookie";
 import UserContext from "../hooks/Context.jsx";
 function HomePage() {
 

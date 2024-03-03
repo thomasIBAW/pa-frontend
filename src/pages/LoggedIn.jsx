@@ -14,8 +14,10 @@ import {useContext, useEffect} from "react";
 import UserContext from "../hooks/Context.jsx";
 import {jwtDecode} from "jwt-decode";
 import CalendarPage from "./CalendarPage.jsx";
+import {globalFetch} from "../hooks/Connectors.jsx";
 
 function LoggedIn() {
+
     //Get Current user from the jwt token
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
@@ -24,35 +26,40 @@ function LoggedIn() {
 
 const {currentUser, setCurrentUser} = useContext(UserContext)
 
-    //TODO change backend URI to the correct one
-    const backendURI = 'http://10.10.0.125:3005';
-
     useEffect( () => {
-        async function fetchData() {
-            const response = await fetch(`${backendURI}/api/users/find`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "api_key": apiKey
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({uuid:decodedUser.userUuid}), // body data type must match "Content-Type" header
-            })
-            if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
-            }
-            const res = await response.json();
-            res[0].password=null;
-            setCurrentUser(res[0])
-            console.log(res[0])
+        // TODO Old part to be removed later
+        // async function fetchData() {
+        //     const response = await fetch(`${backendURI}/api/users/find`, {
+        //         method: "POST", // *GET, POST, PUT, DELETE, etc.
+        //         // mode: "cors", // no-cors, *cors, same-origin
+        //         // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //         // credentials: "same-origin", // include, *same-origin, omit
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "api_key": apiKey
+        //         },
+        //         // redirect: "follow", // manual, *follow, error
+        //         // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //         body: JSON.stringify({uuid:decodedUser.userUuid}), // body data type must match "Content-Type" header
+        //     })
+        //     if (response.status !== 200) {
+        //         // setError("incorrect")
+        //         console.log(response.status)
+        //         return
+        //     }
+        //     const res = await response.json();
+
+        console.log("users", "filter",`${decodedUser.userUuid}`, decodedUser.linkedFamily )
+        const filter = {
+            uuid:decodedUser.userUuid
         }
-        fetchData()
+        globalFetch("users", JSON.stringify(filter),decodedUser.linkedFamily )
+            .then(res => {
+                res[0].password = null;
+                setCurrentUser(res[0])
+                console.log("currentUser has been set to: ", res[0])
+            })
+
     },[])
 
 
@@ -129,11 +136,6 @@ const {currentUser, setCurrentUser} = useContext(UserContext)
                 <Route path="/todos" element={<TodoPage />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/calendar" element={<CalendarPage />} />
-
-                {/*<Route path="/account" element={<Accountpage/>} >*/}
-                {/*    <Route path="settings" element={<Settingspage/>} />*/}
-                {/*    <Route path="privacy" element={<Privacypage/>} />*/}
-                {/*</Route>*/}
             </Routes>
             <Footer />
 

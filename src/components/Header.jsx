@@ -1,28 +1,29 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
-    Box,
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbSeparator, Center,
+    Box
 } from '@chakra-ui/react'
 import {Link} from "react-router-dom";
 import '@fontsource/julius-sans-one';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import Cookies from "universal-cookie";
+import UserContext from "../hooks/Context.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 function Header() {
-    const bgColor='#e6c997';
     const cookies = new Cookies()
-    const user = cookies.get("currentUser")
+    const {currentUser, setCurrentUser} = useContext(UserContext)
+    async function logout() {
+        cookies.remove("jwt_auth")
+        cookies.remove("currentUser")
+        setCurrentUser({})
+        console.log("loggedout")
+    }
 
     return (
 
@@ -130,9 +131,9 @@ function Header() {
                                             </Menu.Item>
                                             <Menu.Item>
                                                 {({ active }) => (
-                                                    <Box
+                                                    <Box as="Link" onClick={logout}
                                                           fontFamily='Julius Sans One'
-
+                                                         to="/"
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out
