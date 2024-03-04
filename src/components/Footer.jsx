@@ -10,7 +10,7 @@ function Footer(props) {
 
     return (
  //TODO Remove Footer or place to the bottom of the page
-    <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller'>
+    <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller' className="tbefooter">
            <Box>User : {currentUser.username}</Box>
           <Box>|</Box>
         <Box>Family : {currentUser.linkedFamily}</Box>

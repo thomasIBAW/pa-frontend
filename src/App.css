@@ -16,6 +16,18 @@ p {
 }
 .julius {
     font-family: 'Julius Sans One',sans-serif;
+}
 
+.tbeheader {
+    position:fixed;
+    top:0;
+    width: 100%;
+    z-index :200
+}
 
+.tbefooter {
+    position:fixed;
+    bottom:0;
+    width: 100%;
+    z-index :200
 }

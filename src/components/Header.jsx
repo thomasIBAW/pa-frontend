@@ -24,10 +24,10 @@ function Header() {
         setCurrentUser({})
         console.log("loggedout")
     }
-
+    //TODO position Header static to the top of the page.
     return (
 
-        <Disclosure as="nav" className="bg-white shadow">
+        <Disclosure as="nav" className="bg-white shadow tbeheader">
             {({ open }) => (
                 <>
                     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
