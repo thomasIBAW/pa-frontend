@@ -213,18 +213,27 @@ function AppointmentsPage() {
                             className="relative mx-1 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
                         >
                             {/*shows the date(day) of the appointment*/}
-                            <div className="w-14 px-1 flex-none">
-                                {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
-                            </div>
+
+                            { moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') == moment().format('DD.MM.YYYY') ?
+                                <div className="w-14 px-1 flex-none border-yellow-400 border-2 rounded-lg">
+                                    {/*<span className="absolute inset-0" aria-hidden="true" />*/}
+                                    <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
+                                </div>
+                                :
+                                <div className="w-14 px-1 flex-none">
+                                    {/*<span className="absolute inset-0" aria-hidden="true" />*/}
+                                    <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
+                                </div>
+                            }
+
 
                             {/*show time*/}
                             <div className="w-14 flex-none px-1 m-0 text-center">
 
                                 <span className="absolute inset-0" aria-hidden="true" />
-                                <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:MM')}</p>
+                                <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>
                                 <p>-</p>
-                                <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:MM')}</p>
+                                <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>
 
                             </div>
                             {/*show an image if Appointment is important*/}

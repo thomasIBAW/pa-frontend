@@ -10,6 +10,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import Cookies from "universal-cookie";
 import UserContext from "../hooks/Context.jsx";
+import DateTime from "./DateTime.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -26,8 +27,9 @@ function Header() {
     }
     //TODO position Header static to the top of the page.
     return (
-
-        <Disclosure as="nav" className="bg-white shadow tbeheader">
+        <>
+        <Box height="64px"></Box>
+        <Disclosure as="nav" className="bg-white shadow tbeheader ">
             {({ open }) => (
                 <>
                     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -83,18 +85,14 @@ function Header() {
                                 {/*    <span className="sr-only">View notifications</span>*/}
                                 {/*    <BellIcon className="h-6 w-6" aria-hidden="true" />*/}
                                 {/*</button>*/}
-
+                                <DateTime></DateTime>
                                 {/* Profile dropdown */}
                                 <Menu as="div" className="relative ml-3">
                                     <div>
-                                        <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                        <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
                                             <span className="absolute -inset-1.5" />
                                             <span className="sr-only">Open user menu</span>
-                                            <img
-                                                className="h-8 w-8 rounded-full"
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt=""
-                                            />
+                                            <i className="fa-solid fa-user"></i>
                                         </Menu.Button>
                                     </div>
                                     <Transition
@@ -184,7 +182,7 @@ function Header() {
             )}
         </Disclosure>
 
-
+        </>
     //     <>
     //     <Box display="flex"  flexWrap="wrap" alignItems="center" justifyContent="space-between" fontFamily='Julius Sans One'>
     //     <Center bg={bgColor} w='100%' p={2} color='black'>
