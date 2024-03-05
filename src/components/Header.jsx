@@ -129,7 +129,7 @@ function Header() {
                                             </Menu.Item>
                                             <Menu.Item>
                                                 {({ active }) => (
-                                                    <Box as="Link" onClick={logout}
+                                                    <Box as={Link} onClick={logout}
                                                           fontFamily='Julius Sans One'
                                                          to="/"
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}

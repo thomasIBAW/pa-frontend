@@ -7,7 +7,7 @@ import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://localhost:3005/login'
+const backendURI = 'http://10.10.0.125:3005/login'
 
 const cookies = new Cookies()
 
@@ -56,7 +56,7 @@ function Login({set}) {
 
             // setUser(decoded)
             // setApi(res.token)
-            set(true) //Set loggedIn State in App.jsx to true
+
 
             cookies.set("jwt_auth", res.token, {
                 expires: new Date(decoded.exp * 1000)
@@ -67,6 +67,9 @@ function Login({set}) {
             setCurrentUser(JSON.stringify(decoded))
             setError(null)
             setFormData({username: "", password: ""});
+
+            set(true) //Set loggedIn State in App.jsx to true
+
         } catch (e) {
             console.log(e)
         }

@@ -195,13 +195,13 @@ const [newAppointment, setNewAppointment] = useState({})
                     </button>
                 </h1>
 
-                <div className="grid grid-cols-1 gap-1 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {currentCalendar.map((event) => (
 
                         // shows the appointment
                         <div
                             key={event.uuid}
-                            className="relative mx-1 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
+                            className="relative mx-0 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
                         >
                             {/*shows the date(day) of the appointment*/}
 
@@ -286,7 +286,9 @@ const [newAppointment, setNewAppointment] = useState({})
                                 ))}
                             </div>
                         </div>
+
                     ))}
+                    <div className="bg-white h-7"></div>
                 </div>
 
 
