@@ -251,7 +251,7 @@ const [newAppointment, setNewAppointment] = useState({})
                             {/*</div>)}*/}
 
                             {/*show the appointment Info like subject and additional informations*/}
-                            <div className="min-w-40 flex-auto ">
+                            <div className="min-w-40 flex-auto px-4">
                                 <a href="#" className="focus:outline-none">
                                     <span className="absolute inset-0" aria-hidden="true" />
                                     <p className="text-lg text-center font-bold text-gray-900">{event.subject}</p>
@@ -279,7 +279,6 @@ const [newAppointment, setNewAppointment] = useState({})
                             <div className="w-16 flex-none">
                                 {event.attendees.map((tag, index) => (
                                     // Move the declaration of tagInfo outside of the return statement.
-
                                         <Box key={index} className="inline-flex rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
                                             {eventUsers[tag]}
                                         </Box>
