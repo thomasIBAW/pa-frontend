@@ -39,7 +39,7 @@ function AppointmentsPage() {
     const [allFamilyPeople, setAllFamilyPeople] = useState([])
     // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyTags, setAllFamilyTags] = useState([])
-
+const [newAppointment, setNewAppointment] = useState({})
     // Handles Inputs from the Add Appointment modal
     const handleInputChange = (eventOrSelectedOption, actionMeta) => {
         // Check if the input change is coming from React Select
@@ -79,7 +79,6 @@ function AppointmentsPage() {
     //Get token from Cookie
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
-
     const decodedUser = currentUser;
 
     //TODO change backend URI to the correct one
@@ -107,17 +106,9 @@ function AppointmentsPage() {
                 return
             }
             const res = await response.json();
-            // setFormData({
-            //     "subject": "",
-            //     "dateTimeStart": "",
-            //     "dateTimeEnd": "",
-            //     "attendees": [],
-            //     "tags": [],
-            //     "note": "",
-            //     "fullDay": false,
-            //     "important": false,
-            // })
 
+            setNewAppointment(res)
+            onClose()
             console.log(res)
         }
         writeData()
@@ -130,7 +121,7 @@ function AppointmentsPage() {
                             $gte: moment().toISOString() // Convert the current moment to an ISO string
                         }}) ,currentUser.linkedFamily )
             .then(res => setCurrentCalendar(res))
-     },[])
+     },[newAppointment])
 
     useEffect( () => {
             globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
@@ -214,9 +205,13 @@ function AppointmentsPage() {
                         >
                             {/*shows the date(day) of the appointment*/}
 
+
                             { moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') == moment().format('DD.MM.YYYY') ?
                                 <div className="w-14 px-1 flex-none border-yellow-400 border-2 rounded-lg">
                                     {/*<span className="absolute inset-0" aria-hidden="true" />*/}
+                                    <div className= "julius text-center">
+                                        {moment(`${event.dateTimeStart}`).format('ddd')}
+                                    </div>
                                     <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
                                     {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
                                     <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
@@ -224,6 +219,9 @@ function AppointmentsPage() {
                                 :
                                 <div className="w-14 px-1 flex-none">
                                     {/*<span className="absolute inset-0" aria-hidden="true" />*/}
+                                    <div className= "julius text-center">
+                                        {moment(`${event.dateTimeStart}`).format('ddd')}
+                                    </div>
                                     <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
                                     {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
                                         <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
@@ -232,14 +230,16 @@ function AppointmentsPage() {
 
 
                             {/*show time*/}
-                            <div className="w-14 flex-none px-1 m-0 text-center">
+                            {/*<div className="w-14 flex-none px-1 m-0 text-center">*/}
 
-                                <span className="absolute inset-0" aria-hidden="true" />
-                                <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>
-                                <p>-</p>
-                                <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>
+                            {/*    <span className="absolute inset-0" aria-hidden="true" />*/}
+                            {/*    <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>*/}
+                            {/*    <p>-</p>*/}
+                            {/*    <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>*/}
 
-                            </div>
+                            {/*</div>*/}
+
+
                             {/*show an image if Appointment is important*/}
 
                             {/*{person.important && (<div>*/}
