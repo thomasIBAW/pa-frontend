@@ -126,7 +126,7 @@ function AppointmentsPage() {
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
          globalFetch("calendar",JSON.stringify({
-                        dateTimeStart: {
+                        dateTimeEnd: {
                             $gte: moment().toISOString() // Convert the current moment to an ISO string
                         }}) ,currentUser.linkedFamily )
             .then(res => setCurrentCalendar(res))
@@ -204,7 +204,7 @@ function AppointmentsPage() {
                     </button>
                 </h1>
 
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-1 lg:grid-cols-2">
                     {currentCalendar.map((event) => (
 
                         // shows the appointment
@@ -217,12 +217,16 @@ function AppointmentsPage() {
                             { moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') == moment().format('DD.MM.YYYY') ?
                                 <div className="w-14 px-1 flex-none border-yellow-400 border-2 rounded-lg">
                                     {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                    <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
+                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
+                                    {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
+                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
                                 </div>
                                 :
                                 <div className="w-14 px-1 flex-none">
                                     {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                    <p className=" text-2xl text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD dd')}</p>
+                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
+                                    {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
+                                        <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
                                 </div>
                             }
 
