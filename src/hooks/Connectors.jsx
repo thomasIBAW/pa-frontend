@@ -9,7 +9,7 @@ const apiKey = cookies.get("jwt_auth")
 
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://10.10.0.125:3005';
+const backendURI = 'http://localhost:3005';
 
 
 export async function globalFetch(endpoint, filter, family) {

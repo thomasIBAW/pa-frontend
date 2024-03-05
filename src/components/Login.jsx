@@ -7,7 +7,7 @@ import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://10.10.0.125:3005/login'
+const backendURI = 'http://localhost:3005/login'
 
 const cookies = new Cookies()
 
@@ -99,10 +99,10 @@ function Login({set}) {
 
             </Box>
 
-                {/*//TODO Create Registrations Page*/}
-            {/*<Box as='h1' fontSize='14px' mt='10px' textAlign='center'>*/}
-            {/*    New to Family Calendar? <Link>Register here</Link>*/}
-            {/*</Box>*/}
+                //TODO Create Registrations Page
+            <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
+                New to Family Calendar? <Link>Register here</Link>
+            </Box>
         </VStack>
 
 
