@@ -7,7 +7,6 @@ import MePage from "./MePage.jsx";
 import AppointmentsPage from "./AppointmentsPage.jsx";
 import TodoPage from "./TodoPage.jsx";
 import '@fontsource/julius-sans-one';
-import Cookies from "universal-cookie";
 import Footer from "../components/Footer.jsx";
 import Settings from "./Settings.jsx";
 import {useContext, useEffect, useState} from "react";
@@ -34,6 +33,7 @@ function LoggedIn() {
     const auth = useAuthUser()
     const isAuthenticated = useIsAuthenticated()
 
+    // TODO Add a check to confirm the user in the backend
     //Get Current user from the jwt token
     // const cookies = new Cookies()
     // const apiKey = cookies.get("jwt_auth")

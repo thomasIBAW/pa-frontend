@@ -11,16 +11,12 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-// import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalWrite, globalFetch} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-
-// function classNames(...classes) {
-//     return classes.filter(Boolean).join(' ')
-// }
+import Appointment from "../components/Appointment.jsx";
 
 function AppointmentsPage() {
 
@@ -80,24 +76,25 @@ function AppointmentsPage() {
         "important": false,
     });
 
-    //Get token from Cookie
-    // const cookies = new Cookies()
-    // const apiKey = cookies.get("jwt_auth")
+    // Get token from Cookie
+    const cookies = new Cookies()
+    const apiKey = cookies.get("_auth")
     // const decodedUser = auth;
 
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
 
     const createAppointment =  () => {
+        console.log(JSON.stringify(auth))
         async function writeData() {
             const response = await fetch(`${backendURI}/api/calendar/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
+                mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                 // credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": auth.token,
+                    "api_key": apiKey,
                     "family_uuid": auth.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
@@ -201,96 +198,7 @@ function AppointmentsPage() {
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {currentCalendar.map((event) => (
-
-                        // shows the appointment
-                        <div
-                            key={event.uuid}
-                            className="relative mx-0 flex items-center space-x-0 rounded-lg border border-gray-300 bg-white px-2 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400"
-                        >
-                            {/*shows the date(day) of the appointment*/}
-
-
-                            { moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') == moment().format('DD.MM.YYYY') ?
-                                <div className="w-14 px-1 flex-none border-yellow-400 border-2 rounded-lg">
-                                    {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                    <div className= "julius text-center">
-                                        {moment(`${event.dateTimeStart}`).format('ddd')}
-                                    </div>
-                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
-                                    {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
-                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
-                                </div>
-                                :
-                                <div className="w-14 px-1 flex-none">
-                                    {/*<span className="absolute inset-0" aria-hidden="true" />*/}
-                                    <div className= "julius text-center">
-                                        {moment(`${event.dateTimeStart}`).format('ddd')}
-                                    </div>
-                                    <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeStart}`).format('DD.MM.')}</p>
-                                    {moment(`${event.dateTimeStart}`).format('DD.MM.') != moment(`${event.dateTimeEnd}`).format('DD.MM.') ?
-                                        <p className=" text-sm text-center font-extrabold text-gray-900">{moment(`${event.dateTimeEnd}`).format('DD.MM.')}</p> : null }
-                                </div>
-                            }
-
-
-                            {/*show time*/}
-                            {/*<div className="w-14 flex-none px-1 m-0 text-center">*/}
-
-                            {/*    <span className="absolute inset-0" aria-hidden="true" />*/}
-                            {/*    <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>*/}
-                            {/*    <p>-</p>*/}
-                            {/*    <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>*/}
-
-                            {/*</div>*/}
-
-
-                            {/*show an image if Appointment is important*/}
-
-                            {/*{person.important && (<div>*/}
-                            {/*    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"*/}
-                            {/*         strokeWidth={0.8} stroke="red" className="w-10 h-10">*/}
-                            {/*        <path strokeLinecap="round" strokeLinejoin="round"*/}
-                            {/*              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>*/}
-                            {/*    </svg>*/}
-                            {/*</div>)}*/}
-
-                            {/*show the appointment Info like subject and additional informations*/}
-                            <div className="min-w-40 flex-auto px-4">
-                                <a href="#" className="focus:outline-none">
-                                    <span className="absolute inset-0" aria-hidden="true" />
-                                    <p className="text-lg text-center font-bold text-gray-900">{event.subject}</p>
-                                    <p className=" text-center px-3 text-xs text-gray-500">{event.note}</p>
-                                </a>
-                            </div>
-
-
-
-                            {/*/!*show Tags*!/*/}
-                            {/*<div className="min-w-0 flex-1 ">*/}
-                            {/*    {person.tags.map((tag, index) => {*/}
-                            {/*        // Move the declaration of tagInfo outside of the return statement.*/}
-                            {/*        const tagInfo = tagNames[tag];*/}
-                            {/*        // Now return the Box component correctly.*/}
-                            {/*        return (*/}
-                            {/*            <Box key={index} bgColor={tagInfo ? tagInfo.color : 'defaultColor'} className="inline-flex items-center rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">*/}
-                            {/*                /!*{tagInfo ? tagInfo.name : 'Unknown Tag'}*!/*/}
-                            {/*            </Box>*/}
-                            {/*        );*/}
-                            {/*    })}*/}
-                            {/*</div>*/}
-
-                            {/*show Attendees*/}
-                            <div className="w-16 flex-none">
-                                {event.attendees.map((tag, index) => (
-                                    // Move the declaration of tagInfo outside of the return statement.
-                                        <Box key={index} className="inline-flex rounded-md bg-gray-50 px-1.5 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                                            {eventUsers[tag]}
-                                        </Box>
-
-                                ))}
-                            </div>
-                        </div>
-
+                        <Appointment event={event} eventUsers={eventUsers} />
                     ))}
                     <div className="bg-white h-7"></div>
                 </div>
