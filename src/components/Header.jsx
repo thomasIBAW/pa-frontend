@@ -1,32 +1,38 @@
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {
     Box
 } from '@chakra-ui/react'
-import {Link, Navigate, redirect} from "react-router-dom";
+import {Link, redirect} from "react-router-dom";
 import '@fontsource/julius-sans-one';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 import Cookies from "universal-cookie";
 import UserContext from "../hooks/Context.jsx";
 import DateTime from "./DateTime.jsx";
 import {IoPersonCircleOutline} from "react-icons/io5";
-import {CiFaceSmile} from "react-icons/ci";
+import {useNavigate} from "react-router-dom";
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 function Header() {
+
+    const navigate = useNavigate()
+    const signout = useSignOut()
     const cookies = new Cookies()
-    const {currentUser, setCurrentUser} = useContext(UserContext)
+
+    // const {currentUser, setCurrentUser} = useContext(UserContext)
     async function logout() {
+        signout()
         await cookies.remove("jwt_auth")
         await cookies.remove("currentUser")
-        await setCurrentUser({})
+        // await setCurrentUser({})
         console.log("loggedout")
-        return redirect("/")
+        navigate("/login")
 
     }
     //TODO position Header static to the top of the page.

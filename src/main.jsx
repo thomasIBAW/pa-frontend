@@ -6,6 +6,7 @@ import {ChakraProvider} from "@chakra-ui/react";
 import {BrowserRouter} from "react-router-dom";
 import AuthProvider from 'react-auth-kit';
 import createStore from "react-auth-kit/createStore";
+import LoggedIn from "./pages/LoggedIn.jsx";
 
 const store = createStore({
     authName:'_auth',

@@ -1,23 +1,19 @@
-import React, {useContext, useState} from 'react';
+import {useState} from 'react';
 import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useConst} from '@chakra-ui/react'
 import '@fontsource/julius-sans-one';
-import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
-import UserContext from "../hooks/Context.jsx";
-import {redirect} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 //TODO change backend URI to the correct one
 const backendURI = 'http://localhost:3005/login'
 
-const cookies = new Cookies()
+function Login() {
+    const navigate= useNavigate()
+    // const {currentUser, setCurrentUser} = useContext(UserContext)
 
-
-function Login({set}) {
-    const {currentUser, setCurrentUser} = useContext(UserContext)
-    const [api_key, setApi] = useState("")
-    const [user, setUser] = useState(null)
     const [error, setError] = useState(null)
+
     // formDAta state contains the credentials entered into the login form
     const [formData, setFormData] = useState({username:"", password:""});
     const signIn = useSignIn()
@@ -64,30 +60,13 @@ function Login({set}) {
                 },
                 userState: decoded
             })){ // Only if you are using refreshToken feature
-                // Redirect or do-something
+                setError(null)
+                setFormData({username: "", password: ""});
+                console.log('redirecting ...')
+                navigate("/home"); // <-- redirect
             }else {
                 //Throw error
             }
-
-
-
-            // setUser(decoded)
-            // setApi(res.token)
-
-
-            cookies.set("jwt_auth", res.token, {
-                expires: new Date(decoded.exp * 1000)
-            })
-            cookies.set("currentUser", true, {
-                expires: new Date(decoded.exp * 1000)
-            })
-
-            let newUser = JSON.stringify(decoded);
-            setCurrentUser(newUser)
-            setError(null)
-            setFormData({username: "", password: ""});
-            redirect("/home")
-            setTimeout(() => set(true) , 200) //Set loggedIn State in App.jsx to true
 
         } catch (e) {
             console.log(e)
