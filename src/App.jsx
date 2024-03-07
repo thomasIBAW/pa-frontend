@@ -4,7 +4,7 @@ import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import Login from "./components/Login.jsx";
 import LoggedIn from "./pages/LoggedIn.jsx";
-import React, { useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Box, SkeletonCircle, SkeletonText} from "@chakra-ui/react";
 import UserContext from "./hooks/Context.jsx";
 import Loading from "./components/Loading.jsx";
@@ -16,10 +16,15 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(null)
     const [currentUser, setCurrentUser] = useState({})
     //added timeout to allow page to load //TODO Remove and use something like onLoaded ...
-    setTimeout(() => {
+
+    useEffect(() => {
         user ? setLoggedIn(true) : setLoggedIn(false)
-       // console.log(user, loggedIn)
-    }, 100)
+    }, []);
+
+    // setTimeout(() => {
+    //     user ? setLoggedIn(true) : setLoggedIn(false)
+    //    // console.log(user, loggedIn)
+    // }, 100)
 
     // console.log(user, loggedIn, currentUser)
   return (

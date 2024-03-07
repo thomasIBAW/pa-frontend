@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {
     Box
 } from '@chakra-ui/react'
-import {Link} from "react-router-dom";
+import {Link, Navigate, redirect} from "react-router-dom";
 import '@fontsource/julius-sans-one';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
@@ -11,6 +11,8 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Cookies from "universal-cookie";
 import UserContext from "../hooks/Context.jsx";
 import DateTime from "./DateTime.jsx";
+import {IoPersonCircleOutline} from "react-icons/io5";
+import {CiFaceSmile} from "react-icons/ci";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -20,10 +22,12 @@ function Header() {
     const cookies = new Cookies()
     const {currentUser, setCurrentUser} = useContext(UserContext)
     async function logout() {
-        cookies.remove("jwt_auth")
-        cookies.remove("currentUser")
-        setCurrentUser({})
+        await cookies.remove("jwt_auth")
+        await cookies.remove("currentUser")
+        await setCurrentUser({})
         console.log("loggedout")
+        return redirect("/")
+
     }
     //TODO position Header static to the top of the page.
     return (
@@ -56,7 +60,7 @@ function Header() {
                                 </div>
                                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                                     {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
-                                    <Box as={Link} to="/" className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900" fontFamily='Julius Sans One'
+                                    <Box as={Link} to="/home" className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900" fontFamily='Julius Sans One'
                                     >
                                         Dashboard
                                     </Box>
@@ -92,7 +96,9 @@ function Header() {
                                         <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
                                             <span className="absolute -inset-1.5" />
                                             <span className="sr-only">Open user menu</span>
-                                            <i className="fa-solid fa-user"></i>
+                                           <h1> <IoPersonCircleOutline /></h1>
+
+
                                         </Menu.Button>
                                     </div>
                                     <Transition
@@ -131,7 +137,7 @@ function Header() {
                                                 {({ active }) => (
                                                     <Box as={Link} onClick={logout}
                                                           fontFamily='Julius Sans One'
-                                                         to="/"
+                                                         to="/home"
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out
@@ -150,7 +156,7 @@ function Header() {
                             {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
                             <Disclosure.Button
                                 as={Link}
-                                to="/"
+                                to="/home"
                                 className="julius block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700"  fontFamily='Julius Sans One'
                             >
                                 Dashboard

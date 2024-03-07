@@ -5,6 +5,7 @@ import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
+import {redirect} from "react-router-dom";
 
 //TODO change backend URI to the correct one
 const backendURI = 'http://localhost:3005/login'
@@ -64,11 +65,13 @@ function Login({set}) {
             cookies.set("currentUser", true, {
                 expires: new Date(decoded.exp * 1000)
             })
-            setCurrentUser(JSON.stringify(decoded))
+
+            let newUser = JSON.stringify(decoded);
+            setCurrentUser(newUser)
             setError(null)
             setFormData({username: "", password: ""});
-
-            set(true) //Set loggedIn State in App.jsx to true
+            redirect("/home")
+            setTimeout(() => set(true) , 200) //Set loggedIn State in App.jsx to true
 
         } catch (e) {
             console.log(e)
@@ -77,16 +80,16 @@ function Login({set}) {
 
     return (
 
-<>
+    <>
         <VStack spacing='24px'>
             <Box as='h1' lineHeight='1' w='340px' h='131px' fontSize='40px' textAlign='center' mt='48px'>Welcome to the Family Calendar</Box>
 
             <Box>
                 <FormControl w='250px'>
                     <FormLabel as='h1' fontSize='14'>Username</FormLabel>
-                    <Input type='text' variant='filled' size='lg' name="username" value={formData.username} onChange={handleInputChange}/>
+                    <Input type='text' variant='filled' size='lg' id="username" name="username" value={formData.username} onChange={handleInputChange}/>
                     <FormLabel as='h1' mt='15px' fontSize='14'>Password</FormLabel>
-                    <Input type='password' variant='filled' size='lg' name="password" value={formData.password} onChange={handleInputChange} />
+                    <Input type='password' variant='filled' size='lg' id="password" name="password" value={formData.password} onChange={handleInputChange} />
                     <Button  onClick={login} colorScheme='gray' mt='30px' variant='solid' size='lg' w='250px'>Log in</Button>
                 </FormControl>
 
@@ -99,10 +102,10 @@ function Login({set}) {
 
             </Box>
 
-                //TODO Create Registrations Page
-            <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
-                New to Family Calendar? <Link>Register here</Link>
-            </Box>
+            {/*    //TODO Create Registrations Page*/}
+            {/*<Box as='h1' fontSize='14px' mt='10px' textAlign='center'>*/}
+            {/*    New to Family Calendar? <Link>Register here</Link>*/}
+            {/*</Box>*/}
         </VStack>
 
 

@@ -22,7 +22,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-function AppointmentsPage() {
+function AppointmentsPage({user}) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -39,7 +39,7 @@ function AppointmentsPage() {
     const [allFamilyPeople, setAllFamilyPeople] = useState([])
     // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyTags, setAllFamilyTags] = useState([])
-const [newAppointment, setNewAppointment] = useState({})
+    const [newAppointment, setNewAppointment] = useState({})
     // Handles Inputs from the Add Appointment modal
     const handleInputChange = (eventOrSelectedOption, actionMeta) => {
         // Check if the input change is coming from React Select
@@ -61,8 +61,10 @@ const [newAppointment, setNewAppointment] = useState({})
         }
     };
 
-    //Get currentUser from Context
+    // Get currentUser from Context
     const {currentUser} = useContext(UserContext)
+    // const currentUser = user
+
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
         "subject": "",

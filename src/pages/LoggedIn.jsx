@@ -24,7 +24,7 @@ function LoggedIn() {
     const decodedUser = jwtDecode(apiKey)
     // console.log(decodedUser)
 
-const {currentUser, setCurrentUser} = useContext(UserContext)
+    const {currentUser, setCurrentUser} = useContext(UserContext)
 
     useEffect( () => {
         // TODO Old part to be removed later
@@ -49,16 +49,20 @@ const {currentUser, setCurrentUser} = useContext(UserContext)
         //     }
         //     const res = await response.json();
 
-        console.log("users", "filter",`${decodedUser.userUuid}`, decodedUser.linkedFamily )
+        console.log("LoggedIn Fetchtes for : users", "filter",`${decodedUser.userUuid}`, decodedUser.linkedFamily )
         const filter = {
             uuid:decodedUser.userUuid
         }
+        setCurrentUser(decodedUser)
+
         globalFetch("users", JSON.stringify(filter),decodedUser.linkedFamily )
             .then(res => {
                 res[0].password = null;
                 setCurrentUser(res[0])
                 console.log("currentUser has been set to: ", res[0])
             })
+            .catch(e => console.log(e))
+
 
     },[])
 
@@ -130,12 +134,12 @@ const {currentUser, setCurrentUser} = useContext(UserContext)
         <>
             <Header />
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/me" element={<MePage />} />
-                <Route path="/appointments" element={<AppointmentsPage />} />
-                <Route path="/todos" element={<TodoPage />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/home" element={<HomePage user={currentUser}/>} />
+                <Route path="/me" element={<MePage user={currentUser}/>} />
+                <Route path="/appointments" element={<AppointmentsPage user={currentUser}/>} />
+                <Route path="/todos" element={<TodoPage user={currentUser}/>} />
+                <Route path="/settings" element={<Settings user={currentUser}/>} />
+                <Route path="/calendar" element={<CalendarPage user={currentUser}/>} />
             </Routes>
             <Footer />
 
