@@ -24,10 +24,13 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 function LoggedIn() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-    const handlerFunction = (data) => {
-        setIsLoggedIn(data)
+    const handlerLogin = () => {
+        setIsLoggedIn(true)
     }
 
+    const handlerLogout = () => {
+        setIsLoggedIn(false)
+    }
     const auth = useAuthUser()
     const isAuthenticated = useIsAuthenticated()
 
@@ -80,10 +83,10 @@ function LoggedIn() {
 
     return (
         <>
-            <Header/>
+            <Header onLogout={handlerLogout}/>
             <Routes>
-                <Route path={"/"} element={<Login onLogin={handlerFunction}/>} />
-                <Route path="/login" element={<Login onLogin={handlerFunction} />} />
+                <Route path={"/"} element={<Login onLogin={handlerLogin}/>} />
+                <Route path="/login" element={<Login onLogin={handlerLogin} />} />
                 <Route element={<AuthOutlet fallbackPath='/login' />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/me" element={<MePage />} />
@@ -93,7 +96,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<TodoPage />} />
                 </Route>
                 </Routes>
-            <Footer />
+            <Footer  />
 
         </>
     )

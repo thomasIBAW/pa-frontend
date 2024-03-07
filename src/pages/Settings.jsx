@@ -1,13 +1,12 @@
-import React from 'react';
 import Tags from "../components/Tags.jsx";
 import People from "../components/People.jsx";
 import Family from "../components/Family.jsx";
 
-function Settings(props) {
+function Settings() {
     return (
         <>
-        <Tags></Tags>
-        <People></People>
+            <Tags></Tags>
+            <People></People>
             <Family></Family>
         </>
     );

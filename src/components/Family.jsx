@@ -1,19 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import Cookies from "universal-cookie";
-import { HexColorPicker } from "react-colorful";
 
 import { Box, useDisclosure, VStack } from "@chakra-ui/react";
-import UserContext from "../hooks/Context.jsx";
-import { PlusIcon } from '@heroicons/react/20/solid'
+
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
-
-
 
 function Family() {
 
@@ -36,8 +31,7 @@ function Family() {
     const [error, setError] = useState(null)
     const [currentFamily, setCurrentFamily] = useState([])
 
-    //Get currentUser from Context
-    // const {currentUser} = useContext(UserContext)
+
 
     //Get token from Cookie
     const cookies = new Cookies()
@@ -52,7 +46,7 @@ console.log(color)
 
     setFormData({tagName: FormData.tagName, tagColor:color} )
     async function writeData() {
-        const response = await fetch(`${backendURI}/api/tags/`, {
+        const response = await fetch(`${backendURI}/api/family/`, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             // mode: "cors", // no-cors, *cors, same-origin
             // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -60,7 +54,7 @@ console.log(color)
             headers: {
                 "Content-Type": "application/json",
                 "api_key": apiKey,
-                "family_uuid": decodedUser.linkedFamily
+                "family_uuid": auth.linkedFamily
             },
             // redirect: "follow", // manual, *follow, error
             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -80,6 +74,7 @@ console.log(color)
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
+        //TODO Change to GlobalFetch function
         async function fetchData() {
             const response = await fetch(`${backendURI}/api/family/find`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -88,7 +83,7 @@ console.log(color)
                 // credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": apiKey,
+                    "api_key": auth.token,
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url

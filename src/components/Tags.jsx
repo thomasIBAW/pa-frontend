@@ -14,16 +14,12 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
-
-
 
 function Tags() {
     const auth = useAuthUser()
@@ -45,8 +41,7 @@ function Tags() {
     const [error, setError] = useState(null)
     const [currentTags, setCurrentTags] = useState([])
     const [newTag, setNewTag] = useState({})
-    //Get currentUser from Context
-    // const {currentUser} = useContext(UserContext)
+
 
     //Get token from Cookie
     const cookies = new Cookies()
@@ -54,12 +49,14 @@ function Tags() {
 
     const decodedUser = auth;
     //console.log(decodedUser.linkedFamily, apiKey)
-    //TODO change backend URI to the correct one
+
+    //TODO change backend URI to the correct one / remove as soon as globalWrite is added
     const backendURI = 'http://127.0.0.1:3005';
 
     // creating a new Tag from the for in Add Tag Modal
     const createTag =  () => {
             setFormData({tagName: FormData.tagName, tagColor:color} )
+            // TODO change local write function to the globalone
             async function writeData() {
                 const response = await fetch(`${backendURI}/api/tags/`, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -93,34 +90,6 @@ function Tags() {
     // Using globalFetch function from connectors:
         globalFetch("tags", "{}", auth.linkedFamily)
             .then(res=> setCurrentTags(res))
-
-    //TODO Remove local fetch function and rely only on the globalFetch function
-   // Local fetch function :
-        // async function fetchData() {
-        //     const response = await fetch(`${backendURI}/api/tags/find`, {
-        //         method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //         // mode: "cors", // no-cors, *cors, same-origin
-        //         // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //         // credentials: "same-origin", // include, *same-origin, omit
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //             "api_key": apiKey,
-        //             "family_uuid": decodedUser.linkedFamily
-        //         },
-        //         // redirect: "follow", // manual, *follow, error
-        //         // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        //         body: JSON.stringify({}), // body data type must match "Content-Type" header
-        //     })
-        //     if (response.status !== 200) {
-        //         // setError("incorrect")
-        //         console.log(response.status)
-        //         return
-        //     }
-        //     const res = await response.json();
-        //     setCurrentTags(res)
-        //     //console.log(res)
-        // }
-        // fetchData()
 
     },[newTag])
 

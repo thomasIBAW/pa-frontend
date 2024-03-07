@@ -13,13 +13,18 @@ import UserContext from "../hooks/Context.jsx";
 import DateTime from "./DateTime.jsx";
 import {IoPersonCircleOutline} from "react-icons/io5";
 import {useNavigate} from "react-router-dom";
+import {PropTypes} from "prop-types";
 
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-function Header() {
+function Header({onLogout}) {
+
+    Header.propTypes = {
+        onLogout: PropTypes.func.isRequired
+    };
 
     const navigate = useNavigate()
     const signout = useSignOut()
@@ -33,6 +38,7 @@ function Header() {
         // await setCurrentUser({})
         console.log("loggedout")
         navigate("/login")
+        onLogout()
 
     }
     //TODO position Header static to the top of the page.

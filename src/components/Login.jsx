@@ -70,7 +70,7 @@ function Login( {onLogin}  ) {
                 setFormData({username: "", password: ""});
                 console.log('redirecting ...')
                 navigate("/home"); // <-- redirect
-                onLogin(true)
+                onLogin()
             }else {
                 //Throw error
             }

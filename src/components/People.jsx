@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import Cookies from "universal-cookie";
-import { HexColorPicker } from "react-colorful";
 
 import {
     Box, Button,
@@ -14,7 +13,6 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
@@ -49,23 +47,20 @@ function People() {
     const [error, setError] = useState(null)
     const [currentPeople, setCurrentPeople] = useState([])
 
-    //Get currentUser from Context
-    //const {currentUser} = useContext(UserContext)
+
 
     //Get token from Cookie
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
     const [createdPerson, setCreatedPerson] = useState({})
 
-    // const decodedUser = currentUser;
-    //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
 
     // Creating a new Person:
     const createPerson =  () => {
-
+        // TODO change to GlobalWrite function
         async function writeData() {
             const response = await fetch(`${backendURI}/api/people/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
