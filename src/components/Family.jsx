@@ -3,20 +3,10 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import Cookies from "universal-cookie";
 import { HexColorPicker } from "react-colorful";
 
-import {
-    Box, Button,
-    Center, FormControl, FormLabel, Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent, ModalFooter,
-    ModalHeader,
-    ModalOverlay, useDisclosure,
-    VStack
-} from "@chakra-ui/react";
+import { Box, useDisclosure, VStack } from "@chakra-ui/react";
 import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
-
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -33,7 +23,7 @@ function Family() {
     const finalRef = React.useRef(null)
     const [color, setColor] = useState("");
     const [formData, setFormData] = useState({tagName:"", tagColor:color});
-
+    const auth = useAuthUser()
     const handleInputChange = (event) => {
         const {name, value} = event.target;
         setFormData((prevData) => ({
@@ -47,13 +37,13 @@ function Family() {
     const [currentFamily, setCurrentFamily] = useState([])
 
     //Get currentUser from Context
-    const {currentUser} = useContext(UserContext)
+    // const {currentUser} = useContext(UserContext)
 
     //Get token from Cookie
     const cookies = new Cookies()
     const apiKey = cookies.get("jwt_auth")
 
-    const decodedUser = currentUser;
+    const decodedUser = auth;
     //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';

@@ -7,8 +7,14 @@ import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 //TODO change backend URI to the correct one
 const backendURI = 'http://localhost:3005/login'
+import {PropTypes} from "prop-types";
 
-function Login() {
+function Login( {onLogin}  ) {
+
+    Login.propTypes = {
+        onLogin: PropTypes.func.isRequired
+    };
+
     const navigate= useNavigate()
     // const {currentUser, setCurrentUser} = useContext(UserContext)
 
@@ -64,6 +70,7 @@ function Login() {
                 setFormData({username: "", password: ""});
                 console.log('redirecting ...')
                 navigate("/home"); // <-- redirect
+                onLogin(true)
             }else {
                 //Throw error
             }

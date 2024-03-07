@@ -10,7 +10,7 @@ import '@fontsource/julius-sans-one';
 import Cookies from "universal-cookie";
 import Footer from "../components/Footer.jsx";
 import Settings from "./Settings.jsx";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import UserContext from "../hooks/Context.jsx";
 import {jwtDecode} from "jwt-decode";
 import CalendarPage from "./CalendarPage.jsx";
@@ -22,16 +22,21 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 
 
 function LoggedIn() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    const handlerFunction = (data) => {
+        setIsLoggedIn(data)
+    }
+
+    const auth = useAuthUser()
+    const isAuthenticated = useIsAuthenticated()
 
     //Get Current user from the jwt token
     // const cookies = new Cookies()
     // const apiKey = cookies.get("jwt_auth")
     // const decodedUser = jwtDecode(apiKey)
     // console.log(decodedUser)
-    const auth = useAuthUser()
-    const isAuthenticated = useIsAuthenticated()
     // const {currentUser, setCurrentUser} = useContext(UserContext)
-
     // useEffect( () => {
     //     // TODO Old part to be removed later
     //     // async function fetchData() {
@@ -77,8 +82,8 @@ function LoggedIn() {
         <>
             <Header/>
             <Routes>
-                <Route path={"/"} element={<Login />} />
-                <Route path="/login" element={<Login />} />
+                <Route path={"/"} element={<Login onLogin={handlerFunction}/>} />
+                <Route path="/login" element={<Login onLogin={handlerFunction} />} />
                 <Route element={<AuthOutlet fallbackPath='/login' />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/me" element={<MePage />} />

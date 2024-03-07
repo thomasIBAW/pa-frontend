@@ -17,14 +17,14 @@ import {
 import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
-
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 function People() {
-
+    const auth = useAuthUser()
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const initialRef = React.useRef(null)
@@ -50,7 +50,7 @@ function People() {
     const [currentPeople, setCurrentPeople] = useState([])
 
     //Get currentUser from Context
-    const {currentUser} = useContext(UserContext)
+    //const {currentUser} = useContext(UserContext)
 
     //Get token from Cookie
     const cookies = new Cookies()
@@ -75,7 +75,7 @@ function People() {
                 headers: {
                     "Content-Type": "application/json",
                     "api_key": apiKey,
-                    "family_uuid": currentUser.linkedFamily
+                    "family_uuid": auth.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -104,7 +104,7 @@ function People() {
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+        globalFetch("people", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
             .then(res => setCurrentPeople(res))
     },[createdPerson])
 
