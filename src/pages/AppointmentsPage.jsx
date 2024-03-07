@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Cookies from "universal-cookie";
 import {
     Box, Button,
@@ -11,23 +11,25 @@ import {
     ModalOverlay, useDisclosure,
     VStack
 } from "@chakra-ui/react";
-import UserContext from "../hooks/Context.jsx";
+// import UserContext from "../hooks/Context.jsx";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalWrite, globalFetch} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import Select from "react-select";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
+// function classNames(...classes) {
+//     return classes.filter(Boolean).join(' ')
+// }
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
-function AppointmentsPage({user}) {
+function AppointmentsPage() {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
+
+    const auth = useAuthUser()
 
     // tagNames are the tags in the Appointments we show
     const [tagNames, setTagNames] = useState({})
@@ -62,13 +64,13 @@ function AppointmentsPage({user}) {
     };
 
     // Get currentUser from Context
-    const {currentUser} = useContext(UserContext)
+    //const {currentUser} = useContext(UserContext)
     // const currentUser = user
 
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
         "subject": "",
-        "creator": currentUser.uuid,
+        "creator": auth.uuid,
         "dateTimeStart": "",
         "dateTimeEnd": "",
         "attendees": [],
@@ -79,9 +81,9 @@ function AppointmentsPage({user}) {
     });
 
     //Get token from Cookie
-    const cookies = new Cookies()
-    const apiKey = cookies.get("jwt_auth")
-    const decodedUser = currentUser;
+    // const cookies = new Cookies()
+    // const apiKey = cookies.get("jwt_auth")
+    // const decodedUser = auth;
 
     //TODO change backend URI to the correct one
     const backendURI = 'http://127.0.0.1:3005';
@@ -95,8 +97,8 @@ function AppointmentsPage({user}) {
                 // credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": currentUser.linkedFamily
+                    "api_key": auth.token,
+                    "family_uuid": auth.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -121,17 +123,17 @@ function AppointmentsPage({user}) {
          globalFetch("calendar",JSON.stringify({
                         dateTimeEnd: {
                             $gte: moment().toISOString() // Convert the current moment to an ISO string
-                        }}) ,currentUser.linkedFamily )
+                        }}) ,auth.linkedFamily )
             .then(res => setCurrentCalendar(res))
      },[newAppointment])
 
     useEffect( () => {
-            globalFetch("people", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+            globalFetch("people", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
                 .then(res => setAllFamilyPeople(res))
         },[]);
 
     useEffect( () => {
-        globalFetch("tags", `{"linkedFamily":"${currentUser.linkedFamily}"}` , currentUser.linkedFamily )
+        globalFetch("tags", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
             .then(res => setAllFamilyTags(res))
     },[]);
 
@@ -147,7 +149,7 @@ function AppointmentsPage({user}) {
                     // console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newTagNames[tag]) {
-                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, decodedUser.linkedFamily);
+                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, auth.linkedFamily);
                         // console.log(res)
                         newTagNames[tag] = {name: res[0].tagName, color: res[0].tagColor}; // Assuming res.tagName is the format of your response
                     }
@@ -158,7 +160,7 @@ function AppointmentsPage({user}) {
         };
 
         fetchTags();
-    }, [currentCalendar, decodedUser.linkedFamily]);
+    }, [currentCalendar, auth.linkedFamily]);
 
     // fetches Users from the events
     useEffect(() => {
@@ -171,7 +173,7 @@ function AppointmentsPage({user}) {
                     // console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newUsers[tag]) {
-                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, currentUser.linkedFamily);
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, auth.linkedFamily);
                         // console.log(res)
                         newUsers[tag] = res[0].nickName;
                     }
@@ -182,7 +184,7 @@ function AppointmentsPage({user}) {
         };
 
         fetchUsers();
-    }, [currentCalendar, currentUser.linkedFamily]);
+    }, [currentCalendar, auth.linkedFamily]);
 
     return (
         <>

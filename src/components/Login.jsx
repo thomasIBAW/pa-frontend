@@ -6,7 +6,7 @@ import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
 import UserContext from "../hooks/Context.jsx";
 import {redirect} from "react-router-dom";
-
+import useSignIn from "react-auth-kit/hooks/useSignIn";
 //TODO change backend URI to the correct one
 const backendURI = 'http://localhost:3005/login'
 
@@ -20,7 +20,7 @@ function Login({set}) {
     const [error, setError] = useState(null)
     // formDAta state contains the credentials entered into the login form
     const [formData, setFormData] = useState({username:"", password:""});
-
+    const signIn = useSignIn()
     // update formData state for every change in the form
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -52,8 +52,24 @@ function Login({set}) {
                 return
             }
 
+
             const res = await response.json();
             const decoded = await jwtDecode(res.token)
+
+
+            if(signIn({
+                auth: {
+                    token: res.token,
+                    type: 'Bearer'
+                },
+                userState: decoded
+            })){ // Only if you are using refreshToken feature
+                // Redirect or do-something
+            }else {
+                //Throw error
+            }
+
+
 
             // setUser(decoded)
             // setApi(res.token)
