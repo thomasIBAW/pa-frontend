@@ -85,7 +85,7 @@ function LoggedIn() {
         <>
             <Header onLogout={handlerLogout}/>
             <Routes>
-                <Route path={"/"} element={<Login onLogin={handlerLogin}/>} />
+                <Route path={"/"} element={<HomePage />} />
                 <Route path="/login" element={<Login onLogin={handlerLogin} />} />
                 <Route element={<AuthOutlet fallbackPath='/login' />}>
                     <Route path="/home" element={<HomePage />} />
@@ -93,7 +93,7 @@ function LoggedIn() {
                     <Route path="/appointments" element={<AppointmentsPage />} />
                     <Route path="/todos" element={<TodoPage />} />
                     <Route path="/settings" element={<Settings />} />
-                    <Route path="/calendar" element={<TodoPage />} />
+                    <Route path="/calendar" element={<CalendarPage />} />
                 </Route>
                 </Routes>
             <Footer  />
