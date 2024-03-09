@@ -3,8 +3,8 @@ import '@fontsource/julius-sans-one';
 import {globalFetch} from "../hooks/Connectors.jsx";
 import moment from "moment/moment.js";
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import Appointment from "../components/Appointment.jsx";
 import AppointmentSmall from "../components/Appointment_small.jsx";
+const { add } = require("date-fns");
 
 
 function HomePage() {
@@ -22,7 +22,7 @@ function HomePage() {
         console.log('Hompage started globalFetch...')
         globalFetch("calendar",JSON.stringify({
             dateTimeStart: {
-                $lte: moment().format('YYYY-MM-DDT23:59') // Convert the current moment to an ISO string
+                $lte: moment().add(3, 'days').format('YYYY-MM-DDT23:59') // Convert the current moment to an ISO string
             },
             dateTimeEnd: {
                 $gte: moment().format('YYYY-MM-DDTHH:mm') // Convert the current moment to an ISO string
@@ -69,6 +69,9 @@ function HomePage() {
                 <p>Welcome to the Family Calendar </p>
                 <h1>Today:</h1>
                 { allEventsToday.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
+                <h1>Tomorrow:</h1>
+                { allEventsToday.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
+
             </center>
 
         </>

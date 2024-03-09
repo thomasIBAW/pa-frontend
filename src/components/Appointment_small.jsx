@@ -24,7 +24,7 @@ function AppointmentSmall({event, eventUsers}) {
     return (
         <>
             <Card key={event.uuid} maxW="lg" >
-                <CardHeader>
+                <CardHeader >
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>
                             {/*DateBox, TimeBox*/}
