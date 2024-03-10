@@ -17,6 +17,8 @@ import moment from "moment";
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
+import { format , add } from "date-fns";
+
 
 function AppointmentsPage() {
 
@@ -38,6 +40,20 @@ function AppointmentsPage() {
     // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyTags, setAllFamilyTags] = useState([])
     const [newAppointment, setNewAppointment] = useState({})
+
+    // Defines the data to be used to create a new Appointment
+    const [formData, setFormData] = useState({
+        "subject": "",
+        "creator": auth.uuid,
+        "dateTimeStart": new Date(),
+        "dateTimeEnd": new Date(),
+        "attendees": [],
+        "tags": [],
+        "note": "",
+        "fullDay": false,
+        "important": false,
+    });
+
     // Handles Inputs from the Add Appointment modal
     const handleInputChange = (eventOrSelectedOption, actionMeta) => {
         // Check if the input change is coming from React Select
@@ -63,18 +79,7 @@ function AppointmentsPage() {
     //const {currentUser} = useContext(UserContext)
     // const currentUser = user
 
-    // Defines the data to be used to create a new Appointment
-    const [formData, setFormData] = useState({
-        "subject": "",
-        "creator": auth.uuid,
-        "dateTimeStart": "",
-        "dateTimeEnd": "",
-        "attendees": [],
-        "tags": [],
-        "note": "",
-        "fullDay": false,
-        "important": false,
-    });
+
 
     // Get token from Cookie
     const cookies = new Cookies()

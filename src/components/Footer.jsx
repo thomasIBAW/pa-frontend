@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import {Box, Center} from "@chakra-ui/react";
-import Cookies from "universal-cookie";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 function Footer() {
 
