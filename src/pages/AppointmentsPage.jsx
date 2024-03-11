@@ -17,10 +17,23 @@ import moment from "moment";
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
-import { format , add } from "date-fns";
+import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth} from "date-fns";
 
 
 function AppointmentsPage() {
+
+    // Assuming 'now' is the current date
+    const now = new Date();
+
+// Start of the current month
+    const startOfCurrentMonth = startOfMonth(now);
+
+// End of the current month
+    const endOfCurrentMonth = endOfMonth(now);
+
+// If you need strings in a specific format, for example:
+    const startOfCurrentMonthStr = format(startOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
+    const endOfCurrentMonthStr = format(endOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -124,12 +137,13 @@ function AppointmentsPage() {
         writeData()
     }
 
-    // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
          globalFetch("calendar",JSON.stringify({
-                        dateTimeEnd: {
-                            $gte: moment().toISOString() // Convert the current moment to an ISO string
-                        }}) ,auth.linkedFamily )
+             $or: [
+                 { dateTimeStart: { $gte: startOfCurrentMonth, $lte: endOfCurrentMonth } },
+                 { dateTimeEnd: { $gte: startOfCurrentMonth, $lte: endOfCurrentMonth } }
+             ]
+         }) ,auth.linkedFamily )
             .then(res => setCurrentCalendar(res))
      },[newAppointment])
 
