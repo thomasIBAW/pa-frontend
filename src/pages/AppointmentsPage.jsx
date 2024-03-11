@@ -68,7 +68,9 @@ function AppointmentsPage() {
         } else {
             // Handle standard inputs (e.g., Input component changes)
             const { name, value } = eventOrSelectedOption.target;
-            console.log(name, value)
+
+            console.log(name, value) //debugging time error
+
             setFormData(prevData => ({
                 ...prevData,
                 [name]: value,
@@ -93,6 +95,7 @@ function AppointmentsPage() {
     const createAppointment =  () => {
         console.log(JSON.stringify(auth))
         async function writeData() {
+            console.log(JSON.stringify(formData))
             const response = await fetch(`${backendURI}/api/calendar/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin

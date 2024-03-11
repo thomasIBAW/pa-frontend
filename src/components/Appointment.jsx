@@ -52,8 +52,9 @@ function Appointment({event, eventUsers}) {
 
                             </Box>
                             {/*Title and Details*/}
-                            <Box flex="1" className="julius">
+                            <Box flex="1" className="julius truncate">
                                 <Box textAlign="center" fontSize="x-large" >{event.subject}</Box>
+
                                 <div className="w-16 flex-none ">
                                     {event.attendees.map((tag, index) => (
                                         // Move the declaration of tagInfo outside of the return statement.
