@@ -34,7 +34,10 @@ function HomePage() {
             }) , auth.linkedFamily )
             .then(res => {
                 const resToday = res.filter( event => event.dateTimeStart <= format(now, "yyyy-MM-dd'T'23:59")  )
-                const resTomorrow = res.filter(event => event.dateTimeStart <= format(add(now,{days:1}), "yyyy-MM-dd'T'23:59") )
+                const resTomorrow = res.filter(event =>
+                    event.dateTimeStart <= format(add(now,{days:1}), "yyyy-MM-dd'T'23:59") &&
+                    event.dateTimeEnd >= format(add(now, {days:1}) ,"yyyy-MM-dd'T'00:00")
+                )
                 setAllEventsToday(resToday)
                 setAllEventsTomorrow(resTomorrow)
                 setAllEventsBoth(res)

@@ -68,6 +68,7 @@ function AppointmentsPage() {
         } else {
             // Handle standard inputs (e.g., Input component changes)
             const { name, value } = eventOrSelectedOption.target;
+            console.log(name, value)
             setFormData(prevData => ({
                 ...prevData,
                 [name]: value,
