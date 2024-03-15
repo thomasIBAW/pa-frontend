@@ -17,13 +17,13 @@ import {BiChat, BiLike, BiShare} from "react-icons/bi";
 import moment from "moment/moment.js";
 import React from "react";
 
-function Appointment({event, eventUsers}) {
+function Appointment({event, eventUsers, key, id}) {
 
     const isToday = moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') <= moment().format('DD.MM.YYYY') && moment(`${event.dateTimeEnd}`).format('DD.MM.YYYY') >= moment().format('DD.MM.YYYY')
 
     return (
         <>
-            <Card key={event.uuid} maxW="lg" >
+            <Card key={event.uuid} id={id} maxW="lg" >
                 <CardHeader>
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>

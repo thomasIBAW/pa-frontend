@@ -17,7 +17,7 @@ import moment from "moment";
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
-import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth} from "date-fns";
+import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, subDays, addDays} from "date-fns";
 
 
 function AppointmentsPage() {
@@ -206,6 +206,31 @@ function AppointmentsPage() {
         fetchUsers();
     }, [currentCalendar, auth.linkedFamily]);
 
+    useEffect(() => {
+        setTimeout(() => {scrollTo(format(now, "yyyy-MM-dd"))
+            console.log('sent scrolling() with date: ', format(now, "yyyy-MM-dd"))}, 100)
+
+    }, []);
+
+    function scrollTo(data) {
+        let date = new Date(data)
+        let element = null
+        let attempts = 0;
+
+        do {
+            const dateString = format(date, 'yyyy-MM-dd');
+            element = document.getElementById(dateString);
+            date = addDays(date, 1); // Go back one day
+            attempts++;
+        } while (!element && attempts < 30); // Prevent infinite loop by limiting attempts
+
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+
+
     return (
         <>
             <VStack mb='20px'>
@@ -221,7 +246,7 @@ function AppointmentsPage() {
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {currentCalendar.map((event) => (
-                        <Appointment event={event} eventUsers={eventUsers} />
+                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} />
                     ))}
                     <div className="bg-white h-7"></div>
                 </div>
