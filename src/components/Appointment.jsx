@@ -53,7 +53,8 @@ function Appointment({event, eventUsers, key, id}) {
                             </Box>
                             {/*Title and Details*/}
                             <Box flex="1" className="julius truncate">
-                                <Box textAlign="left" fontSize="x-large" >{event.subject}</Box>
+                                {event.subject.length >= 11 && <Box className="animate" textAlign="left" fontSize="x-large" >{event.subject}</Box>}
+                                {event.subject.length < 11 && <Box className="" textAlign="left" fontSize="x-large" >{event.subject}</Box>}
 
                                 <div className="w-16 flex-none ">
                                     {event.attendees.map((tag, index) => (
