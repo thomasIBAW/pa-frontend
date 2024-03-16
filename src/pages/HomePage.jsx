@@ -81,12 +81,12 @@ function HomePage() {
                 </section>
                 <section className="bg-gray-50 pb-3">
                 <h1>Today:</h1>
-                <p className="text-gray-400">{allEventsToday.length==0 ? "Nothing for today :)" : null }</p>
+                <p className="text-gray-400">{allEventsToday.length===0 ? "Nothing for today :)" : null }</p>
                 { allEventsToday.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
                 </section>
                 <section className="bg-gray-50 pb-3">
                     <h1>Tomorrow:</h1>
-                <p className="text-gray-400">{allEventsTomorrow.length==0 ? "Nothing planned for Tomorrow" : null }</p>
+                <p className="text-gray-400">{allEventsTomorrow.length===0 ? "Nothing planned for Tomorrow" : null }</p>
 
                 { allEventsTomorrow.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
                 </section>

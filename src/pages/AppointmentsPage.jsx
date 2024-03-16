@@ -54,6 +54,9 @@ function AppointmentsPage() {
     const [allFamilyTags, setAllFamilyTags] = useState([])
     const [newAppointment, setNewAppointment] = useState({})
 
+    const [ allEventsToday , setAllEventsToday ] = useState([])
+    const [ allEventsTomorrow , setAllEventsTomorrow ] = useState([])
+
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
         "subject": "",
@@ -90,11 +93,6 @@ function AppointmentsPage() {
             }));
         }
     };
-
-    // Get currentUser from Context
-    //const {currentUser} = useContext(UserContext)
-    // const currentUser = user
-
 
 
     // Get token from Cookie
@@ -242,6 +240,10 @@ function AppointmentsPage() {
                     >
                         <PlusIcon className="h-5 w-5" aria-hidden="true" />
                     </button>
+                </h1>
+
+                <h1>
+                    {format(now, "MMMM")}
                 </h1>
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
