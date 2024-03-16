@@ -96,7 +96,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<CalendarPage />} />
                 </Route>
                 </Routes>
-            <Footer  />
+            {/*<Footer  />*/}
 
         </>
     )
