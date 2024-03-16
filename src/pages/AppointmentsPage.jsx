@@ -31,6 +31,12 @@ function AppointmentsPage() {
 // End of the current month
     const endOfCurrentMonth = endOfMonth(now);
 
+// Start of the next month
+    const startOfNextMonth = startOfMonth(add(now, {months:1}));
+
+// End of the next month
+    const endOfNextMonth = endOfMonth(add(now, {months:1}));
+
 // If you need strings in a specific format, for example:
     const startOfCurrentMonthStr = format(startOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
     const endOfCurrentMonthStr = format(endOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
@@ -54,8 +60,8 @@ function AppointmentsPage() {
     const [allFamilyTags, setAllFamilyTags] = useState([])
     const [newAppointment, setNewAppointment] = useState({})
 
-    const [ allEventsToday , setAllEventsToday ] = useState([])
-    const [ allEventsTomorrow , setAllEventsTomorrow ] = useState([])
+    const [ allEventsThisMonth , setAllEventsThisMonth ] = useState([])
+    const [ allEventsNextMonth , setAllEventsNextMonth ] = useState([])
 
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
@@ -138,11 +144,33 @@ function AppointmentsPage() {
     useEffect( () => {
          globalFetch("calendar",JSON.stringify({
              $or: [
-                 { dateTimeStart: { $gte: startOfCurrentMonth, $lte: endOfCurrentMonth } },
-                 { dateTimeEnd: { $gte: startOfCurrentMonth, $lte: endOfCurrentMonth } }
+                 { dateTimeStart: { $gte: startOfCurrentMonth, $lte: endOfNextMonth } },
+                 { dateTimeEnd: { $gte: startOfCurrentMonth, $lte: endOfNextMonth } }
              ]
          }) ,auth.linkedFamily )
-            .then(res => setCurrentCalendar(res))
+
+
+
+            .then(res => {
+
+                //TODO filter by month and assign to state
+                const currentMonthEvents = res.filter(event =>
+                    event.dateTimeStart <= format(endOfCurrentMonth, "yyyy-MM-dd'T'23:59") &&
+                    event.dateTimeEnd >= format(startOfCurrentMonth, "yyyy-MM-dd'T'23:59")
+                )
+
+                const nextMonthEvents = res.filter(event =>
+                    event.dateTimeStart <= format(endOfNextMonth, "yyyy-MM-dd'T'23:59") &&
+                    event.dateTimeEnd >= format(startOfNextMonth, "yyyy-MM-dd'T'23:59")
+                )
+                setAllEventsThisMonth(currentMonthEvents)
+                setAllEventsNextMonth(nextMonthEvents)
+                console.log("Current Month Events",res)
+                setCurrentCalendar(res)
+            })
+
+
+
      },[newAppointment])
 
     useEffect( () => {
@@ -242,12 +270,25 @@ function AppointmentsPage() {
                     </button>
                 </h1>
 
-                <h1>
+                {/*CurrentMonth*/}
+                <h2>
                     {format(now, "MMMM")}
-                </h1>
+                </h2>
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-                    {currentCalendar.map((event) => (
+                    {allEventsThisMonth.map((event) => (
+                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} />
+                    ))}
+                    <div className="bg-white h-7"></div>
+                </div>
+
+                {/*NextMonth*/}
+                <h2>
+                   {format(startOfNextMonth, "MMMM")}
+                </h2>
+
+                <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+                    {allEventsNextMonth.map((event) => (
                         <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} />
                     ))}
                     <div className="bg-white h-7"></div>
