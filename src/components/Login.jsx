@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useConst} from '@chakra-ui/react'
 import '@fontsource/julius-sans-one';
 import {jwtDecode} from "jwt-decode"
@@ -8,13 +8,15 @@ import useSignIn from "react-auth-kit/hooks/useSignIn";
 //TODO change backend URI to the correct one
 const backendURI = 'http://localhost:3005/login'
 import {PropTypes} from "prop-types";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
-function Login( {onLogin}  ) {
+function Login( ) {
+
     const navigate= useNavigate()
 
-    Login.propTypes = {
-        onLogin: PropTypes.func.isRequired
-    };
+    // Login.propTypes = {
+    //     onLogin: PropTypes.func
+    // };
 
     // const {currentUser, setCurrentUser} = useContext(UserContext)
 
@@ -32,10 +34,13 @@ function Login( {onLogin}  ) {
         }));
     };
 
-    async function login() {
-        console.log('onLogin prop type:', typeof onLogin);
-        try {
 
+    async function login() {
+
+        //console.log('onLogin prop type:', typeof onLogin);
+
+        try {
+            console.log("Starting Login process....")
             const response = await fetch(backendURI, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
@@ -49,6 +54,7 @@ function Login( {onLogin}  ) {
                 body: JSON.stringify(formData), // body data type must match "Content-Type" header
             });
 
+            console.log("Received Feedback from Login, code:", response.status)
 
             if (response.status !== 200) {
                 setError("incorrect")
@@ -60,24 +66,29 @@ function Login( {onLogin}  ) {
             const res = await response.json();
             const decoded = await jwtDecode(res.token)
 
+            console.log("Starting Sign-In Process with Cookie Creation...")
 
-            if(signIn({
+            if( signIn({
                 auth: {
                     token: res.token,
                     type: 'Bearer'
                 },
                 userState: decoded
             })){
+                console.log("successfully created....")
+
                 setError(null)
                 setFormData({username: "", password: ""});
-                setTimeout(()=> {
-                    console.log('redirecting ...')
-                    navigate("/")
-                } , 1500 )
+
+                setTimeout(()=>{
+                    console.log("starting navigation to /home ...")
+                    navigate("/home")
+                }, 1500)
+
                 // navigate("/"); // <-- redirect
                 // onLogin()
             }else {
-                //Throw error
+                console.error("could not create coockies...")
             }
 
         } catch (e) {

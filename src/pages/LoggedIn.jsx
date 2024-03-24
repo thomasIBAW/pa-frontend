@@ -18,12 +18,13 @@ import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Login from "../components/Login.jsx";
 import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 
 
 function LoggedIn() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const navigate = useNavigate()
-
+    const signout = useSignOut()
     const handlerLogin = () => {
 
         setIsLoggedIn(true)
@@ -35,11 +36,13 @@ function LoggedIn() {
     const handlerLogout = () => {
         setIsLoggedIn(false)
         console.log("loggedIn handler for Logout...")
+        signout()
+
+        //TODO call logout on serverside or delete all cookies
 
 
     }
-    const auth = useAuthUser()
-    const isAuthenticated = useIsAuthenticated()
+
 
     // TODO Add a check to confirm the user in the backend
     //Get Current user from the jwt token
@@ -93,8 +96,6 @@ function LoggedIn() {
         <>
             <Header onLogout={handlerLogout}/>
             <Routes>
-                <Route path={"/"} element={<HomePage />} />
-                <Route path="/login" element={ isAuthenticated ? <Navigate to="/" />: <Login onLogin={handlerLogin} />} />
                 <Route element={<AuthOutlet fallbackPath='/login' />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/me" element={<MePage />} />
