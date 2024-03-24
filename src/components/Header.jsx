@@ -28,15 +28,15 @@ function Header({onLogout}) {
 
     const navigate = useNavigate()
     const signout = useSignOut()
-    const cookies = new Cookies()
+    // const cookies = new Cookies()
 
     // const {currentUser, setCurrentUser} = useContext(UserContext)
     async function logout() {
         signout()
-        await cookies.remove("jwt_auth")
-        await cookies.remove("currentUser")
+        // await cookies.remove("jwt_auth")
+        // await cookies.remove("currentUser")
         // await setCurrentUser({})
-        console.log("loggedout")
+        console.log("loggedOut")
         navigate("/login")
         onLogout()
 

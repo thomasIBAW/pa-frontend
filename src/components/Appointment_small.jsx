@@ -23,7 +23,7 @@ function AppointmentSmall({event, eventUsers}) {
 
     return (
         <>
-            <Card key={event.uuid} maxW="lg" >
+            <Card key={event.uuid} maxW="lg" border="1px solid lightgray" marginBottom="5px">
                 <CardHeader >
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>
@@ -54,7 +54,7 @@ function AppointmentSmall({event, eventUsers}) {
                             {/*Title and Details*/}
                             <Box flex="1" className="julius">
                                 <Box textAlign="center" fontSize="x-large" >{event.subject}</Box>
-                                <div className="w-16 flex-none ">
+                                <div className="w-16 flex justify-center">
                                     {event.attendees.map((tag, index) => (
                                         // Move the declaration of tagInfo outside of the return statement.
                                         <Box key={index} className="inline-flex rounded-md bg-gray-50 px-1.5 py-0 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">

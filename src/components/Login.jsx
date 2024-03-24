@@ -10,12 +10,12 @@ const backendURI = 'http://localhost:3005/login'
 import {PropTypes} from "prop-types";
 
 function Login( {onLogin}  ) {
+    const navigate= useNavigate()
 
     Login.propTypes = {
         onLogin: PropTypes.func.isRequired
     };
 
-    const navigate= useNavigate()
     // const {currentUser, setCurrentUser} = useContext(UserContext)
 
     const [error, setError] = useState(null)
@@ -33,7 +33,9 @@ function Login( {onLogin}  ) {
     };
 
     async function login() {
+        console.log('onLogin prop type:', typeof onLogin);
         try {
+
             const response = await fetch(backendURI, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
@@ -50,7 +52,7 @@ function Login( {onLogin}  ) {
 
             if (response.status !== 200) {
                 setError("incorrect")
-                console.log(response.status)
+                console.Error(response.status)
                 return
             }
 
@@ -65,18 +67,21 @@ function Login( {onLogin}  ) {
                     type: 'Bearer'
                 },
                 userState: decoded
-            })){ // Only if you are using refreshToken feature
+            })){
                 setError(null)
                 setFormData({username: "", password: ""});
-                console.log('redirecting ...')
-                navigate("/home"); // <-- redirect
-                onLogin()
+                setTimeout(()=> {
+                    console.log('redirecting ...')
+                    navigate("/")
+                } , 1500 )
+                // navigate("/"); // <-- redirect
+                // onLogin()
             }else {
                 //Throw error
             }
 
         } catch (e) {
-            console.log(e)
+            console.error(e)
         }
     }
 

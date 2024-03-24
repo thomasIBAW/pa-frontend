@@ -23,7 +23,7 @@ function Appointment({event, eventUsers, key, id}) {
 
     return (
         <>
-            <Card key={event.uuid} id={id} maxW="lg" >
+            <Card key={event.uuid} id={id} maxW="lg" border="1px solid lightgray" >
                 <CardHeader>
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>

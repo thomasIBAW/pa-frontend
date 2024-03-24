@@ -1,7 +1,7 @@
 
 import {Box} from "@chakra-ui/react";
 import Header from "../components/Header.jsx";
-import {Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import HomePage from "./HomePage.jsx";
 import MePage from "./MePage.jsx";
 import AppointmentsPage from "./AppointmentsPage.jsx";
@@ -22,13 +22,21 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 
 function LoggedIn() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const navigate = useNavigate()
 
     const handlerLogin = () => {
+
         setIsLoggedIn(true)
+        console.log("loggedIn handler for Login...")
+        navigate("/")
+
     }
 
     const handlerLogout = () => {
         setIsLoggedIn(false)
+        console.log("loggedIn handler for Logout...")
+
+
     }
     const auth = useAuthUser()
     const isAuthenticated = useIsAuthenticated()
@@ -86,7 +94,7 @@ function LoggedIn() {
             <Header onLogout={handlerLogout}/>
             <Routes>
                 <Route path={"/"} element={<HomePage />} />
-                <Route path="/login" element={<Login onLogin={handlerLogin} />} />
+                <Route path="/login" element={ isAuthenticated ? <Navigate to="/" />: <Login onLogin={handlerLogin} />} />
                 <Route element={<AuthOutlet fallbackPath='/login' />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/me" element={<MePage />} />
@@ -96,7 +104,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<CalendarPage />} />
                 </Route>
                 </Routes>
-            {/*<Footer  />*/}
+            <Footer  />
 
         </>
     )
