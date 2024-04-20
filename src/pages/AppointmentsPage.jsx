@@ -107,7 +107,7 @@ function AppointmentsPage() {
     // const decodedUser = auth;
 
     //TODO change backend URI to the correct one
-    const backendURI = 'http://127.0.0.1:3005';
+    const backendURI = '/app';
 
     const createAppointment =  () => {
         console.log(JSON.stringify(auth))
