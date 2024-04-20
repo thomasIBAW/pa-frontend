@@ -40,7 +40,7 @@ function Family() {
     const decodedUser = auth;
     //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
-    const backendURI = 'http://127.0.0.1:3005';
+    const backendURI = 'http://localhost/app';
 console.log(color)
     const createTag =  () => {
 

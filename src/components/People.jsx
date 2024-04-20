@@ -56,7 +56,7 @@ function People() {
 
 
     //TODO change backend URI to the correct one
-    const backendURI = 'http://127.0.0.1:3005';
+    const backendURI = 'http://localhost/app';
 
     // Creating a new Person:
     const createPerson =  () => {

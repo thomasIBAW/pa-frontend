@@ -5,10 +5,12 @@ import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
 import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
-//TODO change backend URI to the correct one
-const backendURI = 'http://localhost:3005/login'
+
 import {PropTypes} from "prop-types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+
+//TODO change backend URI to the correct one
+const backendURI = '/app/login'
 
 function Login( ) {
 
@@ -45,7 +47,7 @@ function Login( ) {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                //credentials: "same-origin", // include, *same-origin, omit
+                credentials: "include", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -54,11 +56,11 @@ function Login( ) {
                 body: JSON.stringify(formData), // body data type must match "Content-Type" header
             });
 
-            console.log("Received Feedback from Login, code:", response.status)
+            console.log("Received Feedback from Login fetch -> code:", response.status)
 
             if (response.status !== 200) {
                 setError("incorrect")
-                console.Error(response.status)
+                console.log(response)
                 return
             }
 

@@ -21,6 +21,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
+
 function Tags() {
     const auth = useAuthUser()
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -51,7 +52,7 @@ function Tags() {
     //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one / remove as soon as globalWrite is added
-    const backendURI = 'http://127.0.0.1:3005';
+    const backendURI = 'http://localhost/app';
 
     // creating a new Tag from the for in Add Tag Modal
     const createTag =  () => {

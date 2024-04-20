@@ -9,7 +9,8 @@ const cookies = new Cookies()
 const apiKey = cookies.get("_auth")
 
 //TODO change backend URI to the correct one
-const backendURI = 'http://localhost:3005';
+//const backendURI = 'http://localhost:3000';
+const backendURI = '/app';
 
 
 export async function globalFetch(endpoint, filter, family) {
@@ -20,7 +21,7 @@ export async function globalFetch(endpoint, filter, family) {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        // credentials: "same-origin", // include, *same-origin, omit
+        credentials: "include", // include, *same-origin, omit
         headers: {
             "Content-Type": "application/json",
             "api_key": apiKey,
@@ -28,11 +29,12 @@ export async function globalFetch(endpoint, filter, family) {
         },
         // redirect: "follow", // manual, *follow, error
         // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: filter, // body data type must match "Content-Type" header
+        body: filter // body data type must match "Content-Type" header
     })
+
     if (response.status !== 200) {
         // setError("incorrect")
-        console.log(response.status)
+        console.log("not successfull: Status ",response.status)
         return
     }
     const res = await response.json();

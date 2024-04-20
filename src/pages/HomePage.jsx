@@ -23,6 +23,8 @@ function HomePage() {
 
     useEffect( () => {
         console.log('Hompage started globalFetch...')
+        console.log("Auth calendars family:", auth.linkedFamily)
+
         globalFetch("calendar",JSON.stringify({
             dateTimeStart: {
                 $lte: format(add(now, {days:1}),"yyyy-MM-dd'T'23:59") // Convert the current moment to an ISO string
@@ -31,7 +33,7 @@ function HomePage() {
                 $gte: format(now,"yyyy-MM-dd'T'00:00") // Convert the current moment to an ISO string
             }
 
-            }) , auth.linkedFamily )
+            }), auth.linkedFamily )
             .then(res => {
                 const resToday = res.filter( event => event.dateTimeStart <= format(now, "yyyy-MM-dd'T'23:59")  )
                 const resTomorrow = res.filter(event =>
@@ -50,11 +52,10 @@ function HomePage() {
     useEffect(() => {
         const fetchUsers = async () => {
             let newUsers = {};
-
             for (let event of allEventsBoth) {
-                // console.log(event)
+                console.log(event)
                 for (let tag of event.attendees) {
-                    // console.log(tag)
+                    console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newUsers[tag]) {
                         const res = await globalFetch("people", `{"uuid" : "${tag}"}`, auth.linkedFamily);
