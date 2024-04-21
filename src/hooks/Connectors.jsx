@@ -10,7 +10,8 @@ const apiKey = cookies.get("_auth")
 
 //TODO change backend URI to the correct one
 //const backendURI = 'http://localhost:3000';
-const backendURI = '/app';
+const backendURI = 'http://localhost:3005';
+//const backendURI = '/app';
 
 
 export async function globalFetch(endpoint, filter, family) {

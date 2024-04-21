@@ -10,7 +10,8 @@ import {PropTypes} from "prop-types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 //TODO change backend URI to the correct one
-const backendURI = '/app/login'
+//const backendURI = '/app/login'
+const backendURI = 'http://localhost:3005/login'
 
 function Login( ) {
 
@@ -122,10 +123,11 @@ function Login( ) {
 
             </Box>
 
-            {/*    //TODO Create Registrations Page*/}
-            {/*<Box as='h1' fontSize='14px' mt='10px' textAlign='center'>*/}
-            {/*    New to Family Calendar? <Link>Register here</Link>*/}
-            {/*</Box>*/}
+                //TODO Create Registrations Page
+            <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
+                New to Family Calendar? <Link>Register here</Link>
+            </Box>
+
         </VStack>
 
 
