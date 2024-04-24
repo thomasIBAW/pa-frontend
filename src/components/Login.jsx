@@ -8,6 +8,7 @@ import useSignIn from "react-auth-kit/hooks/useSignIn";
 
 import {PropTypes} from "prop-types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import Footer from "./Footer.jsx";
 
 //TODO change backend URI to the correct one
 const devState = import.meta.env.VITE_DEVSTATE
@@ -36,7 +37,7 @@ function Login( ) {
             [name]: value,
         }));
     };
-
+    const frontend = import.meta.env.VITE_DEVSTATE
 
     async function login() {
 
@@ -91,7 +92,7 @@ function Login( ) {
                 // navigate("/"); // <-- redirect
                 // onLogin()
             }else {
-                console.error("could not create coockies...")
+                console.error("could not create cookies...")
             }
 
         } catch (e) {
@@ -127,7 +128,7 @@ function Login( ) {
             <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
                 New to Family Calendar? <Link>Register here</Link>
             </Box>
-
+            <Box>{frontend}</Box>
         </VStack>
 
 
