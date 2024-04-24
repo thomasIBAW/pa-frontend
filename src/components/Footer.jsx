@@ -16,9 +16,9 @@ function Footer() {
     <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller' className="tbefooter">
         {auth.username  && <Box>User : {auth.username}</Box>}
           <Box>|</Box>
-        { auth.linkedFamily &&  <Box>auth.linkedFamily</Box>}
+        <Box>{auth.linkedFamily}</Box>
         <Box>|</Box>
-        <Box>Versions : FE: {frontEnd} </Box>
+        <Box>FE: {frontEnd} </Box>
     </Center>
 
     );
