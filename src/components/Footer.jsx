@@ -7,6 +7,7 @@ function Footer() {
     const backEnd = import.meta.env.VITE_BACKEND
     const dataBase = import.meta.env.VITE_DATABASE
 
+
     const bgColor='#e6c997';
     const auth = useAuthUser()
 
