@@ -18,6 +18,7 @@ import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
 import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, subDays, addDays} from "date-fns";
+import Loading from "../components/Loading.jsx";
 
 
 function AppointmentsPage() {
@@ -59,6 +60,9 @@ function AppointmentsPage() {
     // allFamilyPeople has all people in this Family, used to create new Appoitnments
     const [allFamilyTags, setAllFamilyTags] = useState([])
     const [newAppointment, setNewAppointment] = useState({})
+
+    const [isLoading, setIsLoading] = useState(false)
+
 
     const [ allEventsThisMonth , setAllEventsThisMonth ] = useState([])
     const [ allEventsNextMonth , setAllEventsNextMonth ] = useState([])
@@ -142,6 +146,9 @@ function AppointmentsPage() {
     }
 
     useEffect( () => {
+
+        setIsLoading(true)
+
          globalFetch("calendar",JSON.stringify({
              $or: [
                  { dateTimeStart: { $gte: startOfCurrentMonth, $lte: endOfNextMonth } },
@@ -167,6 +174,7 @@ function AppointmentsPage() {
                 setAllEventsNextMonth(nextMonthEvents)
                 console.log("Current Month Events",res)
                 setCurrentCalendar(res)
+                setIsLoading(false)
             })
 
 
@@ -270,10 +278,14 @@ function AppointmentsPage() {
                     </button>
                 </h1>
 
+
                 {/*CurrentMonth*/}
                 <h2>
                     {format(now, "MMMM")}
                 </h2>
+
+
+                {isLoading && <Loading />}
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {allEventsThisMonth.map((event) => (
@@ -284,7 +296,7 @@ function AppointmentsPage() {
 
                 {/*NextMonth*/}
                 <h2>
-                   {format(startOfNextMonth, "MMMM")}
+                   { !isLoading &&  format(startOfNextMonth, "MMMM")}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">

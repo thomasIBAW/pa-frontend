@@ -52,7 +52,7 @@ function Tags() {
     //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one / remove as soon as globalWrite is added
-    const backendURI = 'http://localhost/app';
+    const backendURI = 'http://localhost:3005';
 
     // creating a new Tag from the for in Add Tag Modal
     const createTag =  () => {
@@ -61,9 +61,9 @@ function Tags() {
             async function writeData() {
                 const response = await fetch(`${backendURI}/api/tags/`, {
                     method: "POST", // *GET, POST, PUT, DELETE, etc.
-                    // mode: "cors", // no-cors, *cors, same-origin
+                    mode: "cors", // no-cors, *cors, same-origin
                     // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                    // credentials: "same-origin", // include, *same-origin, omit
+                    credentials: "include", // include, *same-origin, omit
                     headers: {
                         "Content-Type": "application/json",
                         "api_key": apiKey,

@@ -4,10 +4,12 @@ import {globalFetch} from "../hooks/Connectors.jsx";
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import AppointmentSmall from "../components/Appointment_small.jsx";
 import {format, add, endOfToday, endOfTomorrow} from "date-fns";
+import Loading from "../components/Loading.jsx";
 
 
 function HomePage() {
 
+    const [isLoading, setIsLoading] = useState(false)
     const [eventUsers, setEventUsers] = useState([])
     const [ allEventsBoth , setAllEventsBoth ] = useState([])
 
@@ -24,7 +26,7 @@ function HomePage() {
     useEffect( () => {
         console.log('Hompage started globalFetch...')
         console.log("Auth calendars family:", auth.linkedFamily)
-
+        setIsLoading(true)
         globalFetch("calendar",JSON.stringify({
             dateTimeStart: {
                 $lte: format(add(now, {days:1}),"yyyy-MM-dd'T'23:59") // Convert the current moment to an ISO string
@@ -44,6 +46,7 @@ function HomePage() {
                 setAllEventsTomorrow(resTomorrow)
                 setAllEventsBoth(res)
                 console.log('Homepage response from Fetch : ', JSON.stringify(resToday))
+                setIsLoading(false)
             })
 
     },[auth])
@@ -82,12 +85,14 @@ function HomePage() {
                 </section>
                 <section className="bg-gray-50 pb-3">
                 <h1>Today:</h1>
-                <p className="text-gray-400">{allEventsToday.length===0 ? "Nothing for today :)" : null }</p>
+                    {isLoading && <Loading />}
+                <p className="text-gray-400">{allEventsToday.length===0 && !isLoading ? "Nothing for today :)" : null }</p>
                 { allEventsToday.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
                 </section>
                 <section className="bg-gray-50 pb-3">
                     <h1>Tomorrow:</h1>
-                <p className="text-gray-400">{allEventsTomorrow.length===0 ? "Nothing planned for Tomorrow" : null }</p>
+                    {isLoading && <Loading />}
+                <p className="text-gray-400">{allEventsTomorrow.length===0 && !isLoading ? "Nothing planned for Tomorrow" : null }</p>
 
                 { allEventsTomorrow.map(event => <AppointmentSmall key={event.uuid} event={event} eventUsers={eventUsers}/> ) }
                 </section>

@@ -3,6 +3,7 @@ import {Box, Center} from "@chakra-ui/react";
 import {globalFetch} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import Loading from "../components/Loading.jsx";
 
 
 
@@ -13,13 +14,18 @@ export default function CalendarPage() {
     const [eventUsers, setEventUsers] = useState({})
     // currentCalendar has all the current Appointments (today+)
     const [currentCalendar, setCurrentCalendar] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect( () => {
+        setIsLoading(true)
         globalFetch("calendar",JSON.stringify({
             dateTimeEnd: {
                 $gte: moment().toISOString() // Convert the current moment to an ISO string
             }}) ,auth.linkedFamily )
-            .then(res => setCurrentCalendar(res))
+            .then(res => {
+                setCurrentCalendar(res)
+                setIsLoading(false)
+            })
     },[])
 
 
@@ -59,6 +65,7 @@ export default function CalendarPage() {
                   ))
                   }
 
+                  {isLoading && <Loading />}
 
                   {
                       currentCalendar.map((event) => (
