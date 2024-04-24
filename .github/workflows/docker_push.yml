@@ -1,4 +1,5 @@
-name: Docker Image CI
+
+name: Docker Image CI PUSH
 
 on:
   push:
@@ -30,8 +31,7 @@ jobs:
       with:
         context: .
         file: Dockerfile
-        build-args: VITE_DEVSTATE=PROD
-        build-args: VITE_FRONTEND=${{ env.TAG_NAME }}
+        build-args: VITE_DEVSTATE=PROD,VITE_FRONTEND=${{ env.TAG_NAME }}
         tags: ircnega/pa-frontend:${{ env.TAG_NAME }}
         push: true
 
