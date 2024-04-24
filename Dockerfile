@@ -31,6 +31,7 @@ ENV VITE_DEVSTATE=$VITE_DEVSTATE
 
 # Temporarily add an echo to output the variable
 RUN echo "VITE_DEVSTATE is set to $VITE_DEVSTATE"
+RUN echo "TESTING"
 
 # Build the React app for production
 RUN npm run build
