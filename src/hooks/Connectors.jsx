@@ -10,7 +10,8 @@ const apiKey = cookies.get("_auth")
 
 //TODO change backend URI to the correct one
 //const backendURI = 'http://localhost:3000';
-const backendURI = 'http://localhost:3005';
+const devState = import.meta.env.VITE_DEVSTATE
+const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 //const backendURI = '/app';
 
 
