@@ -40,8 +40,10 @@ function Family() {
     const decodedUser = auth;
     //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
-    const backendURI = 'http://localhost';
-console.log(color)
+    const devState = import.meta.env.VITE_DEVSTATE
+    const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
+
+    console.log(color)
     const createTag =  () => {
 
     setFormData({tagName: FormData.tagName, tagColor:color} )

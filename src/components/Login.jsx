@@ -10,8 +10,8 @@ import {PropTypes} from "prop-types";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 //TODO change backend URI to the correct one
-//const backendURI = '/app/login'
-const backendURI = 'http://localhost:3005/login'
+const devState = import.meta.env.VITE_DEVSTATE
+const backendURI = devState==='PROD' ? '/app/login' : 'http://localhost:3005/login';
 
 function Login( ) {
 

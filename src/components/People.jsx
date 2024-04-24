@@ -56,7 +56,8 @@ function People() {
 
 
     //TODO change backend URI to the correct one
-    const backendURI = 'http://localhost:3005';
+    const devState = import.meta.env.VITE_DEVSTATE
+    const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
     // Creating a new Person:
     const createPerson =  () => {

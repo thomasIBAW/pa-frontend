@@ -52,7 +52,8 @@ function Tags() {
     //console.log(decodedUser.linkedFamily, apiKey)
 
     //TODO change backend URI to the correct one / remove as soon as globalWrite is added
-    const backendURI = 'http://localhost:3005';
+    const devState = import.meta.env.VITE_DEVSTATE
+    const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
     // creating a new Tag from the for in Add Tag Modal
     const createTag =  () => {
