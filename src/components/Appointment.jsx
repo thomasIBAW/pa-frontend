@@ -23,7 +23,7 @@ function Appointment({event, eventUsers, key, id}) {
 
     return (
         <>
-            <Card key={event.uuid} id={id} maxW="lg" border="1px solid lightgray" >
+            <Card key={key} id={id} maxW="lg" border="1px solid lightgray" >
                 <CardHeader>
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>
@@ -68,20 +68,23 @@ function Appointment({event, eventUsers, key, id}) {
 
 
                             </Box>
-                            {/*<IconButton*/}
-                            {/*    variant='ghost'*/}
-                            {/*    colorScheme='gray'*/}
-                            {/*    aria-label='See menu'*/}
-                            {/*    icon={<BsThreeDotsVertical />}*/}
-                            {/*/>*/}
+                            <IconButton
+                                variant='ghost'
+                                colorScheme='gray'
+                                aria-label='See appointment menu'
+                                icon={<BsThreeDotsVertical />}
+                                onClick={(e) => console.log("clicked...", e.target)}
+                            />
 
                         </Flex>
 
                     </Flex>
                 </CardHeader>
+
                 {event.note && <CardBody padding="5px">
                     <Box className="julius" textAlign="center">{event.note}</Box>
                 </CardBody>}
+
                 {/*<Image*/}
                 {/*    objectFit='cover'*/}
                 {/*    src='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'*/}

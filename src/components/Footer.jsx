@@ -15,11 +15,11 @@ function Footer() {
     return (
  //TODO Remove Footer or place to the bottom of the page
     <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller' className="tbefooter">
-        {auth.username  && <Box>User : {auth.username}</Box>}
+        {auth.username  && <Box>{auth.username}</Box>}
           <Box>|</Box>
-        <Box>{auth.linkedFamily}</Box>
+        <Box>{auth.linkedFamily.slice(24)}</Box>
         <Box>|</Box>
-        <Box>FE: {frontEnd} </Box>
+        <Box>{frontEnd}/ </Box>
     </Center>
 
     );
