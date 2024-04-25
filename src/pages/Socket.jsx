@@ -10,7 +10,8 @@ export default function Socket() {
 
     useEffect(() => {
         function onConnect() {
-            setIsConnected(true);
+            // Send a request to join a room
+            socket.emit('join_room', 'sockets_room');
         }
 
         function onDisconnect() {
