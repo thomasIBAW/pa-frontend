@@ -5,6 +5,7 @@ import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import AppointmentSmall from "../components/Appointment_small.jsx";
 import {format, add, endOfToday, endOfTomorrow} from "date-fns";
 import Loading from "../components/Loading.jsx";
+import {socket} from "../socket.js";
 
 
 function HomePage() {
@@ -18,6 +19,22 @@ function HomePage() {
     const auth = useAuthUser()
 
     console.log('Homepage received currentUser from context :', auth)
+
+    // LastChange is used to trigger a rerender in case another client created or modified an Item
+    const [lastChange, setLastChange] = useState(new Date())
+
+    //Socket joins a room named as the current familyId to receive real time updates on items.
+    useEffect(() => {
+        // Send a request to join a room
+        socket.emit('join_room', auth.linkedFamily);
+    }, []);
+
+    // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
+    socket.on("appointments", (arg) => {
+        console.log("Received Socket update because someone created a new Item ... "); // world
+        setLastChange(arg)
+    });
+
 
     const now = new Date()
 
@@ -49,7 +66,7 @@ function HomePage() {
                 setIsLoading(false)
             })
 
-    },[auth])
+    },[auth, lastChange])
 
 
     useEffect(() => {

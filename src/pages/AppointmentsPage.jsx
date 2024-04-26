@@ -19,6 +19,7 @@ import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
 import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, subDays, addDays} from "date-fns";
 import Loading from "../components/Loading.jsx";
+import {socket} from "../socket.js";
 
 
 function AppointmentsPage() {
@@ -63,6 +64,20 @@ function AppointmentsPage() {
 
     const [isLoading, setIsLoading] = useState(false)
 
+    // LastChange is used to trigger a rerender in case another client created or modified an Item
+    const [lastChange, setLastChange] = useState(new Date())
+
+    //Socket joins a room named as the current familyId to receive real time updates on items.
+    useEffect(() => {
+        // Send a request to join a room
+        socket.emit('join_room', auth.linkedFamily);
+    }, []);
+
+    // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
+    socket.on("appointments", (arg) => {
+        console.log("Received Socket update because someone created a new Item ... "); // world
+        setLastChange(arg)
+    });
 
     const [ allEventsThisMonth , setAllEventsThisMonth ] = useState([])
     const [ allEventsNextMonth , setAllEventsNextMonth ] = useState([])
@@ -109,6 +124,8 @@ function AppointmentsPage() {
     const cookies = new Cookies()
     const apiKey = cookies.get("_auth")
     // const decodedUser = auth;
+
+
 
     //TODO change backend URI to the correct one
     const backendURI = '/app';
@@ -179,7 +196,7 @@ function AppointmentsPage() {
 
 
 
-     },[newAppointment])
+     },[newAppointment, lastChange])
 
     useEffect( () => {
             globalFetch("people", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
@@ -245,6 +262,8 @@ function AppointmentsPage() {
             console.log('sent scrolling() with date: ', format(now, "yyyy-MM-dd"))}, 100)
 
     }, []);
+
+
 
     function scrollTo(data) {
         let date = new Date(data)
