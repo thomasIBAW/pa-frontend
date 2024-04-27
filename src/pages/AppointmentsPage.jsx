@@ -71,6 +71,7 @@ function AppointmentsPage() {
     useEffect(() => {
         // Send a request to join a room
         socket.emit('join_room', auth.linkedFamily);
+        console.log(`Emitted "join Room" to Join the Room ${auth.linkedFamily}....`)
     }, []);
 
     // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page

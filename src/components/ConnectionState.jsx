@@ -14,10 +14,13 @@ export function ConnectionState({ isConnected }) {
         setLastChange(arg)
     });
 
+    const URL = import.meta.env.MODE === 'production' ? '/app/' : 'http://localhost:3005';
+
     return (
 <>
         <p>State: { 'Sockets connection is ' + isConnected }</p>
         <p> Last change : {JSON.stringify(lastChange)}</p>
+    <p>{import.meta.env.MODE} - Socket target {URL}</p>
 </>
     )
 }

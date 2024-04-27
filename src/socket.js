@@ -4,3 +4,4 @@ import { io } from 'socket.io-client';
 const URL = import.meta.env.MODE === 'production' ? '/app/' : 'http://localhost:3005';
 
 export const socket = io(URL, {});
+console.log(URL)
