@@ -14,7 +14,7 @@ export function ConnectionState({ isConnected }) {
         setLastChange(arg)
     });
 
-    const URL = import.meta.env.MODE === 'production' ? 'http://app.famcal.ch/ws' : 'http://localhost:3005';
+    const URL = import.meta.env.MODE === 'production' ? 'api.backend.famcal.ch/socket.io' : 'http://localhost:3005';
 
     return (
 <>
