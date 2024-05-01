@@ -12,6 +12,7 @@ export default function Socket() {
         function onConnect() {
             setIsConnected(true)
             // Send a request to join a room
+            console.log("sending request to join ...")
             socket.emit('join_room', 'sockets_room');
         }
 
