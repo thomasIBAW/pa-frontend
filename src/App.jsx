@@ -7,6 +7,7 @@ import LoggedIn from "./pages/LoggedIn.jsx";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import {useEffect, useState} from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
+import Registration from "./pages/Registration.jsx";
 
 function App() {
 
@@ -14,14 +15,13 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(false)
 
 
-
     return (
     <>
 
 
         <Routes>
-
             <Route path="/login" element={ auth ? <Navigate to="/" />: <Login />} />
+            <Route path="/registration" element={ auth ? <Navigate to="/" />: <Registration />} />
             <Route path="*" element={ auth ? <LoggedIn />: <Navigate to="/login" /> } />
         </Routes>
 

@@ -156,6 +156,30 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <Box as={Link}
+                                                         fontFamily='Julius Sans One'
+                                                         to="https://docs.famcal.ch/books/ui-frontend"
+                                                         target="_blank" rel="noopener noreferrer"
+                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700') }
+                                                    >
+                                                        User Manual
+                                                    </Box>
+                                                )}
+                                            </Menu.Item>
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <Box as={Link}
+                                                         fontFamily='Julius Sans One'
+                                                         to="https://docs.famcal.ch/books/dev-backend"
+                                                         target="_blank" rel="noopener noreferrer"
+                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700') }
+                                                    >
+                                                        Api Docu
+                                                    </Box>
+                                                )}
+                                            </Menu.Item>
                                         </Menu.Items>
                                     </Transition>
                                 </Menu>

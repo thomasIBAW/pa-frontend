@@ -126,7 +126,7 @@ function Login( ) {
 
                 //TODO Create Registrations Page
             <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
-                New to Family Calendar? <Link>Register here</Link>
+                New to Family Calendar? <Link to="/registration">Register here</Link>
             </Box>
             <Box>{frontend}</Box>
         </VStack>
