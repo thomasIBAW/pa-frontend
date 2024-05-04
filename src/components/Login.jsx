@@ -3,12 +3,10 @@ import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useCon
 import '@fontsource/julius-sans-one';
 import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { Link as RouterLink } from 'react-router-dom';
 
-import {PropTypes} from "prop-types";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
-import Footer from "./Footer.jsx";
 
 //TODO change backend URI to the correct one
 const devState = import.meta.env.VITE_DEVSTATE
@@ -84,9 +82,11 @@ function Login( ) {
                 setError(null)
                 setFormData({username: "", password: ""});
 
+                navigate("/")
+
                 setTimeout(()=>{
-                    console.log("starting navigation to /home ...")
-                    navigate("/home")
+                    console.log("starting navigation to / ...")
+
                 }, 1500)
 
                 // navigate("/"); // <-- redirect
@@ -126,7 +126,8 @@ function Login( ) {
 
                 //TODO Create Registrations Page
             <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
-                New to Family Calendar? <Link to="/registration">Register here</Link>
+                New to Family Calendar? <Link as={RouterLink} to="/registration" style={{ textDecoration: 'none' }}>Register here</Link>
+
             </Box>
             <Box>{frontend}</Box>
         </VStack>

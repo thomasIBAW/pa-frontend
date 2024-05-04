@@ -10,6 +10,8 @@ import {
     InputRightElement, Radio, RadioGroup, Stack,
     VStack
 } from "@chakra-ui/react";
+import '@fontsource/julius-sans-one';
+
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
@@ -65,7 +67,7 @@ function Registration(props) {
             <VStack spacing='24px'>
                 <Box as='h1' lineHeight='1' w='340px'  fontSize='40px' textAlign='center' mt='48px'> Register</Box>
 
-                <FormControl w='350px'>
+                <FormControl w='250px'>
                     <FormLabel as='h1' fontSize='14'>Username</FormLabel>
                     <Input type='text' variant='filled' size='lg' id="username" name="username" value={formData.username} onChange={handleInputChange}/>
                     <FormLabel as='h1' fontSize='14'>E-Mail</FormLabel>
@@ -104,10 +106,10 @@ function Registration(props) {
 
                     <FormLabel as='h1' mt='35px' fontSize='14'>Join existing Family?</FormLabel>
 
-                    <RadioGroup onChange={setValue} value={value} mb='25px'>
+                    <RadioGroup className='julius' fontSize='10' onChange={setValue} value={value} mb='25px'>
                         <Stack direction='row'>
-                            <Radio value='1'>New</Radio>
-                            <Radio value='2'>Existing</Radio>
+                            <Radio value='1' >New</Radio>
+                            <Radio value='2' >Existing</Radio>
                         </Stack>
                     </RadioGroup>
                     { value==="1" && (
