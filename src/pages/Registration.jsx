@@ -12,14 +12,24 @@ import {
 } from "@chakra-ui/react";
 import '@fontsource/julius-sans-one';
 
+import {useNavigate} from "react-router-dom";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { Link as RouterLink } from 'react-router-dom';
+
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import {globalWrite} from "../hooks/Connectors.jsx";
+import {jwtDecode} from "jwt-decode";
 
-
+const devState = import.meta.env.VITE_DEVSTATE
+const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 
 function Registration(props) {
 
+    const signIn = useSignIn()
+    const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false)
 
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
@@ -55,12 +65,193 @@ function Registration(props) {
         }
     };
 
-    const signup = () => {
-        console.log("demo")
-    }
+
     const [value, setValue] = React.useState('1')
     const [show, setShow] = React.useState(false)
     const handleClick = () => setShow(!show)
+
+    const signup = async () => {
+
+        console.log("Starting Process")
+        setIsLoading(true)
+
+        let familyBody = {familyName : formData.familyName}
+        let decoded = ""
+        let data = {
+                username : formData.username,
+                email : formData.useremail || "",
+                password : formData.password1, //to be bcrypted
+                repeat_password: formData.password2,
+                remember : true,
+                isAdmin : false,
+                isFamilyAdmin : true,
+          }
+
+        console.log(familyBody)
+        console.log(data)
+
+        try {
+
+        const response = await fetch(`${backendURI}/signup`, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "include", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json"
+            },
+            // redirect: "follow", // manual, *follow, error
+            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
+        })
+        if (response.status !== 200) {
+            // setError("incorrect")
+            console.log(response.status)
+            throw new Error(response.status)
+        }
+
+        const createdUser = await response.json()
+        console.log('User creation sucessful', createdUser)
+
+
+        // Start Login process
+
+            console.log("Starting Login process....")
+            const login = await fetch(`${backendURI}/login`, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "omit", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                //redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({username: formData.username, password: formData.password1}), // body data type must match "Content-Type" header
+            });
+
+            console.log("Received Feedback from Login fetch -> code:", login.status)
+
+            if (login.status !== 200) {
+                console.log(login)
+                throw new Error(login)
+
+            }
+
+
+            const res = await login.json();
+            decoded = await jwtDecode(res.token)
+
+        // Create Family
+            const finalres = await fetch(`${backendURI}/api/family`, {
+
+
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                // credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    "api_key": res.token,
+                },
+                // redirect: "follow", // manual, *follow, error
+                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(familyBody), // body data type must match "Content-Type" header
+            })
+            if (finalres.status !== 200) {
+                // setError("incorrect")
+                console.log(finalres.status)
+                return
+            }
+
+            const createdFamily = await finalres.json()
+            console.log('Family creation sucessful', createdFamily)
+
+
+            // adding familyId to user
+
+
+            const finalUser = await fetch(`${backendURI}/api/users/${createdUser.uuid}`, {
+
+                method: "PATCH", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                // credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                    "api_key": res.token,
+                    "family_uuid": createdFamily.uuid
+                },
+                // redirect: "follow", // manual, *follow, error
+                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({linkedFamily: createdFamily.uuid}), // body data type must match "Content-Type" header
+            })
+            if (finalUser.status !== 200) {
+                // setError("incorrect")
+                console.log(finalUser.status)
+                return
+            }
+
+
+            // Login again
+
+            console.log(" Login again....")
+            const login2 = await fetch(`${backendURI}/login`, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "omit", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                //redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({username: formData.username, password: formData.password1}), // body data type must match "Content-Type" header
+            });
+
+            console.log("Received Feedback from Login fetch -> code:", login.status)
+
+            if (login.status !== 200) {
+                console.log(login)
+                throw new Error(login)
+
+            }
+
+            const res2 = await login2.json();
+            decoded = await jwtDecode(res2.token)
+
+
+            console.log("Starting Sign-In Process with Cookie Creation...")
+
+            if( signIn({
+                auth: {
+                    token: res2.token,
+                    type: 'Bearer'
+                },
+                userState: decoded
+            })){
+                console.log("successfully created....")
+
+            } else {
+                console.error("could not create cookies...")
+            }
+
+
+
+        } catch (e) {
+            console.error(e)
+            return
+        }
+
+        setTimeout(()=>{
+            console.log("starting navigation to / ...")
+            setIsLoading(false)
+            navigate("/home")
+        }, 500)
+
+    }
+
+
 
     return (
         <>
@@ -109,7 +300,7 @@ function Registration(props) {
                     <RadioGroup className='julius' fontSize='10' onChange={setValue} value={value} mb='25px'>
                         <Stack direction='row'>
                             <Radio value='1' >New</Radio>
-                            <Radio value='2' >Existing</Radio>
+                            <Radio isDisabled value='2' >Existing</Radio>
                         </Stack>
                     </RadioGroup>
                     { value==="1" && (
@@ -130,7 +321,8 @@ function Registration(props) {
 
 
                     {/*{(formData.password1===formData.password2 && formData.password1.length>=6) && <Button  onClick={signup} colorScheme='gray' mt='30px' variant='solid' size='lg' w='300px'>Register User {value==='1' ? 'and Family' : 'and join'}</Button> }*/}
-                        <Button  onClick={signup} isDisabled={(formData.password1 !== formData.password2) || formData.password1.length < 6}
+                        <Button  onClick={signup} isLoading={isLoading}
+                                 loadingText='Creating...' isDisabled={(formData.password1 !== formData.password2) || formData.password1.length < 6}
                                  colorScheme='gray' mt='30px' variant='solid' size='lg' w='300px'>Register User {value==='1' ? 'and Family' : 'and join'}</Button>
 
                 </FormControl>
@@ -140,15 +332,6 @@ function Registration(props) {
     );
 }
 //
-// let username = user.username,
-//     useremail = user.email || "",
-//     password = user.password, //to be bcrypted
-//     remember = user.remember || false,
-//     isAdmin = user.isAdmin || false,
-//     isFamilyAdmin = user.isFamilyAdmin || false,
-//     linkedPerson = user.linkedPerson || "",
-//     linkedFamily = user.linkedFamily || "",
-//     created2 = date.format(new Date(), 'DD.MM.YYYY HH:MM')
 
 
 export default Registration;

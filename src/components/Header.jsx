@@ -160,7 +160,7 @@ function Header({onLogout}) {
                                                 {({ active }) => (
                                                     <Box as={Link}
                                                          fontFamily='Julius Sans One'
-                                                         to="https://docs.famcal.ch/books/ui-frontend"
+                                                         to="https://docs.famcal.ch/User%20Manual/gettingstarted"
                                                          target="_blank" rel="noopener noreferrer"
                                                          className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700') }
                                                     >
@@ -172,7 +172,7 @@ function Header({onLogout}) {
                                                 {({ active }) => (
                                                     <Box as={Link}
                                                          fontFamily='Julius Sans One'
-                                                         to="https://docs.famcal.ch/books/dev-backend"
+                                                         to="https://docs.famcal.ch/dev_backend/Setup/"
                                                          target="_blank" rel="noopener noreferrer"
                                                          className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700') }
                                                     >

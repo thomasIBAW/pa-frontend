@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
 import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useConst} from '@chakra-ui/react'
 import '@fontsource/julius-sans-one';
-import {jwtDecode} from "jwt-decode"
 import LoginError from "./LoginError.jsx";
-import {Navigate, useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode"
+import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -26,6 +26,7 @@ function Login( ) {
 
     // formDAta state contains the credentials entered into the login form
     const [formData, setFormData] = useState({username:"", password:""});
+
     const signIn = useSignIn()
     // update formData state for every change in the form
     const handleInputChange = (event) => {
@@ -82,15 +83,13 @@ function Login( ) {
                 setError(null)
                 setFormData({username: "", password: ""});
 
-                navigate("/")
+
 
                 setTimeout(()=>{
                     console.log("starting navigation to / ...")
+                    navigate("/home")
+                }, 2500)
 
-                }, 1500)
-
-                // navigate("/"); // <-- redirect
-                // onLogin()
             }else {
                 console.error("could not create cookies...")
             }
@@ -124,7 +123,8 @@ function Login( ) {
 
             </Box>
 
-                //TODO Create Registrations Page
+
+            {/*TODO Create a env variable to controll if registrations are open or not*/}
             <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
                 New to Family Calendar? <Link as={RouterLink} to="/registration" style={{ textDecoration: 'none' }}>Register here</Link>
 

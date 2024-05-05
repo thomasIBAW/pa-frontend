@@ -49,7 +49,7 @@ export async function globalWrite(endpoint, body, family) {
 
     console.log(`"globalWrite()" received the following params: endpoint: ${endpoint} / filter ${body} / family_uuid: ${family}`)
     //console.log(`${backendURI}/api/${endpoint}/find`)
-    const response = await fetch(`${backendURI}/api/${endpoint}/find`, {
+    const response = await fetch(`${backendURI}/api/${endpoint}/`, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, *cors, same-origin
         // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

@@ -8,12 +8,21 @@ import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import {useEffect, useState} from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
 import Registration from "./pages/Registration.jsx";
+import Cookies from "universal-cookie";
+import {jwtDecode} from "jwt-decode";
 
 function App() {
 
     const auth = useAuthUser()
     const [loggedIn, setLoggedIn] = useState(false)
 
+    const cookies = new Cookies()
+    const apiKey = cookies.get("_auth")
+
+    if (apiKey) {
+        const decodedUser = jwtDecode(apiKey)
+        console.log(decodedUser)
+    } else console.log("nokey")
 
     return (
     <>
