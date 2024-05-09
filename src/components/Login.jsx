@@ -3,7 +3,7 @@ import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useCon
 import '@fontsource/julius-sans-one';
 import LoginError from "./LoginError.jsx";
 import {jwtDecode} from "jwt-decode"
-import {useNavigate} from "react-router-dom";
+import {useNavigate, redirect} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -86,8 +86,8 @@ function Login( ) {
 
 
                 setTimeout(()=>{
-                    console.log("starting navigation to / ...")
-                    navigate("/home")
+                    console.log("starting navigation to /home ...")
+                    redirect("/home")
                 }, 2500)
 
             }else {

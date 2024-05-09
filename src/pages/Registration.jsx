@@ -244,7 +244,7 @@ function Registration(props) {
         }
 
         setTimeout(()=>{
-            console.log("starting navigation to / ...")
+            console.log("starting navigation to /home ...")
             setIsLoading(false)
             navigate("/home")
         }, 500)

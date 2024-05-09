@@ -14,7 +14,9 @@ import DateTime from "./DateTime.jsx";
 import {IoPersonCircleOutline} from "react-icons/io5";
 import {useNavigate} from "react-router-dom";
 import {PropTypes} from "prop-types";
-
+//TODO change backend URI to the correct one
+const devState = import.meta.env.VITE_DEVSTATE
+const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -32,14 +34,38 @@ function Header({onLogout}) {
 
     // const {currentUser, setCurrentUser} = useContext(UserContext)
     async function logout() {
-        signout()
-        // await cookies.remove("jwt_auth")
-        // await cookies.remove("currentUser")
-        // await setCurrentUser({})
-        console.log("loggedOut")
-        navigate("/login")
-        onLogout()
+        try {
+            console.log("Starting Logout process....")
+            const response = await fetch(`${backendURI}/logout`, {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "include", // include, *same-origin, omit
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                //redirect: "follow", // manual, *follow, error
+                //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                //body: {"user":"demo"}, // body data type must match "Content-Type" header
+            });
 
+            console.log("Received Feedback from Logout fetch -> code:", response.status)
+
+            if (response.status !== 200) {
+                console.log(response)
+                return
+            }
+
+            signout()
+
+            console.log("loggedOut")
+
+            navigate("/login")
+            onLogout()
+            }
+            catch(e) {
+            console.log(e)
+        }
     }
     //TODO position Header static to the top of the page.
     return (
