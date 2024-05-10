@@ -1,8 +1,7 @@
-import {useContext} from 'react';
 import {
     Box
 } from '@chakra-ui/react'
-import {Link, redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import '@fontsource/julius-sans-one';
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
@@ -24,11 +23,9 @@ function classNames(...classes) {
 
 function Header({onLogout}) {
 
-    Header.propTypes = {
-        onLogout: PropTypes.func.isRequired
-    };
 
     const navigate = useNavigate()
+
     const signout = useSignOut()
     // const cookies = new Cookies()
 
@@ -49,19 +46,21 @@ function Header({onLogout}) {
                 //body: {"user":"demo"}, // body data type must match "Content-Type" header
             });
 
-            console.log("Received Feedback from Logout fetch -> code:", response.status)
+            // console.log("Received Feedback from Logout fetch -> code:", response.status)
 
             if (response.status !== 200) {
                 console.log(response)
                 return
             }
-
             signout()
-
             console.log("loggedOut")
 
-            navigate("/login")
-            onLogout()
+            setTimeout(()=>{
+                console.log("starting navigation to /login ...")
+                navigate("/login")
+            }, 500)
+
+            // onLogout()
             }
             catch(e) {
             console.log(e)
@@ -108,7 +107,7 @@ function Header({onLogout}) {
                                     <Box as={Link} to="/todos"
                                         className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" fontFamily='Julius Sans One'
                                     >
-                                        Todos
+                                        Debug
                                     </Box>
                                     {/*<Box as={Link}*/}
                                     {/*    to="/calendar"*/}
@@ -173,9 +172,9 @@ function Header({onLogout}) {
                                             </Menu.Item>
                                             <Menu.Item>
                                                 {({ active }) => (
-                                                    <Box as={Link} onClick={logout}
+                                                    <Box onClick={logout}
                                                           fontFamily='Julius Sans One'
-                                                         to="/home"
+
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out
@@ -235,7 +234,7 @@ function Header({onLogout}) {
                                 to="/todos"
                                 className="julius block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700" fontFamily='Julius Sans One'
                             >
-                                Todos
+                                Debug
                             </Disclosure.Button>
                             {/*<Disclosure.Button*/}
                             {/*    as={Link}*/}

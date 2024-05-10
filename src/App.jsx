@@ -10,32 +10,46 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import Registration from "./pages/Registration.jsx";
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode";
+import { useCookies } from 'react-cookie'
 
 function App() {
 
-    const auth = useAuthUser()
-    const [loggedIn, setLoggedIn] = useState(false)
+    // cookies using react-cookie - reworking
+    const [cookie] = useCookies(['fc_user'])
+    const [isAuth, setIsAuth] = useState(false)
 
-    const cookies = new Cookies()
-    const apiKey = cookies.get("_auth")
+    //const auth = useAuthUser()
 
-    if (apiKey) {
-        const decodedUser = jwtDecode(apiKey)
-        console.log(decodedUser)
-    } else console.log("nokey")
+    // const cookies = new Cookies()
+    // const apiKey = cookies.get("_auth")
+
+    // if (apiKey) {
+    //     const decodedUser = jwtDecode(apiKey)
+    //     console.log(decodedUser)
+    // } else console.log("nokey")
+
+    useEffect(() =>
+        {
+            if(cookie.fc_user) {
+                console.log("token cookie is available", cookie)
+                setIsAuth(true)
+            } else {console.log("no cookie")
+            setIsAuth(false)
+            }
+
+}, [cookie]);
 
     return (
     <>
-
-
         <Routes>
-            <Route path="/login" element={ auth ? <Navigate to="/home" />: <Login />} />
-            <Route path="/registration" element={ auth ? <Navigate to="/home" />: <Registration />} />
-            <Route path="*" element={ auth ? <LoggedIn />: <Navigate to="/login" /> } />
+            <Route path="/login" element={ isAuth ? <Navigate to="/home" />: <Login />} />
+            <Route path="/registration" element={ isAuth ? <Navigate to="/home" />: <Registration />} />
+            <Route path="*" element={ isAuth ? <LoggedIn />: <Navigate to="/login" /> } />
         </Routes>
 
         {/*{auth == null && <Login />}*/}
         {/*{auth != null && <LoggedIn />}*/}
+
 
     </>
   )

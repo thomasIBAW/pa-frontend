@@ -16,18 +16,13 @@ function Login( ) {
 
     const navigate= useNavigate()
 
-    // Login.propTypes = {
-    //     onLogin: PropTypes.func
-    // };
-
-    // const {currentUser, setCurrentUser} = useContext(UserContext)
-
     const [error, setError] = useState(null)
 
-    // formDAta state contains the credentials entered into the login form
+    // formData state contains the credentials entered into the login form
     const [formData, setFormData] = useState({username:"", password:""});
 
     const signIn = useSignIn()
+
     // update formData state for every change in the form
     const handleInputChange = (event) => {
         const {name, value} = event.target;
@@ -39,9 +34,6 @@ function Login( ) {
     const frontend = import.meta.env.VITE_DEVSTATE
 
     async function login() {
-
-        //console.log('onLogin prop type:', typeof onLogin);
-
         try {
             console.log("Starting Login process....")
             const response = await fetch(backendURI, {
@@ -75,20 +67,18 @@ function Login( ) {
                 auth: {
                     token: res.token,
                     type: 'Bearer'
-                },
-                userState: decoded
-            })){
+                }
+            }))
+            {
                 console.log("successfully created....")
 
                 setError(null)
                 setFormData({username: "", password: ""});
 
-
-
                 setTimeout(()=>{
                     console.log("starting navigation to /home ...")
-                    redirect("/home")
-                }, 2500)
+                    navigate("/home")
+                }, 1500)
 
             }else {
                 console.error("could not create cookies...")

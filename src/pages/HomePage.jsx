@@ -6,6 +6,7 @@ import AppointmentSmall from "../components/Appointment_small.jsx";
 import {format, add, endOfToday, endOfTomorrow} from "date-fns";
 import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
+import {useCookies} from "react-cookie";
 
 
 function HomePage() {
@@ -16,9 +17,13 @@ function HomePage() {
 
     const [ allEventsToday , setAllEventsToday ] = useState([])
     const [ allEventsTomorrow , setAllEventsTomorrow ] = useState([])
-    const auth = useAuthUser()
 
-    console.log('Homepage received currentUser from context :', auth)
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
+
+    //const auth = useAuthUser()
+
+    console.log('Homepage received currentUser from context :', user)
 
     // LastChange is used to trigger a rerender in case another client created or modified an Item
     const [lastChange, setLastChange] = useState(new Date())
@@ -26,7 +31,7 @@ function HomePage() {
     //Socket joins a room named as the current familyId to receive real time updates on items.
     useEffect(() => {
         // Send a request to join a room
-        socket.emit('join_room', auth.linkedFamily);
+        socket.emit('join_room', user.linkedFamily);
     }, []);
 
     // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
@@ -42,7 +47,7 @@ function HomePage() {
 
     useEffect( () => {
         console.log('Hompage started globalFetch...')
-        console.log("Auth calendars family:", auth.linkedFamily)
+        console.log("Auth calendars family:", user.linkedFamily)
         setIsLoading(true)
         globalFetch("calendar",JSON.stringify({
             dateTimeStart: {
@@ -52,7 +57,7 @@ function HomePage() {
                 $gte: format(now,"yyyy-MM-dd'T'00:00") // Convert the current moment to an ISO string
             }
 
-            }), auth.linkedFamily )
+            }), "" )
             .then(res => {
                 const resToday = res.filter( event => event.dateTimeStart <= format(now, "yyyy-MM-dd'T'23:59")  )
                 const resTomorrow = res.filter(event =>
@@ -66,7 +71,7 @@ function HomePage() {
                 setIsLoading(false)
             })
 
-    },[auth, lastChange])
+    },[user, lastChange])
 
 
     useEffect(() => {
@@ -78,7 +83,7 @@ function HomePage() {
                     console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newUsers[tag]) {
-                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, auth.linkedFamily);
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, user.linkedFamily);
                         // console.log(res)
                         newUsers[tag] = res[0].nickName;
                     }
@@ -89,7 +94,7 @@ function HomePage() {
         };
 
         fetchUsers();
-    }, [allEventsToday, allEventsTomorrow, auth.linkedFamily]);
+    }, [allEventsToday, allEventsTomorrow, user.linkedFamily]);
 
 
     return (
@@ -97,7 +102,7 @@ function HomePage() {
 
             <center>
                 <section className="pb-3">
-                <h1>Hello {auth.username}</h1>
+                <h1>Hello {user.username}</h1>
                     <p className="text-gray-500">Welcome to the Family Calendar </p>
                 </section>
                 <section className="bg-gray-50 pb-3">

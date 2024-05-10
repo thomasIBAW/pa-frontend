@@ -11,7 +11,7 @@ function TodoPage() {
 
     return (
         <center>
-        <h1>TodoPage</h1>
+        <h1>Temp. DEBUG page</h1>
             <Socket />
             <Box> Current Mode : {mode}</Box>
             <Box> PROD Value : {prod}</Box>

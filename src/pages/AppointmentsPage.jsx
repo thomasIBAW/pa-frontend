@@ -20,9 +20,13 @@ import Appointment from "../components/Appointment.jsx";
 import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, subDays, addDays} from "date-fns";
 import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
+import {useCookies} from "react-cookie";
 
 
 function AppointmentsPage() {
+
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
 
     // Assuming 'now' is the current date
     const now = new Date();
@@ -48,7 +52,7 @@ function AppointmentsPage() {
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
 
-    const auth = useAuthUser()
+    //const auth = useAuthUser()
 
     // tagNames are the tags in the Appointments we show
     const [tagNames, setTagNames] = useState({})
@@ -70,8 +74,8 @@ function AppointmentsPage() {
     //Socket joins a room named as the current familyId to receive real time updates on items.
     useEffect(() => {
         // Send a request to join a room
-        socket.emit('join_room', auth.linkedFamily);
-        console.log(`Emitted "join Room" to Join the Room ${auth.linkedFamily}....`)
+        socket.emit('join_room', user.linkedFamily);
+        console.log(`Emitted "join Room" to Join the Room ${user.linkedFamily}....`)
     }, []);
 
     // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
@@ -86,7 +90,7 @@ function AppointmentsPage() {
     // Defines the data to be used to create a new Appointment
     const [formData, setFormData] = useState({
         "subject": "",
-        "creator": auth.uuid,
+        "creator": user.uuid,
         "dateTimeStart": new Date(),
         "dateTimeEnd": new Date(),
         "attendees": [],
@@ -122,28 +126,28 @@ function AppointmentsPage() {
 
 
     // Get token from Cookie
-    const cookies = new Cookies()
-    const apiKey = cookies.get("_auth")
+    //const cookies = new Cookies()
+    //const apiKey = cookies.get("_auth")
     // const decodedUser = auth;
 
 
 
     //TODO change backend URI to the correct one
-    const backendURI = '/app';
+    const devState = import.meta.env.VITE_DEVSTATE
+    const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
     const createAppointment =  () => {
-        console.log(JSON.stringify(auth))
+        console.log(JSON.stringify(user))
         async function writeData() {
             console.log(JSON.stringify(formData))
             const response = await fetch(`${backendURI}/api/calendar/`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
+                credentials: "include", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": auth.linkedFamily
+                    "family_uuid": user.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -172,7 +176,7 @@ function AppointmentsPage() {
                  { dateTimeStart: { $gte: startOfCurrentMonth, $lte: endOfNextMonth } },
                  { dateTimeEnd: { $gte: startOfCurrentMonth, $lte: endOfNextMonth } }
              ]
-         }) ,auth.linkedFamily )
+         }) ,user.linkedFamily )
 
 
 
@@ -200,12 +204,12 @@ function AppointmentsPage() {
      },[newAppointment, lastChange])
 
     useEffect( () => {
-            globalFetch("people", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
+            globalFetch("people", `{"linkedFamily":"${user.linkedFamily}"}` , user.linkedFamily )
                 .then(res => setAllFamilyPeople(res))
         },[]);
 
     useEffect( () => {
-        globalFetch("tags", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
+        globalFetch("tags", `{"linkedFamily":"${user.linkedFamily}"}` , user.linkedFamily )
             .then(res => setAllFamilyTags(res))
     },[]);
 
@@ -221,7 +225,7 @@ function AppointmentsPage() {
                     // console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newTagNames[tag]) {
-                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, auth.linkedFamily);
+                        const res = await globalFetch("tags", `{"uuid" : "${tag}"}`, user.linkedFamily);
                         // console.log(res)
                         newTagNames[tag] = {name: res[0].tagName, color: res[0].tagColor}; // Assuming res.tagName is the format of your response
                     }
@@ -232,7 +236,7 @@ function AppointmentsPage() {
         };
 
         fetchTags();
-    }, [currentCalendar, auth.linkedFamily]);
+    }, [currentCalendar, user.linkedFamily]);
 
     // fetches Users from the events
     useEffect(() => {
@@ -245,7 +249,7 @@ function AppointmentsPage() {
                     // console.log(tag)
                     // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newUsers[tag]) {
-                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, auth.linkedFamily);
+                        const res = await globalFetch("people", `{"uuid" : "${tag}"}`, user.linkedFamily);
                         // console.log(res)
                         newUsers[tag] = res[0].nickName;
                     }
@@ -256,7 +260,7 @@ function AppointmentsPage() {
         };
 
         fetchUsers();
-    }, [currentCalendar, auth.linkedFamily]);
+    }, [currentCalendar, user.linkedFamily]);
 
     useEffect(() => {
         setTimeout(() => {scrollTo(format(now, "yyyy-MM-dd"))

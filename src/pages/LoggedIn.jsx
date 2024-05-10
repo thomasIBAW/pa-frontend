@@ -19,12 +19,17 @@ import Login from "../components/Login.jsx";
 import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+import {useCookies} from "react-cookie";
 
 
 function LoggedIn() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const navigate = useNavigate()
     const signout = useSignOut()
+
+
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
     const handlerLogin = () => {
 
         setIsLoggedIn(true)
@@ -35,8 +40,8 @@ function LoggedIn() {
 
     const handlerLogout = () => {
         setIsLoggedIn(false)
-        console.log("loggedIn handler for Logout...")
-        signout()
+        //console.log("loggedIn handler for Logout...")
+        //signout()
 
         //TODO call logout on serverside or delete all cookies
 
@@ -105,7 +110,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<CalendarPage />} />
                 </Route>
                 </Routes>
-            <Footer />
+            {user ? <Footer/> : <Navigate to="/login" /> }
 
         </>
     )

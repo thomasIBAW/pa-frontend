@@ -4,6 +4,8 @@
 // import {jwtDecode} from "jwt-decode";
 import moment from "moment";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import {useCookies} from "react-cookie";
+import {useState} from "react";
 
 function MePage() {
     // const {currentUser} = useContext(UserContext)
@@ -11,23 +13,26 @@ function MePage() {
     // const cookies = new Cookies()
     // const apiKey = cookies.get("jwt_auth")
     // const decodedUser = jwtDecode(apiKey)
-    const auth = useAuthUser()
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
+
+    // const auth = useAuthUser()
+
     return (
         <center>
         <h1>This is me</h1>
+            <h2>From the Cookie:</h2>
+            <p><abbr title="Currently Logged In User">Username</abbr> : {user.username}</p>
+            <p>linked Person : {user.linkedPerson}</p>
+            <p>Linked Family : {user.linkedFamily}</p>
+            <p>Server Admin : {user.isAdmin ? "Yes": "NO"}</p>
+            <p>Family Admin : {user.isFamilyAdmin ? "Yes": "NO"}</p>
+            <p>User Uuid : {user.uuid}</p>
+            <p>Registered : {user.created}</p>
 
-            <p><abbr title="Currently Logged In User">Username</abbr> : {auth.username}</p>
-            <p>linked Person : {auth.linkedPerson}</p>
-            <p>Linked Family : {auth.linkedFamily}</p>
-            <p>Server Admin : {auth.isAdmin ? "Yes": "NO"}</p>
-            <p>Family Admin : {auth.isFamilyAdmin ? "Yes": "NO"}</p>
-            <p>User Uuid : {auth.uuid}</p>
-            <p>Registered : {auth.created}</p>
-            <p>Token created : {moment("1970-01-20 ").add(auth.iat * 1000).format('DD.MM.YYYY')} </p>
-            <p>Valid until : {moment("1970-01-20 ").add(auth.exp * 1000).format('DD.MM.YYYY')} </p>
             <p></p>
             <h1>Cookie</h1>
-            <p>{JSON.stringify(auth)}</p>
+            <p>{JSON.stringify(user)}</p>
 
         </center>
 
