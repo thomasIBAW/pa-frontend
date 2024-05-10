@@ -23,30 +23,30 @@ import {useCookies} from "react-cookie";
 
 
 function LoggedIn() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const navigate = useNavigate()
-    const signout = useSignOut()
+    // const [isLoggedIn, setIsLoggedIn] = useState(false)
+    // const navigate = useNavigate()
+    // const signout = useSignOut()
 
 
     const [cookie] = useCookies()
     const [user , setUser] = useState(cookie.fc_user)
-    const handlerLogin = () => {
-
-        setIsLoggedIn(true)
-        console.log("loggedIn handler for Login...")
-        navigate("/")
-
-    }
-
-    const handlerLogout = () => {
-        setIsLoggedIn(false)
-        //console.log("loggedIn handler for Logout...")
-        //signout()
-
-        //TODO call logout on serverside or delete all cookies
-
-
-    }
+    // const handlerLogin = () => {
+    //
+    //     setIsLoggedIn(true)
+    //     console.log("loggedIn handler for Login...")
+    //     navigate("/")
+    //
+    // }
+    //
+    // const handlerLogout = () => {
+    //     setIsLoggedIn(false)
+    //     //console.log("loggedIn handler for Logout...")
+    //     //signout()
+    //
+    //     //TODO call logout on serverside or delete all cookies
+    //
+    //
+    // }
 
 
     // TODO Add a check to confirm the user in the backend
@@ -99,16 +99,16 @@ function LoggedIn() {
 
     return (
         <>
-            <Header onLogout={handlerLogout}/>
+            <Header />
             <Routes>
-                <Route element={<AuthOutlet fallbackPath='/login' />}>
+
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/me" element={<MePage />} />
                     <Route path="/appointments" element={<AppointmentsPage />} />
                     <Route path="/todos" element={<TodoPage />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/calendar" element={<CalendarPage />} />
-                </Route>
+
                 </Routes>
             {user ? <Footer/> : <Navigate to="/login" /> }
 

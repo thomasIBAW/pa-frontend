@@ -1,10 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import Cookies from "universal-cookie";
 
 import { Box, useDisclosure, VStack } from "@chakra-ui/react";
 
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import {useCookies} from "react-cookie";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -12,13 +11,15 @@ function classNames(...classes) {
 
 function Family() {
 
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
     const [color, setColor] = useState("");
     const [formData, setFormData] = useState({tagName:"", tagColor:color});
-    const auth = useAuthUser()
     const handleInputChange = (event) => {
         const {name, value} = event.target;
         setFormData((prevData) => ({
@@ -31,20 +32,17 @@ function Family() {
     const [error, setError] = useState(null)
     const [currentFamily, setCurrentFamily] = useState([])
 
-
-
-    //Get token from Cookie
-    const cookies = new Cookies()
-    const apiKey = cookies.get("jwt_auth")
-
-    const decodedUser = auth;
+    const decodedUser = user;
     //console.log(decodedUser.linkedFamily, apiKey)
     //TODO change backend URI to the correct one
     const devState = import.meta.env.VITE_DEVSTATE
     const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
     console.log(color)
-    const createTag =  () => {
+
+
+    //TODO Work on Family Settings
+    const addFamily =  () => {
 
     setFormData({tagName: FormData.tagName, tagColor:color} )
     async function writeData() {
@@ -55,8 +53,7 @@ function Family() {
             // credentials: "same-origin", // include, *same-origin, omit
             headers: {
                 "Content-Type": "application/json",
-                "api_key": apiKey,
-                "family_uuid": auth.linkedFamily
+                "family_uuid": user.linkedFamily
             },
             // redirect: "follow", // manual, *follow, error
             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -82,10 +79,9 @@ function Family() {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 // mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
+                credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": auth.token,
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -99,7 +95,7 @@ function Family() {
             const res = await response.json();
 
             setCurrentFamily(res)
-            //console.log(res)
+
         }
 
         fetchData()

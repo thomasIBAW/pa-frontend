@@ -1,9 +1,8 @@
-import {useEffect, useState} from 'react';
-import {Box, FormControl, FormLabel, VStack, Input, Button, Link, Center, useConst} from '@chakra-ui/react'
+import {useState} from 'react';
+import {Box, FormControl, FormLabel, VStack, Input, Button, Link} from '@chakra-ui/react'
 import '@fontsource/julius-sans-one';
 import LoginError from "./LoginError.jsx";
-import {jwtDecode} from "jwt-decode"
-import {useNavigate, redirect} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -33,6 +32,7 @@ function Login( ) {
     };
     const frontend = import.meta.env.VITE_DEVSTATE
 
+    // Login function that checks username and password on the server. If correct, a cookie is created by the server which triggers a rerender
     async function login() {
         try {
             console.log("Starting Login process....")
@@ -58,31 +58,13 @@ function Login( ) {
             }
 
 
-            const res = await response.json();
-            const decoded = await jwtDecode(res.token)
+            setError(null)
+            setFormData({username: "", password: ""});
 
-            console.log("Starting Sign-In Process with Cookie Creation...")
-
-            if( signIn({
-                auth: {
-                    token: res.token,
-                    type: 'Bearer'
-                }
-            }))
-            {
-                console.log("successfully created....")
-
-                setError(null)
-                setFormData({username: "", password: ""});
-
-                setTimeout(()=>{
-                    console.log("starting navigation to /home ...")
-                    navigate("/home")
-                }, 1500)
-
-            }else {
-                console.error("could not create cookies...")
-            }
+            setTimeout(()=>{
+                console.log("starting navigation to /home ...")
+                navigate("/home")
+            }, 500)
 
         } catch (e) {
             console.error(e)
@@ -114,7 +96,7 @@ function Login( ) {
             </Box>
 
 
-            {/*TODO Create a env variable to controll if registrations are open or not*/}
+            {/*TODO Create a env variable to control if registrations are open or not*/}
             <Box as='h1' fontSize='14px' mt='10px' textAlign='center'>
                 New to Family Calendar? <Link as={RouterLink} to="/registration" style={{ textDecoration: 'none' }}>Register here</Link>
 

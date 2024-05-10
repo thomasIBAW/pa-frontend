@@ -15,14 +15,17 @@ import {
 } from "@chakra-ui/react";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import {useCookies} from "react-cookie";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 function People() {
-    const auth = useAuthUser()
+
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const initialRef = React.useRef(null)
@@ -47,11 +50,6 @@ function People() {
     const [error, setError] = useState(null)
     const [currentPeople, setCurrentPeople] = useState([])
 
-
-
-    //Get token from Cookie
-    const cookies = new Cookies()
-    const apiKey = cookies.get("jwt_auth")
     const [createdPerson, setCreatedPerson] = useState({})
 
 
@@ -67,11 +65,10 @@ function People() {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 // mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
+                credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": apiKey,
-                    "family_uuid": auth.linkedFamily
+                    "family_uuid": user.linkedFamily
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -100,7 +97,7 @@ function People() {
 
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        globalFetch("people", `{"linkedFamily":"${auth.linkedFamily}"}` , auth.linkedFamily )
+        globalFetch("people", `{"linkedFamily":"${user.linkedFamily}"}` , user.linkedFamily )
             .then(res => setCurrentPeople(res))
     },[createdPerson])
 

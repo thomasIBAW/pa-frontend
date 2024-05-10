@@ -72,7 +72,6 @@ function Registration(props) {
 
     const signup = async () => {
 
-        console.log("Starting Process")
         setIsLoading(true)
 
         let familyBody = {familyName : formData.familyName}
@@ -86,9 +85,9 @@ function Registration(props) {
                 isAdmin : false,
                 isFamilyAdmin : true,
           }
-
-        console.log(familyBody)
-        console.log(data)
+        console.log(`Starting Process for new Family ${familyBody.familyName} and new User ${data.username}`)
+        // console.log(familyBody)
+        // console.log(data)
 
         try {
 
@@ -104,6 +103,7 @@ function Registration(props) {
             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify(data), // body data type must match "Content-Type" header
         })
+
         if (response.status !== 200) {
             // setError("incorrect")
             console.log(response.status)
@@ -111,22 +111,22 @@ function Registration(props) {
         }
 
         const createdUser = await response.json()
-        console.log('User creation sucessful', createdUser)
+        console.log('User creation sucesful', createdUser)
 
 
-        // Start Login process
+        // Start Login process after the user has been created
 
             console.log("Starting Login process....")
             const login = await fetch(`${backendURI}/login`, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "omit", // include, *same-origin, omit
+                credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
                 },
                 //redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: JSON.stringify({username: formData.username, password: formData.password1}), // body data type must match "Content-Type" header
             });
 
@@ -137,22 +137,18 @@ function Registration(props) {
                 throw new Error(login)
 
             }
-
-
-            const res = await login.json();
-            decoded = await jwtDecode(res.token)
+            const res = await login.json()
 
         // Create Family
             const finalres = await fetch(`${backendURI}/api/family`, {
-
-
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
+                credentials: "include", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": res.token,
+                    "api_key": res.token
+
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -161,7 +157,8 @@ function Registration(props) {
             if (finalres.status !== 200) {
                 // setError("incorrect")
                 console.log(finalres.status)
-                return
+                throw new Error(login)
+
             }
 
             const createdFamily = await finalres.json()
@@ -170,17 +167,16 @@ function Registration(props) {
 
             // adding familyId to user
 
-
             const finalUser = await fetch(`${backendURI}/api/users/${createdUser.uuid}`, {
-
                 method: "PATCH", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
+                credentials: "same-origin", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
-                    "api_key": res.token,
-                    "family_uuid": createdFamily.uuid
+                    "family_uuid": createdFamily.uuid,
+                    "api_key": res.token
+
                 },
                 // redirect: "follow", // manual, *follow, error
                 // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -189,11 +185,11 @@ function Registration(props) {
             if (finalUser.status !== 200) {
                 // setError("incorrect")
                 console.log(finalUser.status)
-                return
+                throw new Error(login)
             }
 
 
-            // Login again
+            // Login again to update cookie with the new information (linkedFamily)
 
             console.log(" Login again....")
             const login2 = await fetch(`${backendURI}/login`, {
@@ -216,25 +212,25 @@ function Registration(props) {
                 throw new Error(login)
 
             }
+            //
+            // const res2 = await login2.json();
+            // decoded = await jwtDecode(res2.token)
 
-            const res2 = await login2.json();
-            decoded = await jwtDecode(res2.token)
 
-
-            console.log("Starting Sign-In Process with Cookie Creation...")
-
-            if( signIn({
-                auth: {
-                    token: res2.token,
-                    type: 'Bearer'
-                },
-                userState: decoded
-            })){
-                console.log("successfully created....")
-
-            } else {
-                console.error("could not create cookies...")
-            }
+            // console.log("Starting Sign-In Process with Cookie Creation...")
+            //
+            // if( signIn({
+            //     auth: {
+            //         token: res2.token,
+            //         type: 'Bearer'
+            //     },
+            //     userState: decoded
+            // })){
+            //     console.log("successfully created....")
+            //
+            // } else {
+            //     console.error("could not create cookies...")
+            // }
 
 
 
@@ -258,7 +254,7 @@ function Registration(props) {
             <VStack spacing='24px'>
                 <Box as='h1' lineHeight='1' w='340px'  fontSize='40px' textAlign='center' mt='48px'> Register</Box>
 
-                <FormControl w='250px'>
+                <FormControl w='300px'>
                     <FormLabel as='h1' fontSize='14'>Username</FormLabel>
                     <Input type='text' variant='filled' size='lg' id="username" name="username" value={formData.username} onChange={handleInputChange}/>
                     <FormLabel as='h1' fontSize='14'>E-Mail</FormLabel>

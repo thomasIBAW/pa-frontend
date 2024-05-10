@@ -4,10 +4,6 @@ import {useContext} from "react";
 import React from 'react';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
-//Get token from Cookie
-const cookies = new Cookies()
-const apiKey = cookies.get("_auth")
-
 //TODO change backend URI to the correct one
 //const backendURI = 'http://localhost:3000';
 const devState = import.meta.env.VITE_DEVSTATE

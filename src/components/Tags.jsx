@@ -1,11 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import Cookies from "universal-cookie";
 import { HexColorPicker } from "react-colorful";
 
 import {
     Box, Button,
-    Center, FormControl, FormLabel, Input,
+    FormControl, FormLabel, Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -16,14 +15,17 @@ import {
 } from "@chakra-ui/react";
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import {useCookies} from "react-cookie";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 
 function Tags() {
-    const auth = useAuthUser()
+
+    const [cookie] = useCookies()
+    const [user , setUser] = useState(cookie.fc_user)
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const initialRef = React.useRef(null)
@@ -44,12 +46,7 @@ function Tags() {
     const [newTag, setNewTag] = useState({})
 
 
-    //Get token from Cookie
-    const cookies = new Cookies()
-    const apiKey = cookies.get("jwt_auth")
-
-    const decodedUser = auth;
-    //console.log(decodedUser.linkedFamily, apiKey)
+      const decodedUser = user;
 
     //TODO change backend URI to the correct one / remove as soon as globalWrite is added
     const devState = import.meta.env.VITE_DEVSTATE
@@ -67,7 +64,6 @@ function Tags() {
                     credentials: "include", // include, *same-origin, omit
                     headers: {
                         "Content-Type": "application/json",
-                        "api_key": apiKey,
                         "family_uuid": decodedUser.linkedFamily
                     },
                     // redirect: "follow", // manual, *follow, error
@@ -90,7 +86,7 @@ function Tags() {
     // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
     // Using globalFetch function from connectors:
-        globalFetch("tags", "{}", auth.linkedFamily)
+        globalFetch("tags", "{}", user.linkedFamily)
             .then(res=> setCurrentTags(res))
 
     },[newTag])
