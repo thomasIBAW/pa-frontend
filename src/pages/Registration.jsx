@@ -25,7 +25,7 @@ const devState = import.meta.env.VITE_DEVSTATE
 const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 
-function Registration(props) {
+function Registration() {
 
     const signIn = useSignIn()
     const navigate = useNavigate()
@@ -65,8 +65,10 @@ function Registration(props) {
         }
     };
 
-
+    // value for Radio buttons
     const [value, setValue] = React.useState('1')
+
+    // show for ShowPassword
     const [show, setShow] = React.useState(false)
     const handleClick = () => setShow(!show)
 
@@ -82,9 +84,13 @@ function Registration(props) {
                 password : formData.password1, //to be bcrypted
                 repeat_password: formData.password2,
                 remember : true,
-                isAdmin : false,
                 isFamilyAdmin : true,
           }
+
+        const completeData = {
+            user: data,
+            family: familyBody
+        }
         console.log(`Starting Process for new Family ${familyBody.familyName} and new User ${data.username}`)
         // console.log(familyBody)
         // console.log(data)
@@ -101,7 +107,7 @@ function Registration(props) {
             },
             // redirect: "follow", // manual, *follow, error
             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data), // body data type must match "Content-Type" header
+            body: JSON.stringify(completeData), // body data type must match "Content-Type" header
         })
 
         if (response.status !== 200) {
@@ -112,126 +118,6 @@ function Registration(props) {
 
         const createdUser = await response.json()
         console.log('User creation sucesful', createdUser)
-
-
-        // Start Login process after the user has been created
-
-            console.log("Starting Login process....")
-            const login = await fetch(`${backendURI}/login`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                //redirect: "follow", // manual, *follow, error
-                //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({username: formData.username, password: formData.password1}), // body data type must match "Content-Type" header
-            });
-
-            console.log("Received Feedback from Login fetch -> code:", login.status)
-
-            if (login.status !== 200) {
-                console.log(login)
-                throw new Error(login)
-
-            }
-            const res = await login.json()
-
-        // Create Family
-            const finalres = await fetch(`${backendURI}/api/family`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "include", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "api_key": res.token
-
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(familyBody), // body data type must match "Content-Type" header
-            })
-            if (finalres.status !== 200) {
-                // setError("incorrect")
-                console.log(finalres.status)
-                throw new Error(login)
-
-            }
-
-            const createdFamily = await finalres.json()
-            console.log('Family creation sucessful', createdFamily)
-
-
-            // adding familyId to user
-
-            const finalUser = await fetch(`${backendURI}/api/users/${createdUser.uuid}`, {
-                method: "PATCH", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    "family_uuid": createdFamily.uuid,
-                    "api_key": res.token
-
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({linkedFamily: createdFamily.uuid}), // body data type must match "Content-Type" header
-            })
-            if (finalUser.status !== 200) {
-                // setError("incorrect")
-                console.log(finalUser.status)
-                throw new Error(login)
-            }
-
-
-            // Login again to update cookie with the new information (linkedFamily)
-
-            console.log(" Login again....")
-            const login2 = await fetch(`${backendURI}/login`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "omit", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                //redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({username: formData.username, password: formData.password1}), // body data type must match "Content-Type" header
-            });
-
-            console.log("Received Feedback from Login fetch -> code:", login.status)
-
-            if (login.status !== 200) {
-                console.log(login)
-                throw new Error(login)
-
-            }
-            //
-            // const res2 = await login2.json();
-            // decoded = await jwtDecode(res2.token)
-
-
-            // console.log("Starting Sign-In Process with Cookie Creation...")
-            //
-            // if( signIn({
-            //     auth: {
-            //         token: res2.token,
-            //         type: 'Bearer'
-            //     },
-            //     userState: decoded
-            // })){
-            //     console.log("successfully created....")
-            //
-            // } else {
-            //     console.error("could not create cookies...")
-            // }
-
 
 
         } catch (e) {

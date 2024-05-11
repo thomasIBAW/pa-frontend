@@ -77,7 +77,7 @@ function Tags() {
                 }
                 const res = await response.json();
                 setNewTag(res)
-
+                onClose()
                 //console.log(res)
             }
             writeData()
