@@ -47,7 +47,28 @@ function AppointmentsPage() {
     const startOfCurrentMonthStr = format(startOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
     const endOfCurrentMonthStr = format(endOfCurrentMonth, "yyyy-MM-dd'T'HH:mm");
 
+
+    const [editData, setEditData] = useState({
+        "subject": "",
+        "creator": "user.uuid",
+        "dateTimeStart": new Date(),
+        "dateTimeEnd": new Date(),
+        "attendees": [],
+        "tags": [],
+        "note": "",
+        "fullDay": false,
+        "important": false,
+    });
+
+    const handleOpenEditModal = async (d) => {
+        await setEditData(d);
+        console.log(editData)
+        onOpen2();
+    };
+
+
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen: isOpen2 , onOpen: onOpen2, onClose: onClose2 } = useDisclosure()
 
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
@@ -124,14 +145,6 @@ function AppointmentsPage() {
         }
     };
 
-
-    // Get token from Cookie
-    //const cookies = new Cookies()
-    //const apiKey = cookies.get("_auth")
-    // const decodedUser = auth;
-
-
-
     //TODO change backend URI to the correct one
     const devState = import.meta.env.VITE_DEVSTATE
     const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
@@ -156,6 +169,7 @@ function AppointmentsPage() {
             if (response.status !== 200) {
                 // setError("incorrect")
                 console.log(response.status)
+                throw new Error()
                 return
             }
             const res = await response.json();
@@ -167,6 +181,7 @@ function AppointmentsPage() {
         writeData()
     }
 
+    // Global fetch, Getting all appointments
     useEffect( () => {
 
         setIsLoading(true)
@@ -203,11 +218,13 @@ function AppointmentsPage() {
 
      },[newAppointment, lastChange])
 
+    // Fetch all People in Family
     useEffect( () => {
             globalFetch("people", `{"linkedFamily":"${user.linkedFamily}"}` , user.linkedFamily )
                 .then(res => setAllFamilyPeople(res))
         },[]);
 
+    // Fetch all Tags in Family
     useEffect( () => {
         globalFetch("tags", `{"linkedFamily":"${user.linkedFamily}"}` , user.linkedFamily )
             .then(res => setAllFamilyTags(res))
@@ -262,6 +279,7 @@ function AppointmentsPage() {
         fetchUsers();
     }, [currentCalendar, user.linkedFamily]);
 
+    // scroll to the current Day
     useEffect(() => {
         setTimeout(() => {scrollTo(format(now, "yyyy-MM-dd"))
             console.log('sent scrolling() with date: ', format(now, "yyyy-MM-dd"))}, 100)
@@ -304,28 +322,39 @@ function AppointmentsPage() {
 
 
                 {/*CurrentMonth*/}
+
+                {allEventsThisMonth.length != 0 &&
                 <h2>
                     {format(now, "MMMM")}
                 </h2>
+                }
 
+                {allEventsThisMonth.length === 0 &&
+                    <h2 style={{ width: '50%', textAlign:'center' }}>
+                        There are no appointments to display at the moment. Please add a new appointment.
+                    </h2>
+                }
 
                 {isLoading && <Loading />}
 
+
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {allEventsThisMonth.map((event) => (
-                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} />
+                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} open={handleOpenEditModal} />
                     ))}
                     <div className="bg-white h-7"></div>
                 </div>
 
                 {/*NextMonth*/}
-                <h2>
-                   { !isLoading &&  format(startOfNextMonth, "MMMM")}
-                </h2>
 
+                {allEventsNextMonth.length != 0 &&
+                <h2>
+                   { !isLoading && format(startOfNextMonth, "MMMM")}
+                </h2>
+                }
                 <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                     {allEventsNextMonth.map((event) => (
-                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} />
+                        <Appointment key={event.uuid} id={format(event.dateTimeStart,"yyyy-MM-dd" )} event={event} eventUsers={eventUsers} open={handleOpenEditModal}  />
                     ))}
                     <div className="bg-white h-7"></div>
                 </div>
@@ -340,11 +369,11 @@ function AppointmentsPage() {
                 onClose={onClose}
             >
                 <ModalOverlay />
-                <ModalContent w='300px' alignItems='center'>
+                <ModalContent w='90%' alignItems='center'>
                     <ModalHeader className='julius'>Add an appointment</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={3}>
-                        <FormControl  w='200px'>
+                        <FormControl  w='90%'>
                             <FormLabel as='h1' fontSize='14'>subject *</FormLabel>
                             <Input type='text' variant='filled' size='lg' name="subject" value={formData.subject} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
@@ -380,6 +409,59 @@ function AppointmentsPage() {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
+
+            {/*New Modal for Details and edit*/}
+            <Modal
+                initialFocusRef={initialRef}
+                finalFocusRef={finalRef}
+                isOpen={isOpen2}
+                onClose={onClose2}
+            >
+                <ModalOverlay />
+                <ModalContent w='90%' alignItems='center'>
+                    <ModalHeader className='julius'>Details</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={3}>
+                        <FormControl  w='90%'>
+                            <FormLabel as='h1' fontSize='14'>subject *</FormLabel>
+                            <Input type='text' variant='filled' size='lg' name="subject" value={editData.subject} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
+                            <Input type='text' variant='filled' size='lg' name="note" value={editData.note} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>
+                            <Select
+                                isMulti
+                                name="attendees"
+                                value={editData.attendees}
+                                options={allFamilyPeople.map(person => ({ value: person.uuid, label: person.firstName }))}
+                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'attendees' })}
+                            />
+                            <FormLabel as='h1' mt='15px' fontSize='14'>Tags</FormLabel>
+                            <Select
+                                isMulti
+                                name="tags"
+                                options={allFamilyTags.map(tag => ({ value: tag.uuid, label: tag.tagName }))}
+                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'tags' })}
+                            />
+                            <FormLabel as='h1' mt='15px' fontSize='14'>From</FormLabel>
+                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeStart" value={editData.dateTimeStart} onChange={handleInputChange}/>
+                            <FormLabel as='h1' mt='15px' fontSize='14'>To</FormLabel>
+                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeEnd" value={editData.dateTimeEnd} onChange={handleInputChange}/>
+                            <Checkbox size='lg'  >Important</Checkbox>
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='red' mr={3} onClick={onClose2}>
+                            Delete
+                        </Button>
+                        <Button colorScheme='blue' mr={3} onClick={onClose2}>
+                        Modify
+                        </Button>
+                        <Button onClick={onClose2}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+
         </>
     );
 }

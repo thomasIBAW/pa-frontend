@@ -17,13 +17,15 @@ import {BiChat, BiLike, BiShare} from "react-icons/bi";
 import moment from "moment/moment.js";
 import React from "react";
 
-function Appointment({event, eventUsers, key, id}) {
+function Appointment({event, eventUsers,  id, open}) {
 
     const isToday = moment(`${event.dateTimeStart}`).format('DD.MM.YYYY') <= moment().format('DD.MM.YYYY') && moment(`${event.dateTimeEnd}`).format('DD.MM.YYYY') >= moment().format('DD.MM.YYYY')
+    const allData = {...event, allFamilyPeople:eventUsers}
+    //console.log(allData)
 
     return (
         <>
-            <Card key={key} id={id} maxW="lg" border="1px solid lightgray" >
+            <Card id={id} maxW="lg" border="1px solid lightgray" >
                 <CardHeader>
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>
@@ -73,7 +75,7 @@ function Appointment({event, eventUsers, key, id}) {
                                 colorScheme='gray'
                                 aria-label='See appointment menu'
                                 icon={<BsThreeDotsVertical />}
-                                onClick={(e) => console.log("clicked...", e.target)}
+                                onClick={() => open(allData)}
                             />
 
                         </Flex>
