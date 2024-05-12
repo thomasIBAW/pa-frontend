@@ -21,7 +21,7 @@ function Footer() {
           <Box>|</Box>
         <Box>{user.linkedFamily.slice(24)}</Box>
         <Box>|</Box>
-        <Box>{frontEnd}/{backend} </Box>
+        <Box>{frontEnd}/{backend.version} </Box>
     </Center>
 
     );
