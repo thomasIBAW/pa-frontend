@@ -1,5 +1,5 @@
 import {
-    Box
+    Box, Divider
 } from '@chakra-ui/react'
 import {Link} from "react-router-dom";
 import '@fontsource/julius-sans-one';
@@ -170,6 +170,7 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
+                                            <Divider />
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <Box onClick={logout}
@@ -181,6 +182,7 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
+                                            <Divider />
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <Box as={Link}

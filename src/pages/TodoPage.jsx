@@ -1,4 +1,4 @@
-import {Box} from "@chakra-ui/react";
+import {Box, Divider} from "@chakra-ui/react";
 import Socket from "./Socket.jsx";
 
 
@@ -13,6 +13,7 @@ function TodoPage() {
         <center>
         <h1>Temp. DEBUG page</h1>
             <Socket />
+            <Divider />
             <h2> Details Env Variables:</h2>
             <p> Current Mode : {mode}</p>
             <p> PROD Value : {prod}</p>
