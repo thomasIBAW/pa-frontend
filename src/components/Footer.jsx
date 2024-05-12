@@ -4,12 +4,11 @@ import {useCookies} from "react-cookie";
 function Footer() {
 
     const frontEnd = import.meta.env.VITE_FRONTEND
-    const backEnd = import.meta.env.VITE_BACKEND
-    const dataBase = import.meta.env.VITE_DATABASE
+    //const dataBase = import.meta.env.VITE_DATABASE
 
     const [cookie] = useCookies()
     const [user , setUser] = useState(cookie.fc_user)
-
+    const [backend, setBackend] = useState(cookie.fc_backend_version)
     const bgColor='#e6c997';
 
     console.log(`FrontEnd Version is : ${frontEnd}`)
@@ -22,7 +21,7 @@ function Footer() {
           <Box>|</Box>
         <Box>{user.linkedFamily.slice(24)}</Box>
         <Box>|</Box>
-        <Box>{frontEnd}/ </Box>
+        <Box>{frontEnd}/{backend} </Box>
     </Center>
 
     );
