@@ -5,7 +5,7 @@ import Socket from "./Socket.jsx";
 function TodoPage() {
 
     const mode = import.meta.env.MODE
-    const prod = import.meta.env.PROD
+    const prod = import.meta.env.VITE_DEVSTATE
 
 
 
@@ -13,8 +13,9 @@ function TodoPage() {
         <center>
         <h1>Temp. DEBUG page</h1>
             <Socket />
-            <Box> Current Mode : {mode}</Box>
-            <Box> PROD Value : {prod}</Box>
+            <h2> Details Env Variables:</h2>
+            <p> Current Mode : {mode}</p>
+            <p> PROD Value : {prod}</p>
         </center>
     );
 }

@@ -2,11 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-h1, h2, button {
+h1, h2, h3, button {
     font-family: 'Julius Sans One',sans-serif;
 }
 h1 {
     font-size: xx-large;
+    margin: 10px 0;
+    font-weight: lighter;
+}
+
+h2 {
+    font-size: large;
     margin: 10px 0;
     font-weight: lighter;
 }

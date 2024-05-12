@@ -3,6 +3,7 @@ import { socket } from '../socket';
 import { ConnectionState } from '../components/ConnectionState';
 import { ConnectionManager } from '../components/ConnectionManager';
 import { Events } from "../components/Events";
+import {Box} from "@chakra-ui/react";
 
 export default function Socket() {
     const [isConnected, setIsConnected] = useState(socket.connected);
@@ -37,8 +38,9 @@ export default function Socket() {
 
     return (
         <div className="App">
+            <h2> Information about the Socket.io connection</h2>
             <ConnectionState isConnected={ isConnected } />
-            <Events events={ fooEvents } />
+            <h2>Connection Manager</h2>
             <ConnectionManager />
         </div>
     );
