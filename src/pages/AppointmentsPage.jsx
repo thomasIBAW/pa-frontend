@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Cookies from "universal-cookie";
 import {
-    Box, Button,
+    Button,
     Checkbox, FormControl, FormLabel, Input,
     Modal,
     ModalBody,
@@ -9,10 +9,10 @@ import {
     ModalContent, ModalFooter,
     ModalHeader,
     ModalOverlay, useDisclosure,
-    VStack
+    VStack,
 } from "@chakra-ui/react";
 import { PlusIcon } from '@heroicons/react/20/solid'
-import {globalWrite, globalFetch} from "../hooks/Connectors.jsx";
+import {globalWrite, globalFetch, globalDelete} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import Select from "react-select";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
@@ -21,6 +21,8 @@ import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, s
 import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
 import {useCookies} from "react-cookie";
+import {MdBuild} from "react-icons/md";
+import {IoMdTrash} from "react-icons/io";
 
 
 function AppointmentsPage() {
@@ -305,7 +307,12 @@ function AppointmentsPage() {
         }
     }
 
-
+    async function deleteItem(uuid){
+            console.log("deleting ...", uuid)
+            globalDelete("calendar", uuid, "unused")
+                .then(() => {onClose2()})
+                .catch(e => console.log(e))
+    }
 
     return (
         <>
@@ -427,21 +434,21 @@ function AppointmentsPage() {
                             <Input type='text' variant='filled' size='lg' name="subject" value={editData.subject} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
                             <Input type='text' variant='filled' size='lg' name="note" value={editData.note} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>
-                            <Select
-                                isMulti
-                                name="attendees"
-                                value={editData.attendees}
-                                options={allFamilyPeople.map(person => ({ value: person.uuid, label: person.firstName }))}
-                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'attendees' })}
-                            />
-                            <FormLabel as='h1' mt='15px' fontSize='14'>Tags</FormLabel>
-                            <Select
-                                isMulti
-                                name="tags"
-                                options={allFamilyTags.map(tag => ({ value: tag.uuid, label: tag.tagName }))}
-                                onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'tags' })}
-                            />
+                            {/*<FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>*/}
+                            {/*<Select*/}
+                            {/*    isMulti*/}
+                            {/*    name="attendees"*/}
+                            {/*    value={editData.attendees}*/}
+                            {/*    options={allFamilyPeople.map(person => ({ value: person.uuid, label: person.firstName }))}*/}
+                            {/*    onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'attendees' })}*/}
+                            {/*/>*/}
+                            {/*<FormLabel as='h1' mt='15px' fontSize='14'>Tags</FormLabel>*/}
+                            {/*<Select*/}
+                            {/*    isMulti*/}
+                            {/*    name="tags"*/}
+                            {/*    options={allFamilyTags.map(tag => ({ value: tag.uuid, label: tag.tagName }))}*/}
+                            {/*    onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'tags' })}*/}
+                            {/*/>*/}
                             <FormLabel as='h1' mt='15px' fontSize='14'>From</FormLabel>
                             <Input type='datetime-local' variant='filled' size='lg' name="dateTimeStart" value={editData.dateTimeStart} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>To</FormLabel>
@@ -450,10 +457,10 @@ function AppointmentsPage() {
                         </FormControl>
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='red' mr={3} onClick={onClose2}>
+                        <Button  leftIcon={<IoMdTrash />} colorScheme='red' mr={3} onClick={() => deleteItem(editData.uuid)}>
                             Delete
                         </Button>
-                        <Button colorScheme='blue' mr={3} onClick={onClose2}>
+                        <Button isDisabled colorScheme='blue' mr={3} onClick={onClose2}>
                         Modify
                         </Button>
                         <Button onClick={onClose2}>Cancel</Button>
