@@ -1,9 +1,21 @@
 import React, { useEffect, useState} from 'react';
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
+import {EllipsisVerticalIcon, PlusIcon} from '@heroicons/react/20/solid'
 
-import { Box, useDisclosure, VStack } from "@chakra-ui/react";
+import {
+    Box, Button, FormControl, FormLabel, Input,
+    Modal,
+    ModalBody,
+    ModalCloseButton, ModalContent, ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    useDisclosure,
+    VStack
+} from "@chakra-ui/react";
 
 import {useCookies} from "react-cookie";
+import {HexColorPicker} from "react-colorful";
+import {globalFetch} from "../hooks/Connectors.jsx";
+import FamilyDetails from "./FamilyDetails.jsx";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -29,84 +41,71 @@ function Family() {
     };
 
 
+
+    const [editData, setEditData] = useState({})
+    const handleOpenEditModal = async (d) => {
+        await setEditData(d)
+
+        onOpen();
+    };
+
     const [error, setError] = useState(null)
     const [currentFamily, setCurrentFamily] = useState([])
 
     const decodedUser = user;
     //console.log(decodedUser.linkedFamily, apiKey)
-    //TODO change backend URI to the correct one
+    // TODO remove if not used
     const devState = import.meta.env.VITE_DEVSTATE
     const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
-    console.log(color)
 
 
-    //TODO Work on Family Settings
-    const addFamily =  () => {
+    //     //TODO if needed add create Family function
+    //     const addFamily =  () => {
+    //
+    //     setFormData({tagName: FormData.tagName, tagColor:color} )
+    //     async function writeData() {
+    //         const response = await fetch(`${backendURI}/api/family/`, {
+    //             method: "POST", // *GET, POST, PUT, DELETE, etc.
+    //             // mode: "cors", // no-cors, *cors, same-origin
+    //             // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    //             //credentials: "same-origin", // include, *same-origin, omit
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 "family_uuid": user.linkedFamily
+    //             },
+    //             // redirect: "follow", // manual, *follow, error
+    //             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //             body: JSON.stringify(formData), // body data type must match "Content-Type" header
+    //         })
+    //         if (response.status !== 200) {
+    //             // setError("incorrect")
+    //             console.log(response.status)
+    //             return
+    //         }
+    //         const res = await response.json();
+    //
+    //         //console.log(res)
+    //     }
+    //     writeData()
+    // }
 
-    setFormData({tagName: FormData.tagName, tagColor:color} )
-    async function writeData() {
-        const response = await fetch(`${backendURI}/api/family/`, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            // mode: "cors", // no-cors, *cors, same-origin
-            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            //credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                "family_uuid": user.linkedFamily
-            },
-            // redirect: "follow", // manual, *follow, error
-            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(formData), // body data type must match "Content-Type" header
-        })
-        if (response.status !== 200) {
-            // setError("incorrect")
-            console.log(response.status)
-            return
-        }
-        const res = await response.json();
-
-        //console.log(res)
-    }
-    writeData()
-}
-
-    // eslint-disable-next-line no-unexpected-multiline
     useEffect( () => {
-        //TODO Change to GlobalFetch function
         async function fetchData() {
-            const response = await fetch(`${backendURI}/api/family/find`, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                // mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: "include", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                // redirect: "follow", // manual, *follow, error
-                // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({}), // body data type must match "Content-Type" header
-            })
-            if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
-            }
-            const res = await response.json();
-
-            setCurrentFamily(res)
-
+            const response = await globalFetch("family", "{}", "")
+            setCurrentFamily(response)
         }
 
         fetchData()
-    },[])
+    },[editData])
 
 //TODO Add Details to the Families / Modification
+
     return (
 <>
         <VStack mb='20px'>
 
-            <h1>Families (adminonly)
+            <h1>Family
                 {/*<button*/}
                 {/*    type="button" onClick={onOpen}*/}
                 {/*    className="ml-3 rounded-full bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"*/}
@@ -139,7 +138,7 @@ function Family() {
                                         className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                     >
                                         <span className="sr-only">Open options</span>
-                                        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+                                        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" onClick={() => handleOpenEditModal(project)} />
                                     </button>
                                 </div>
                             </div>
@@ -149,35 +148,19 @@ function Family() {
             </div>
         </VStack>
 
-    {/*<Modal*/}
-    {/*    initialFocusRef={initialRef}*/}
-    {/*    finalFocusRef={finalRef}*/}
-    {/*    isOpen={isOpen}*/}
-    {/*    onClose={onClose}*/}
-    {/*>*/}
-    {/*    <ModalOverlay />*/}
-    {/*    <ModalContent w='300px' alignItems='center'>*/}
-    {/*        <ModalHeader className='julius'>Add a new Tag</ModalHeader>*/}
-    {/*        <ModalCloseButton />*/}
-    {/*        <ModalBody pb={3}>*/}
-    {/*            <FormControl w='200px'>*/}
-    {/*                <FormLabel as='h1' fontSize='14'>Tag Name</FormLabel>*/}
-    {/*                <Input type='text' variant='filled' size='lg' name="tagName" value={formData.tagName} onChange={handleInputChange}/>*/}
-    {/*                <FormLabel as='h1' mt='15px' fontSize='14'>Color</FormLabel>*/}
-    {/*                <HexColorPicker color={color} onChange={setColor} />*/}
-    {/*                /!*<Button  onClick={} colorScheme='gray' mt='30px' variant='solid' size='lg' w='250px'>Log in</Button>*!/*/}
-    {/*            </FormControl>*/}
+    <Modal
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+    >
+        <ModalOverlay />
+        <ModalContent>
+        <FamilyDetails fam={editData} />
+        </ModalContent>
+        </Modal>
 
-    {/*        </ModalBody>*/}
 
-    {/*        <ModalFooter>*/}
-    {/*            <Button colorScheme='blue' mr={3} onClick={createTag}>*/}
-    {/*                Save*/}
-    {/*            </Button>*/}
-    {/*            <Button onClick={onClose}>Cancel</Button>*/}
-    {/*        </ModalFooter>*/}
-    {/*    </ModalContent>*/}
-    {/*</Modal>*/}
 </>
     );
 }

@@ -170,18 +170,7 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
-                                            <Divider />
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <Box onClick={logout}
-                                                          fontFamily='Julius Sans One'
 
-                                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                                                    >
-                                                        Sign out
-                                                    </Box>
-                                                )}
-                                            </Menu.Item>
                                             <Divider />
                                             <Menu.Item>
                                                 {({ active }) => (
@@ -204,6 +193,18 @@ function Header({onLogout}) {
                                                          className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700') }
                                                     >
                                                         Api Docu
+                                                    </Box>
+                                                )}
+                                            </Menu.Item>
+                                            <Divider />
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <Box onClick={logout}
+                                                         fontFamily='Julius Sans One'
+
+                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                    >
+                                                        Sign out
                                                     </Box>
                                                 )}
                                             </Menu.Item>
