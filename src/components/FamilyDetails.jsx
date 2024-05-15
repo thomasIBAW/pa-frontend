@@ -1,20 +1,15 @@
 import React, { useEffect, useState} from 'react';
-import {EllipsisVerticalIcon, PlusIcon} from '@heroicons/react/20/solid'
 
 import {
-    Box, Button, Divider, FormControl, FormLabel, Icon, Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton, ModalContent, ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    useDisclosure,
-    VStack
+    Box, Button, Divider, VStack
 } from "@chakra-ui/react";
 
 import {useCookies} from "react-cookie";
 import {HexColorPicker} from "react-colorful";
 import {globalFetch} from "../hooks/Connectors.jsx";
+
+const devState = import.meta.env.VITE_DEVSTATE
+const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -23,8 +18,8 @@ function classNames(...classes) {
 function FamilyDetails({fam}) {
 
     const [familyDetails, setFamilyDetails] = useState(fam)
-    const [familyAdmins, setFamilyAdmins] = useState ({})
-    const [familyMembers, setFamilyMembers] = useState ({})
+    const [familyAdmins, setFamilyAdmins] = useState ([])
+    const [familyMembers, setFamilyMembers] = useState ([])
 
 
 
@@ -33,31 +28,31 @@ function FamilyDetails({fam}) {
             let newAdminNames = {};
                for (let admin of familyDetails.familyAdmin) {
                     console.log(admin)
-                    // Assuming globalFetch does not duplicate requests for already fetched tags
                     if (!newAdminNames[admin]) {
+
+
                         const res = await globalFetch("users", `{"uuid" : "${admin}"}`, "");
                         console.log(res)
                         newAdminNames[admin] = {name: res[0].username, uuid: res[0].uuid, isFamilyAdmin : res[0].isFamilyAdmin};
                     }
                 }
-               setFamilyAdmins(newAdminNames)
+               setFamilyAdmins(Object.values(newAdminNames))
         }
 
         const getUsers = async () => {
             let newMemberNames = {};
             for (let user of familyDetails.familyMember) {
                 console.log(user)
-                // Assuming globalFetch does not duplicate requests for already fetched tags
                 if (!newMemberNames[user]) {
                     const res = await globalFetch("users", `{"uuid" : "${user}"}`, "");
                     console.log(res)
-                    newMemberNames[user] = { name: res[0].username, uuid: res[0].uuid, ifFamilyAdmin : res[0].isFamilyAdmin};
+                    newMemberNames[user] = { name: res[0].username, uuid: res[0].uuid, isFamilyAdmin : res[0].isFamilyAdmin};
                 }
             }
-            setFamilyMembers(newMemberNames)
+            setFamilyMembers(Object.values(newMemberNames))
         }
         getAdmins()
-        // getUsers()
+        getUsers()
     },[familyDetails])
 
     return (
@@ -68,20 +63,28 @@ function FamilyDetails({fam}) {
 
                 <div>
                    <Box>
-                      <Box fontWeight="bold" color="black" bgColor="orange" textAlign="center" rounded="5px" p="10px">Not ready yet !</Box>
+                      {/*<Box fontWeight="bold" color="black" bgColor="orange" textAlign="center" rounded="5px" p="10px">Not ready yet !</Box>*/}
                        <Divider m="10px"/>
-                       <p>Family Admins : {familyDetails.familyAdmin.map((e, index) => (
-                           <li key={index}>***{e.slice(24)}</li>
+                       <p>Family Admins : {familyAdmins.map((e, index) => (
+                           <li key={index}>{e.name} (***{e.uuid.slice(24)})</li>
                        ))}</p>
                        <Divider m="10px"/>
-                       <p>Family Users : {familyDetails.familyMember.map((e, index) => (
-                           <li key={index}>***{e.slice(24)}</li>
+                        <p>Family Users : {familyMembers.map((e, index) => (
+                           <li key={index}>{e.name} (***{e.uuid.slice(24)})</li>
                        ))}</p>
+
                        <Divider m="10px"/>
                        <p>Created by : <li>***{familyDetails.createdBy.slice(24)}</li>
                        </p>
+                       <Divider m="10px"/>
+                       <p>Invitation Codes:</p>
+                       <Button isDisabled bgColor="gold" mt="10px">
+                           Create Invitation Code
+                       </Button>
                    </Box>
-                    <h1> {JSON.stringify(familyMembers)}</h1>
+                    {/*<p> {JSON.stringify(familyMembers)}</p>*/}
+
+
 
                 </div>
             </VStack>

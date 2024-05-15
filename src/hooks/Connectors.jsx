@@ -1,8 +1,3 @@
-import Cookies from "universal-cookie";
-import UserContext from "./Context.jsx";
-import {useContext} from "react";
-import React from 'react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 //TODO change backend URI to the correct one
 //const backendURI = 'http://localhost:3000';
