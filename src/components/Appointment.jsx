@@ -46,17 +46,20 @@ function Appointment({event, eventUsers,  id, open}) {
                                 </Box>
                             }
 
-                            <Box width="50px" textAlign="center">
-                                <p>Time</p>
-                                <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>
-                                <p>-</p>
-                                <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>
+                            {/*Time Information*/}
 
-                            </Box>
+                            {/*<Box width="50px" textAlign="center">*/}
+                            {/*    <p>Time</p>*/}
+                            {/*    <p className="text-sm text-gray-900">{moment(`${event.dateTimeStart}`).format('HH:mm')}</p>*/}
+                            {/*    <p>-</p>*/}
+                            {/*    <p className=" text-sm text-gray-500">{moment(`${event.dateTimeEnd}`).format('HH:mm')}</p>*/}
+                            {/*</Box>*/}
+
                             {/*Title and Details*/}
-                            <Box flex="1" className="julius truncate">
-                                {event.subject.length >= 11 && <Box className="animate" textAlign="left" fontSize="x-large" >{event.subject}</Box>}
-                                {event.subject.length < 11 && <Box className="" textAlign="left" fontSize="x-large" >{event.subject}</Box>}
+                            <Box w="300px" flex="1" className="julius truncate">
+                                {/*{event.subject.length >= 11 && <Box className="animate" textAlign="left" fontSize="x-large" >{event.subject}</Box>}*/}
+                                {/*{event.subject.length < 11 && <Box className="" textAlign="left" fontSize="x-large" >{event.subject}</Box>}*/}
+                                <Box className="" textAlign="left" fontSize="x-large" >{event.subject}</Box>
 
                                 <div className="w-16 flex-none ">
                                     {event.attendees.map((tag, index) => (
