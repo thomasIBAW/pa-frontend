@@ -7,21 +7,18 @@ import {Fragment, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import useSignOut from "react-auth-kit/hooks/useSignOut";
-import Cookies from "universal-cookie";
-import UserContext from "../hooks/Context.jsx";
 import DateTime from "./DateTime.jsx";
 import {IoPersonCircleOutline} from "react-icons/io5";
 import {useNavigate} from "react-router-dom";
-import {PropTypes} from "prop-types";
 import {useCookies} from "react-cookie";
 //TODO change backend URI to the correct one
+
 const devState = import.meta.env.VITE_DEVSTATE
 const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
-
 function Header({onLogout}) {
 
     const [cookie] = useCookies()
@@ -69,7 +66,6 @@ function Header({onLogout}) {
             console.log(e)
         }
     }
-    //TODO position Header static to the top of the page.
     return (
         <>
         <Box height="64px"></Box>
@@ -152,11 +148,11 @@ function Header({onLogout}) {
                                     >
                                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                             <Menu.Item>
-                                                {({ active }) => (
+
                                                     <Box fontFamily='Julius Sans One' className="block px-4 py-2 text-sm text-gray-700">
                                                         User: {user.username}
                                                     </Box>
-                                                )}
+
                                             </Menu.Item>
                                             <Divider />
                                             <Menu.Item>

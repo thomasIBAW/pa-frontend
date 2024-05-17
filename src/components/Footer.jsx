@@ -16,7 +16,7 @@ function Footer() {
 
     return (
  //TODO Remove Footer or place to the bottom of the page
-    <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller' className="tbefooter">
+    <Center display="flex" bg={bgColor} w='100%' p="1" color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller' className="tbefooter">
         {user  && <Box>{user.username}</Box>}
           <Box>|</Box>
         <Box>{user.linkedFamily.slice(24)}</Box>
