@@ -22,6 +22,22 @@ function FamilyDetails({fam}) {
     const [familyMembers, setFamilyMembers] = useState ([])
 
 
+    function generateRandomCode(length = 6) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        const charactersLength = characters.length;
+
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+    }
+    const createCode = async () => {
+            // generating a random 6 char code
+            const newCode = await generateRandomCode(8)
+            console.log(newCode)
+    }
 
     useEffect( () => {
         const getAdmins = async () => {
@@ -78,7 +94,7 @@ function FamilyDetails({fam}) {
                        </p>
                        <Divider m="10px"/>
                        <p>Invitation Codes:</p>
-                       <Button isDisabled bgColor="gold" mt="10px">
+                       <Button isDisabled bgColor="gold" mt="10px" onClick={createCode}>
                            Create Invitation Code
                        </Button>
                    </Box>
