@@ -67,6 +67,9 @@ function FamilyDetails({fam}) {
             }
             setFamilyMembers(Object.values(newMemberNames))
         }
+
+        // const get
+
         getAdmins()
         getUsers()
     },[familyDetails])
@@ -93,7 +96,23 @@ function FamilyDetails({fam}) {
                        <p>Created by : <li>***{familyDetails.createdBy.slice(24)}</li>
                        </p>
                        <Divider m="10px"/>
+
                        <p>Invitation Codes:</p>
+
+                       {familyDetails.invitationCode && familyDetails.invitationCode.length > 0 ?
+                      ( <p>{ familyDetails.invitationCode
+                           .filter(e => e.valid)
+                           .map((e, index) => (
+                           <li key={index}>{e.code} (***{e.createdBy.slice(24)})</li>
+                       ))}
+                          { familyDetails.invitationCode
+                              .filter(e => !e.valid)
+                              .map((e, index) => (
+                                  <li key={index} style={{ color: 'red', textDecoration: 'line-through' }}>{e.code} (used)</li>
+                              ))}
+                      </p>) : null
+                       }
+
                        <Button isDisabled bgColor="gold" mt="10px" onClick={createCode}>
                            Create Invitation Code
                        </Button>
