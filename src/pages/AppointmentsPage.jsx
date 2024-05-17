@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Cookies from "universal-cookie";
 import {
+    Box,
     Button,
-    Checkbox, FormControl, FormLabel, Input,
+    Checkbox, Divider, FormControl, FormLabel, Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -29,6 +30,8 @@ function AppointmentsPage() {
 
     const [cookie] = useCookies()
     const [user , setUser] = useState(cookie.fc_user)
+
+
 
     // Assuming 'now' is the current date
     const now = new Date();
@@ -306,6 +309,7 @@ function AppointmentsPage() {
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
+    const isSameDay = moment(editData.dateTimeStart).isSame(editData.dateTimeEnd, 'day');
 
     async function deleteItem(uuid){
             console.log("deleting ...", uuid)
@@ -429,42 +433,83 @@ function AppointmentsPage() {
                     <ModalHeader className='julius'>Details</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={3}>
-                        <FormControl  w='90%'>
-                            <FormLabel as='h1' fontSize='14'>subject *</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="subject" value={editData.subject} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
-                            <Input type='text' variant='filled' size='lg' name="note" value={editData.note} onChange={handleInputChange}/>
-                            {/*<FormLabel as='h1' mt='15px' fontSize='14'>Attendees</FormLabel>*/}
-                            {/*<Select*/}
-                            {/*    isMulti*/}
-                            {/*    name="attendees"*/}
-                            {/*    value={editData.attendees}*/}
-                            {/*    options={allFamilyPeople.map(person => ({ value: person.uuid, label: person.firstName }))}*/}
-                            {/*    onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'attendees' })}*/}
-                            {/*/>*/}
-                            {/*<FormLabel as='h1' mt='15px' fontSize='14'>Tags</FormLabel>*/}
-                            {/*<Select*/}
-                            {/*    isMulti*/}
-                            {/*    name="tags"*/}
-                            {/*    options={allFamilyTags.map(tag => ({ value: tag.uuid, label: tag.tagName }))}*/}
-                            {/*    onChange={(selectedOption, actionMeta) => handleInputChange(selectedOption, { ...actionMeta, name: 'tags' })}*/}
-                            {/*/>*/}
-                            <FormLabel as='h1' mt='15px' fontSize='14'>From</FormLabel>
-                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeStart" value={editData.dateTimeStart} onChange={handleInputChange}/>
-                            <FormLabel as='h1' mt='15px' fontSize='14'>To</FormLabel>
-                            <Input type='datetime-local' variant='filled' size='lg' name="dateTimeEnd" value={editData.dateTimeEnd} onChange={handleInputChange}/>
-                            <Checkbox size='lg'  >Important</Checkbox>
-                        </FormControl>
+
+                        <VStack mb='20px'>
+                            {/*eventname*/}
+                            <h1>{editData.subject}</h1>
+
+                            <div>
+                                <Box>
+                                    {/*Date from to */}
+                                    <Divider m="10px"/>
+                                    { isSameDay ? (
+                                            <p align="center">{moment(`${editData.dateTimeStart}`).format('dddd')}  -  {moment(`${editData.dateTimeStart}`).format('DD MMMM YYYY')} </p>
+                                        )
+                                        : (
+                                            <p align="center">{moment(`${editData.dateTimeStart}`).format('DD MMMM YYYY')}  -  {moment(`${editData.dateTimeEnd}`).format('DD.MMMM.YYYY')} </p>
+                                        )}
+                                    {/*Start and End Time */}
+                                    <Divider m="10px"/>
+                                    { isSameDay ? (
+                                        <p align="center">From {moment(`${editData.dateTimeStart}`).format('HH:mm')} to {moment(`${editData.dateTimeEnd}`).format('HH:mm')} </p>
+                                        )
+                                        : (
+                                            <p>none</p>
+                                        )}
+                                    {/*notes*/}
+                                    { editData.note ? (<>
+                                        <Divider m="10px"/>
+                                        <h3 align="center">{editData.note}</h3>
+                                        </>
+                                    ) : null}
+
+                                    {/*Attendees*/}
+                                    <Divider m="10px"/>
+
+                                    <h3 className="flex flex-col items-center justify-center" >
+                                        <p>Attendees:</p>
+                                        <ul className="text-center">
+                                        {editData.attendees.map((uuid, index) => (
+                                               <li key={index}> {editData.allFamilyPeople[uuid]}</li>
+                                        ))}
+                                        </ul>
+                                    </h3>
+
+                                    <Divider m="10px"/>
+
+                                    <p className="flex flex-col items-center justify-center">Created by : <li>{editData.createdBy}</li>
+                                    </p>
+
+                                    <Divider m="10px"/>
+
+                                    {(user.isAdmin || user.isFamilyAdmin) && user.userUuid != editData.createdBy ? <p className="mt-10"> (You are not the creator, be careful editing)</p> : null }
+
+
+
+                                    {/*debug*/}
+                                    {/*<Divider m="10px"/>*/}
+                                    {/*<p>{JSON.stringify(user.userUuid)}</p>*/}
+                                    {/*<Divider m="10px"/>*/}
+
+                                    {/*<p>{JSON.stringify(editData.allFamilyPeople)}</p>*/}
+
+                                    {/*<Divider m="10px"/>*/}
+
+                                </Box>
+                            </div>
+                        </VStack>
+
                     </ModalBody>
                     <ModalFooter>
-                        <Button  leftIcon={<IoMdTrash />} colorScheme='red' mr={3} onClick={() => deleteItem(editData.uuid)}>
+                        <Button isDisabled={!(user.isAdmin || user.isFamilyAdmin || user.userUuid === editData.createdBy)}
+                            leftIcon={<IoMdTrash />} colorScheme='red' mr={3} onClick={() => deleteItem(editData.uuid)}>
                             Delete
                         </Button>
                         <Button isDisabled colorScheme='blue' mr={3} onClick={onClose2}>
                         Modify
                         </Button>
                         <Button onClick={onClose2}>Cancel</Button>
-                    </ModalFooter>
+                        </ModalFooter>
                 </ModalContent>
             </Modal>
 
