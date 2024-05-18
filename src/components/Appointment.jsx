@@ -16,6 +16,7 @@ import {BsThreeDotsVertical} from "react-icons/bs";
 import {BiChat, BiLike, BiShare} from "react-icons/bi";
 import moment from "moment/moment.js";
 import React from "react";
+import {IoSettingsOutline} from "react-icons/io5";
 
 function Appointment({event, eventUsers,  id, open}) {
 
@@ -25,7 +26,7 @@ function Appointment({event, eventUsers,  id, open}) {
 
     return (
         <>
-            <Card id={id} maxW="lg" border="1px solid lightgray" >
+            <Card id={id} maxW="lg" border="1px solid lightgray" onClick={() => open(allData)} >
                 <CardHeader>
                     <Flex spacing='4'>
                         <Flex flex='1' gap='6' alignItems='center' flexWrap='wrap'>
@@ -77,7 +78,7 @@ function Appointment({event, eventUsers,  id, open}) {
                                 variant='ghost'
                                 colorScheme='gray'
                                 aria-label='See appointment menu'
-                                icon={<BsThreeDotsVertical />}
+                                icon={<IoSettingsOutline />}
                                 onClick={() => open(allData)}
                             />
 

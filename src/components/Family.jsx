@@ -16,6 +16,7 @@ import {useCookies} from "react-cookie";
 import {HexColorPicker} from "react-colorful";
 import {globalFetch} from "../hooks/Connectors.jsx";
 import FamilyDetails from "./FamilyDetails.jsx";
+import {IoPersonCircleOutline, IoPersonOutline, IoSettingsOutline} from "react-icons/io5";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -61,34 +62,6 @@ function Family() {
 
 
     //     //TODO if needed add create Family function
-    //     const addFamily =  () => {
-    //
-    //     setFormData({tagName: FormData.tagName, tagColor:color} )
-    //     async function writeData() {
-    //         const response = await fetch(`${backendURI}/api/family/`, {
-    //             method: "POST", // *GET, POST, PUT, DELETE, etc.
-    //             // mode: "cors", // no-cors, *cors, same-origin
-    //             // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    //             //credentials: "same-origin", // include, *same-origin, omit
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 "family_uuid": user.linkedFamily
-    //             },
-    //             // redirect: "follow", // manual, *follow, error
-    //             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    //             body: JSON.stringify(formData), // body data type must match "Content-Type" header
-    //         })
-    //         if (response.status !== 200) {
-    //             // setError("incorrect")
-    //             console.log(response.status)
-    //             return
-    //         }
-    //         const res = await response.json();
-    //
-    //         //console.log(res)
-    //     }
-    //     writeData()
-    // }
 
     useEffect( () => {
         async function fetchData() {
@@ -112,12 +85,13 @@ function Family() {
                 <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
                     {currentFamily.map((project) => (
                         <li key={project.uuid} className="col-span-1 flex rounded-md shadow-sm">
-                            <Box bgColor={project.familyColor}
+                            <Box bgColor="gray"
                                 className={classNames(
-                                    'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white'
+                                    'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white '
                                 )}
                             >
-                                {/*{project.tagName}*/}
+                               {/*Add icon of users in family info*/}
+                               <IoPersonOutline />{project.familyMember.length}
                             </Box>
                             <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
                                 <div className="flex-1 truncate px-4 py-2 text-sm">
@@ -132,7 +106,7 @@ function Family() {
                                         className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                     >
                                         <span className="sr-only">Open options</span>
-                                        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" onClick={() => handleOpenEditModal(project)} />
+                                        <IoSettingsOutline className="h-5 w-5" aria-hidden="true" onClick={() => handleOpenEditModal(project)} />
                                     </button>
                                 </div>
                             </div>

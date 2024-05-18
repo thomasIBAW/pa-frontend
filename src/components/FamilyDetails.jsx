@@ -20,9 +20,10 @@ function FamilyDetails({fam}) {
     const [familyDetails, setFamilyDetails] = useState(fam)
     const [familyAdmins, setFamilyAdmins] = useState ([])
     const [familyMembers, setFamilyMembers] = useState ([])
+    const [lastRefresh, setToRefresh] = useState(new Date())
 
-
-    function generateRandomCode(length = 6) {
+    // console.log(fam)
+    function generateRandomCode(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let result = '';
         const charactersLength = characters.length;
@@ -34,12 +35,60 @@ function FamilyDetails({fam}) {
         return result;
     }
     const createCode = async () => {
-            // generating a random 6 char code
-            const newCode = await generateRandomCode(8)
-            console.log(newCode)
+        let body = {}
+        // generating a random 6 char code
+        const newCode = await generateRandomCode(6)
+        console.log(newCode)
+
+        body = {
+            invitationCode: newCode,
+            uuid: fam.uuid
+        }
+
+        const response = await fetch(`${backendURI}/api/family/code`, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, *cors, same-origin
+            // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "include", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // redirect: "follow", // manual, *follow, error
+            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(body) // body data type must match "Content-Type" header
+        });
+
+        if (response.status !== 200) {
+            // setError("incorrect")
+            console.log(response.status)
+            return
+        }
+        setToRefresh(new Date())
+
     }
 
+
     useEffect( () => {
+        const getFamDetails = async () => {
+
+            console.log(
+                "fetch for Family Details"
+            )
+              const res = await globalFetch("family", `{ "uuid" : "${fam.uuid}" }`, "");
+                    console.log("setting Details to : ", res[0])
+
+
+
+            setFamilyDetails(res[0])
+        }
+        getFamDetails()
+
+    }, [lastRefresh])
+
+
+
+    useEffect( () => {
+
         const getAdmins = async () => {
             let newAdminNames = {};
                for (let admin of familyDetails.familyAdmin) {
@@ -113,11 +162,11 @@ function FamilyDetails({fam}) {
                       </p>) : null
                        }
 
-                       <Button isDisabled bgColor="gold" mt="10px" onClick={createCode}>
+                       <Button  bgColor="gold" mt="10px" onClick={createCode}>
                            Create Invitation Code
                        </Button>
                    </Box>
-                    {/*<p> {JSON.stringify(familyMembers)}</p>*/}
+
 
 
 
