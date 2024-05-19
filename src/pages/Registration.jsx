@@ -27,7 +27,7 @@ const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
 function Registration() {
 
-    const signIn = useSignIn()
+    // const signIn = useSignIn()
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -77,7 +77,9 @@ function Registration() {
         setIsLoading(true)
 
         let familyBody = {familyName : formData.familyName}
+
         let decoded = ""
+
         let data = {
                 username : formData.username,
                 email : formData.useremail || "",
@@ -89,8 +91,12 @@ function Registration() {
 
         const completeData = {
             user: data,
-            family: familyBody
+            family: familyBody,
+            invitationCode : formData.invitationCode,
+            value
         }
+
+
         console.log(`Starting Process for new Family ${familyBody.familyName} and new User ${data.username}`)
         // console.log(familyBody)
         // console.log(data)
@@ -182,7 +188,7 @@ function Registration() {
                     <RadioGroup className='julius' fontSize='10' onChange={setValue} value={value} mb='25px'>
                         <Stack direction='row'>
                             <Radio value='1' >New</Radio>
-                            <Radio isDisabled value='2' >Existing</Radio>
+                            <Radio  value='2' >Existing</Radio>
                         </Stack>
                     </RadioGroup>
                     { value==="1" && (
