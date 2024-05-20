@@ -134,25 +134,25 @@ function FamilyDetails({fam}) {
                       {/*<Box fontWeight="bold" color="black" bgColor="orange" textAlign="center" rounded="5px" p="10px">Not ready yet !</Box>*/}
                        <Divider m="10px"/>
                        <p>Family Admins : {familyAdmins.map((e, index) => (
-                           <li key={index}>{e.name} (***{e.uuid.slice(24)})</li>
+                           <li key={index}>{e.name} (***{e.uuid.slice(32)})</li>
                        ))}</p>
                        <Divider m="10px"/>
                         <p>Family Users : {familyMembers.map((e, index) => (
-                           <li key={index}>{e.name} (***{e.uuid.slice(24)})</li>
+                           <li key={index}>{e.name} (***{e.uuid.slice(32)})</li>
                        ))}</p>
 
+                       {/*<Divider m="10px"/>*/}
+                       {/*<p>Created by : <li>***{familyDetails.createdBy.slice(32)}</li>*/}
+                       {/*</p>*/}
+                       {/*<Divider m="10px"/>*/}
                        <Divider m="10px"/>
-                       <p>Created by : <li>***{familyDetails.createdBy.slice(24)}</li>
-                       </p>
-                       <Divider m="10px"/>
-
                        <p>Invitation Codes:</p>
 
                        {familyDetails.invitationCode && familyDetails.invitationCode.length > 0 ?
                       ( <p>{ familyDetails.invitationCode
                            .filter(e => e.valid)
                            .map((e, index) => (
-                           <li key={index}>{e.code} (***{e.createdBy.slice(24)})</li>
+                           <li key={index}>{e.code} (***{e.createdBy.slice(32)})</li>
                        ))}
                           { familyDetails.invitationCode
                               .filter(e => !e.valid)
