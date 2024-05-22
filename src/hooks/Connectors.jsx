@@ -90,3 +90,31 @@ export async function globalDelete(endpoint, uuid, family) {
     return res
     //console.log(res)
 }
+
+export async function globalPatch(endpoint, uuid, body) {
+
+    console.log(`"globalPatch()" received the following params: endpoint: ${endpoint} / filter ${uuid} / body: ${body}`)
+    //console.log(`${backendURI}/api/${endpoint}/find`)
+    const response = await fetch(`${backendURI}/api/${endpoint}/${uuid}`, {
+        method: "PATCH", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "include", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+        },
+        // redirect: "follow", // manual, *follow, error
+        // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: body, // body data type must match "Content-Type" header
+    })
+    if (response.status !== 200) {
+        // setError("incorrect")
+        console.log(response.status)
+        return
+    }
+    const res = await response.json();
+
+    console.log(`Response from "${endpoint}" globalPAtch is: `, res)
+    return res
+    //console.log(res)
+}
