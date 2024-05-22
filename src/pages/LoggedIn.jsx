@@ -20,6 +20,7 @@ import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import {useCookies} from "react-cookie";
+import DebugPage from "./DebugPage.jsx";
 
 
 function LoggedIn() {
@@ -106,6 +107,7 @@ function LoggedIn() {
                     <Route path="/me" element={<MePage />} />
                     <Route path="/appointments" element={<AppointmentsPage />} />
                     <Route path="/todos" element={<TodoPage />} />
+                    <Route path="/debug" element={<DebugPage />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/calendar" element={<CalendarPage />} />
 

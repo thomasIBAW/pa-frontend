@@ -106,7 +106,7 @@ function Header({onLogout}) {
                                     <Box as={Link} to="/todos"
                                         className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" fontFamily='Julius Sans One'
                                     >
-                                        Debug
+                                        ToDo's
                                     </Box>
                                     {/*<Box as={Link}*/}
                                     {/*    to="/calendar"*/}
@@ -177,7 +177,18 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
-
+                                            { user.isAdmin &&
+                                            (<Menu.Item>
+                                                {({ active }) => (
+                                                    <Box as={Link}
+                                                         fontFamily='Julius Sans One'
+                                                         to="/debug"
+                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                    >
+                                                        Debug
+                                                    </Box>
+                                                )}
+                                            </Menu.Item> )}
                                             <Divider />
                                             <Menu.Item>
                                                 {({ active }) => (
@@ -244,7 +255,7 @@ function Header({onLogout}) {
                                 to="/todos"
                                 className="julius block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700" fontFamily='Julius Sans One'
                             >
-                                Debug
+                                ToDo's
                             </Disclosure.Button>
                             {/*<Disclosure.Button*/}
                             {/*    as={Link}*/}

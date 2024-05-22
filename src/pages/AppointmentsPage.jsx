@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import Cookies from "universal-cookie";
 import {
     Box,
     Button,
@@ -16,13 +15,21 @@ import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalWrite, globalFetch, globalDelete} from "../hooks/Connectors.jsx";
 import moment from "moment";
 import Select from "react-select";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import Appointment from "../components/Appointment.jsx";
-import {format, add, isFirstDayOfMonth, isSameMonth, startOfMonth, endOfMonth, subDays, addDays} from "date-fns";
+import {
+    format,
+    add,
+    isFirstDayOfMonth,
+    isSameMonth,
+    startOfMonth,
+    endOfMonth,
+    subDays,
+    addDays,
+    addHours
+} from "date-fns";
 import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
 import {useCookies} from "react-cookie";
-import {MdBuild} from "react-icons/md";
 import {IoMdTrash} from "react-icons/io";
 
 
@@ -56,8 +63,8 @@ function AppointmentsPage() {
     const [editData, setEditData] = useState({
         "subject": "",
         "creator": "user.uuid",
-        "dateTimeStart": new Date(),
-        "dateTimeEnd": new Date(),
+        "dateTimeStart": format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+        "dateTimeEnd": format(addHours(new Date(), 1), 'yyyy-MM-dd HH:mm:ss'),
         "attendees": [],
         "tags": [],
         "note": "",
