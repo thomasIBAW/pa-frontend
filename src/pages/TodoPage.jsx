@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+    Alert, AlertDescription, AlertIcon, AlertTitle,
     Box,
     Button,
     Checkbox, Divider, FormControl, FormLabel, Input,
@@ -117,7 +118,8 @@ function TodoPage() {
         console.log("Received Socket update because someone modified an Item ... "); // world
         setLastChange(arg)
     });
-
+    const [isError, setIsError] = useState(false)
+    const [currentError, setCurrentError] = useState("")
     const [ allOverDueTasks , setAllOverDueTasks ] = useState([])
     const [ allPendingTasks , setAllPendingTasks ] = useState([])
     const [ allDoneTasks , setAllDoneTasks ] = useState([])
@@ -180,14 +182,17 @@ function TodoPage() {
                 body: JSON.stringify(formData), // body data type must match "Content-Type" header
             })
             if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                throw new Error()
-                return
+                const errorData = await response.json();
+                console.log(response.status);
+                console.log(errorData.message);
+                setCurrentError(errorData.message);
+                setIsError(true)
+                throw new Error(errorData.message);
             }
             const res = await response.json();
 
             setNewTodo(res)
+            setIsError(false)
             onClose()
             console.log(res)
         }
@@ -397,11 +402,11 @@ function TodoPage() {
             >
                 <ModalOverlay />
                 <ModalContent w='90%' alignItems='center'>
-                    <ModalHeader className='julius'>Add an appointment</ModalHeader>
+                    <ModalHeader className='julius'>Add a Task</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={3}>
                         <FormControl  w='90%'>
-                            <FormLabel as='h1' fontSize='14'>subject *</FormLabel>
+                            <FormLabel as='h1' fontSize='14'><abbr title="min 3 max 30 char">Title</abbr> *</FormLabel>
                             <Input type='text' variant='filled' size='lg' name="subject" value={formData.subject} onChange={handleInputChange}/>
                             <FormLabel as='h1' mt='15px' fontSize='14'>Note</FormLabel>
                             <Input type='text' variant='filled' size='lg' name="note" value={formData.note} onChange={handleInputChange}/>
@@ -425,6 +430,12 @@ function TodoPage() {
                         </FormControl>
 
                     </ModalBody>
+
+                    {isError && (<Alert status='error'>
+                        <AlertIcon/>
+                        <AlertTitle> Warning</AlertTitle>
+                        <AlertDescription>{currentError}</AlertDescription>
+                    </Alert>)}
 
                     <ModalFooter>
                         <Button colorScheme='blue' mr={3} onClick={createTodo}>
@@ -456,21 +467,7 @@ function TodoPage() {
                                 <Box>
                                     {/*Date from to */}
                                     <Divider m="10px"/>
-                                    {/*{ isSameDay ? (*/}
-                                    {/*        <p align="center">{moment(`${editData.dateTimeStart}`).format('dddd')}  -  {moment(`${editData.dateTimeStart}`).format('DD MMMM YYYY')} </p>*/}
-                                    {/*    )*/}
-                                    {/*    : (*/}
-                                    {/*        <p align="center">{moment(`${editData.dateTimeStart}`).format('DD MMMM YYYY')}  -  {moment(`${editData.dateTimeEnd}`).format('DD.MMMM.YYYY')} </p>*/}
-                                    {/*    )}*/}
-                                    {/*/!*Start and End Time *!/*/}
-                                    {/*<Divider m="10px"/>*/}
-                                    {/*{ isSameDay ? (*/}
-                                    {/*        <p align="center">From {moment(`${editData.dateTimeStart}`).format('HH:mm')} to {moment(`${editData.dateTimeEnd}`).format('HH:mm')} </p>*/}
-                                    {/*    )*/}
-                                    {/*    : (*/}
-                                    {/*        <p>none</p>*/}
-                                    {/*    )}*/}
-                                    {/*notes*/}
+
                                     { editData.note ? (<>
                                             <Divider m="10px"/>
                                             <h3 align="center">{editData.note}</h3>

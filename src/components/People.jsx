@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
 import {
+    Alert, AlertDescription, AlertIcon, AlertTitle,
     Box, Button,
     FormControl, FormLabel, Input,
     Modal,
@@ -51,6 +52,8 @@ function People() {
 
     const [createdPerson, setCreatedPerson] = useState({})
 
+    const [isError, setIsError] = useState(false)
+    const [currentError, setCurrentError] = useState("")
 
     //TODO change backend URI to the correct one
     const devState = import.meta.env.VITE_DEVSTATE
@@ -72,9 +75,12 @@ function People() {
                body: JSON.stringify(formData), // body data type must match "Content-Type" header
             })
             if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                return
+                const errorData = await response.json();
+                console.log(response.status);
+                console.log(errorData.message);
+                setCurrentError(errorData.message);
+                setIsError(true)
+                throw new Error(errorData.message);
             }
             const res = await response.json();
             setCreatedPerson(formData)
@@ -171,6 +177,12 @@ function People() {
                         </FormControl>
 
                     </ModalBody>
+
+                    {isError && (<Alert status='error'>
+                        <AlertIcon/>
+                        <AlertTitle> Warning</AlertTitle>
+                        <AlertDescription>{currentError}</AlertDescription>
+                    </Alert>)}
 
                     <ModalFooter>
                         <Button colorScheme='blue' mr={3} onClick={createPerson}>

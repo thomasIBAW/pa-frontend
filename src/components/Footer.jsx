@@ -10,11 +10,15 @@ function Footer() {
     const [familyDetails, setFamilyDetails] = useState({})
     const [cookie] = useCookies()
     const [user , setUser] = useState(cookie.fc_user)
-    const [backend, setBackend] = useState(cookie.fc_backend_version)
+    const [backend, setBackend] = useState({version : "-"})
     const bgColor='#e6c997';
 
     console.log(`FrontEnd Version is : ${frontEnd}`)
     user && console.log(user)
+
+    useEffect( () => {
+        cookie.fc_backend_version ? setBackend(cookie.fc_backend_version) : null
+    }, [])
 
     // Get Family Details
     useEffect( () => {

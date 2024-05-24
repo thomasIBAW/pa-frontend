@@ -112,6 +112,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<CalendarPage />} />
 
                 </Routes>
+
             {user ? <Footer/> : <Navigate to="/login" /> }
 
         </>

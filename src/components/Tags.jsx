@@ -3,6 +3,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import { HexColorPicker } from "react-colorful";
 
 import {
+    Alert, AlertDescription, AlertIcon, AlertTitle,
     Box, Button,
     FormControl, FormLabel, Input,
     Modal,
@@ -45,6 +46,8 @@ function Tags() {
     const [currentTags, setCurrentTags] = useState([])
     const [newTag, setNewTag] = useState({})
 
+    const [isError, setIsError] = useState(false)
+    const [currentError, setCurrentError] = useState("")
 
       const decodedUser = user;
 
@@ -71,9 +74,12 @@ function Tags() {
                     body: JSON.stringify(formData), // body data type must match "Content-Type" header
                 })
                 if (response.status !== 200) {
-                    // setError("incorrect")
-                    console.log(response.status)
-                    return
+                    const errorData = await response.json();
+                    console.log(response.status);
+                    console.log(errorData.message);
+                    setCurrentError(errorData.message);
+                    setIsError(true)
+                    throw new Error(errorData.message);
                 }
                 const res = await response.json();
                 setNewTag(res)
@@ -159,6 +165,11 @@ function Tags() {
                 </FormControl>
 
             </ModalBody>
+            {isError && (<Alert status='error'>
+                <AlertIcon/>
+                <AlertTitle> Warning</AlertTitle>
+                <AlertDescription>{currentError}</AlertDescription>
+            </Alert>)}
 
             <ModalFooter>
                 <Button colorScheme='blue' mr={3} onClick={createTag}>

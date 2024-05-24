@@ -147,11 +147,11 @@ function Registration() {
                 <Box as='h1' lineHeight='1' w='340px'  fontSize='40px' textAlign='center' mt='48px'> Register</Box>
 
                 <FormControl w='300px'>
-                    <FormLabel as='h1' fontSize='14'>Username</FormLabel>
+                    <FormLabel as='h1' fontSize='14'><abbr title="All lowercase, min 3, max 30 characters">Username</abbr></FormLabel>
                     <Input type='text' variant='filled' size='lg' id="username" name="username" value={formData.username} onChange={handleInputChange}/>
                     <FormLabel as='h1' fontSize='14'>E-Mail</FormLabel>
                     <Input type='email' variant='filled' size='lg' id="useremail" name="useremail" value={formData.useremail} onChange={handleInputChange}/>
-                    <FormLabel as='h1' mt='15px' fontSize='14'>Password</FormLabel>
+                    <FormLabel as='h1' mt='15px' fontSize='14'><abbr title="min 6 characters">Password</abbr></FormLabel>
                     {/*<Input type='password' variant='filled' size='lg' id="password" name="password" value={formData.password} onChange={handleInputChange} />*/}
 
                     <InputGroup size='md'>
