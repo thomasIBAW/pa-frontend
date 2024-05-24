@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+    Alert, AlertDescription, AlertIcon, AlertTitle,
     Box,
     Button,
     Checkbox, Divider, FormControl, FormLabel, Input,
@@ -161,6 +162,9 @@ function AppointmentsPage() {
     const devState = import.meta.env.VITE_DEVSTATE
     const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
 
+    const [isError, setIsError] = useState(false)
+    const [currentError, setCurrentError] = useState("")
+
     const createAppointment =  () => {
         console.log(JSON.stringify(user))
         async function writeData() {
@@ -179,10 +183,12 @@ function AppointmentsPage() {
                 body: JSON.stringify(formData), // body data type must match "Content-Type" header
             })
             if (response.status !== 200) {
-                // setError("incorrect")
-                console.log(response.status)
-                throw new Error()
-                return
+                const errorData = await response.json();
+                console.log(response.status);
+                console.log(errorData.message);
+                setCurrentError(errorData.message);
+                setIsError(true)
+                throw new Error(errorData.message);
             }
             const res = await response.json();
 
@@ -418,7 +424,11 @@ function AppointmentsPage() {
                         </FormControl>
 
                     </ModalBody>
-
+                    {isError && (<Alert status='error'>
+                        <AlertIcon/>
+                        <AlertTitle> Warning</AlertTitle>
+                        <AlertDescription>{currentError}</AlertDescription>
+                    </Alert>)}
                     <ModalFooter>
                         <Button colorScheme='blue' mr={3} onClick={createAppointment}>
                             Save
