@@ -11,12 +11,16 @@ function DebugPage() {
 
     return (
         <center>
-        <h1>Temp. DEBUG page</h1>
-            <Socket />
+        <h1>DEBUG page (admin only)</h1>
+            <Box mb="10px" bgColor="lightcyan"><Socket />
+            </Box>
+
             <Divider />
-            <h2> Details Env Variables:</h2>
-            <p> Current Mode : {mode}</p>
-            <p> PROD Value : {prod}</p>
+            <Box mb="10px" bgColor="lightcyan">
+                <h2> Details Env Variables:</h2>
+                <p> Current Mode : {mode}</p>
+                <p> PROD Value : {prod}</p>
+            </Box>
         </center>
     );
 }
