@@ -6,7 +6,7 @@ import moment from "moment";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import {useCookies} from "react-cookie";
 import {useEffect, useState} from "react";
-import {Box} from "@chakra-ui/react";
+import {Box, Center} from "@chakra-ui/react";
 
 const devState = import.meta.env.VITE_DEVSTATE
 const backendURI = devState==='PROD' ? '/app' : 'http://localhost:3005';
@@ -52,7 +52,7 @@ function MePage() {
             <Box h="10px"></Box>
 
             <p><abbr title="Currently Logged In User">Username</abbr> : {user.username}</p>
-            <p>linked Person : {user.linkedPerson}</p>
+            {/*<p>linked Person : {user.linkedPerson}</p>*/}
             <p>Linked Family : {user.linkedFamily}</p>
             <p>Server Admin : {user.isAdmin ? "Yes": "NO"}</p>
             <p>Family Admin : {user.isFamilyAdmin ? "Yes": "NO"}</p>
