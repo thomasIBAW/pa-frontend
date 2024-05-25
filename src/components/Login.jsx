@@ -101,7 +101,6 @@ function Login( ) {
                 New to Family Calendar? <Link as={RouterLink} to="/registration" style={{ textDecoration: 'none' }}>Register here</Link>
 
             </Box>
-            <Box>{frontend}</Box>
         </VStack>
 
 
