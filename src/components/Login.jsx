@@ -5,13 +5,15 @@ import LoginError from "./LoginError.jsx";
 import {useNavigate} from "react-router-dom";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { Link as RouterLink } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //TODO change backend URI to the correct one
 const devState = import.meta.env.VITE_DEVSTATE
 const backendURI = devState==='PROD' ? '/app/login' : 'http://localhost:3005/login';
 
 function Login( ) {
+
 
     const navigate= useNavigate()
 
@@ -52,6 +54,8 @@ function Login( ) {
             console.log("Received Feedback from Login fetch -> code:", response.status)
 
             if (response.status !== 200) {
+                notify("Username or Password incorrect...")
+
                 setError("incorrect")
                 console.log(response)
                 return

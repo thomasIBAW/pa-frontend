@@ -34,7 +34,8 @@ import {useCookies} from "react-cookie";
 import {IoMdTrash} from "react-icons/io";
 import Todo from "../components/Todo.jsx";
 import {IoCheckmarkDone} from "react-icons/io5";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TodoPage() {
 
@@ -105,7 +106,9 @@ function TodoPage() {
 
     // LastChange is used to trigger a rerender in case another client created or modified an Item
     const [lastChange, setLastChange] = useState(new Date())
-
+    const notify = (message) => {
+        toast.error(message)
+    };
     //Socket joins a room named as the current familyId to receive real time updates on items.
     useEffect(() => {
         // Send a request to join a room
@@ -185,8 +188,9 @@ function TodoPage() {
                 const errorData = await response.json();
                 console.log(response.status);
                 console.log(errorData.message);
-                setCurrentError(errorData.message);
-                setIsError(true)
+                toast.error(errorData.message)
+                // setCurrentError(errorData.message);
+                // setIsError(true)
                 throw new Error(errorData.message);
             }
             const res = await response.json();

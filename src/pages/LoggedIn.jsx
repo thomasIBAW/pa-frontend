@@ -21,7 +21,8 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import {useCookies} from "react-cookie";
 import DebugPage from "./DebugPage.jsx";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function LoggedIn() {
     // const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -66,7 +67,7 @@ function LoggedIn() {
                     <Route path="/calendar" element={<CalendarPage />} />
 
                 </Routes>
-
+            <ToastContainer style={{ fontFamily: "julian" }}/>
             {user ? <Footer/> : <Navigate to="/login" /> }
 
         </>

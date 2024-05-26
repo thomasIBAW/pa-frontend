@@ -32,6 +32,7 @@ import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
 import {useCookies} from "react-cookie";
 import {IoMdTrash} from "react-icons/io";
+import {toast} from "react-toastify";
 
 
 function AppointmentsPage() {
@@ -186,8 +187,10 @@ function AppointmentsPage() {
                 const errorData = await response.json();
                 console.log(response.status);
                 console.log(errorData.message);
-                setCurrentError(errorData.message);
-                setIsError(true)
+                toast.error(errorData.message)
+
+                // setCurrentError(errorData.message);
+                // setIsError(true)
                 throw new Error(errorData.message);
             }
             const res = await response.json();

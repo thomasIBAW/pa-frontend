@@ -16,6 +16,7 @@ import {
 import { PlusIcon } from '@heroicons/react/20/solid'
 import {globalFetch} from "../hooks/Connectors.jsx";
 import {useCookies} from "react-cookie";
+import {toast} from "react-toastify";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -78,8 +79,9 @@ function People() {
                 const errorData = await response.json();
                 console.log(response.status);
                 console.log(errorData.message);
-                setCurrentError(errorData.message);
-                setIsError(true)
+                // setCurrentError(errorData.message);
+                // setIsError(true)
+                toast.error(errorData.message)
                 throw new Error(errorData.message);
             }
             const res = await response.json();
