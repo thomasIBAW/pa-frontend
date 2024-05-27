@@ -8,6 +8,7 @@ import AuthProvider from 'react-auth-kit';
 import createStore from "react-auth-kit/createStore";
 import {CookiesProvider} from "react-cookie";
 
+
 const store = createStore({
     authName:'_auth',
     authType:'cookie',

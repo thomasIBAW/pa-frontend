@@ -11,6 +11,10 @@ import Registration from "./pages/Registration.jsx";
 import Cookies from "universal-cookie";
 import {jwtDecode} from "jwt-decode";
 import { useCookies } from 'react-cookie'
+import '@fontsource-variable/lexend';
+// import "@fontsource/lexend"; // Defaults to weight 400
+// import "@fontsource/lexend/400.css"; // Specify weight
+// import "@fontsource/lexend/400-italic.css"; // Specify weight and style
 
 function App() {
 

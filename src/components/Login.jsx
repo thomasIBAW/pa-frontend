@@ -29,7 +29,7 @@ function Login( ) {
         const {name, value} = event.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: name === "username" ? value.toLowerCase() : value,
         }));
     };
     const frontend = import.meta.env.VITE_DEVSTATE

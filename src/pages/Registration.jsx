@@ -60,7 +60,7 @@ function Registration() {
 
             setFormData(prevData => ({
                 ...prevData,
-                [name]: value,
+                [name]: name === "username" ? value.toLowerCase() : value,
             }));
         }
     };
