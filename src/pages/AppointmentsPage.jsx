@@ -386,6 +386,7 @@ function AppointmentsPage() {
                     <div className="bg-white h-7"></div>
                 </div>
 
+
                 {/*NextMonth*/}
 
                 {allEventsNextMonth.length != 0 &&

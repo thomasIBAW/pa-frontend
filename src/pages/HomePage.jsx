@@ -127,7 +127,7 @@ function HomePage() {
                 <h1>Hello {user.username}</h1>
                     <p className="text-gray-500">Welcome to the Family Calendar </p>
                 </section>
-                <section className="bg-gray-50 pb-3">
+                <section className="bg-gray-100 pb-3">
                 <h1>Today:</h1>
                     {isLoading && <Loading />}
                 <p className="text-gray-400">{allEventsToday.length===0 && !isLoading ? "Nothing for today :)" : null }</p>
