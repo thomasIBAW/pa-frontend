@@ -7,6 +7,7 @@ import {format, add, endOfToday, endOfTomorrow} from "date-fns";
 import Loading from "../components/Loading.jsx";
 import {socket} from "../socket.js";
 import {useCookies} from "react-cookie";
+import {toast} from "react-toastify";
 
 
 function HomePage() {
@@ -28,6 +29,26 @@ function HomePage() {
     // LastChange is used to trigger a rerender in case another client created or modified an Item
     const [lastChange, setLastChange] = useState(new Date())
 
+    // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
+    socket.on("appointments", (arg) => {
+        console.log("Received Socket update because someone created a new Item ... "); // world
+        console.log(arg)
+        // const res = arg.json()
+
+        if (arg.userid === user.userUuid) {
+            toast.success(`an Item has been ${arg.type} ...`, {
+                toastId: arg.date,
+                autoClose: 1500
+            })
+        }
+        else {
+        toast.info(`an Item has been ${arg.type} by user "${arg.user}" `, {
+            toastId: arg.date
+        })
+        }
+        setLastChange(arg.date)
+    });
+
     //Socket joins a room named as the current familyId to receive real time updates on items.
     useEffect(() => {
         // Send a request to join a room
@@ -35,10 +56,11 @@ function HomePage() {
     }, []);
 
     // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
-    socket.on("appointments", (arg) => {
-        console.log("Received Socket update because someone created a new Item ... "); // world
-        setLastChange(arg)
-    });
+    // socket.on("appointments", (arg) => {
+    //     console.log("Received Socket update because someone created a new Item ... "); // world
+    //     // toast.info("New Appoiments has been added...")
+    //     setLastChange(arg)
+    // });
 
 
     const now = new Date()

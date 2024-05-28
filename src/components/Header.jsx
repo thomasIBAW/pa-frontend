@@ -177,7 +177,7 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
-                                            { user.isAdmin &&
+                                            { !user.isAdmin &&
                                             (<Menu.Item>
                                                 {({ active }) => (
                                                     <Box as={Link}

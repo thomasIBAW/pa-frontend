@@ -115,7 +115,21 @@ function AppointmentsPage() {
 
     // on a trigger from the server (Socket.io), update lastChange to trigger a rerendering of the page
     socket.on("appointments", (arg) => {
-        console.log("Received Socket update because someone created a new Item ... "); // world
+        // console.log("Received Socket update because someone created a new Item ... "); // world
+        // console.log(arg)
+        // const res = arg.json()
+
+        if (arg.userid === user.userUuid) {
+            toast.success(`an Item has been ${arg.type} ...`, {
+                toastId: arg.date,
+                autoClose: 1500
+            })
+        }
+        else {
+            toast.info(`an Item has been ${arg.type} by user "${arg.user}" `, {
+                toastId: arg.date
+            })
+        }
         setLastChange(arg)
     });
 
