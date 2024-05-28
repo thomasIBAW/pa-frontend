@@ -20,7 +20,7 @@ function MePage() {
     const [cookie] = useCookies()
     const [user , setUser] = useState({})
     const [cookieUser , setCookieUser] = useState(cookie.fc_user)
-    const [familyDetails, setFamilyDetails] = useState({})
+    const [familyDetails, setFamilyDetails] = useState({familyName:''})
 
     useEffect( () => {
         async function getMe(){
@@ -44,19 +44,23 @@ function MePage() {
         getMe()
     }, [])
 
-    useEffect( () => {
-        const getFamDetails = async () => {
-
-            console.log(
-                "fetch for Family Details"
-            )
-            const res = await globalFetch("family", `{ "uuid" : "${user.linkedFamily}" }`, "");
-            console.log("setting Details to : ", res[0])
-            setFamilyDetails(res[0])
+    useEffect(() => {
+        if (user.linkedFamily) {
+            const getFamDetails = async () => {
+                try {
+                    const res = await globalFetch("family", `{ "uuid" : "${user.linkedFamily}" }`, "");
+                    if (res && res.length > 0) {
+                        setFamilyDetails(res[0]);
+                    } else {
+                        console.log("No family details found.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching family details:", error);
+                }
+            };
+            getFamDetails();
         }
-        getFamDetails()
-
-    }, [user])
+    }, [user]);
 
     // const auth = useAuthUser()
 
@@ -66,15 +70,19 @@ function MePage() {
             <h2></h2>
             <Box h="10px"></Box>
                 <section >
-                    <p className="text-xl"><abbr title="Currently Logged In User">Username</abbr> : <p className="font-bold">{user.username}</p></p>
+                    <p className="text-xl"><abbr title="Currently Logged In User">Username</abbr> : <span className="font-bold">{user.username}</span></p>
                     {/*<p>linked Person : {user.linkedPerson}</p>*/}
+                    <Box h="10px"></Box>
+
                     <p>(User Uuid : {user.userUuid})</p>
                     <Box h="10px"></Box>
-                    <p className="text-xl">Linked Family: <p className="font-bold">{familyDetails.familyName}</p></p>
+                    <p className="text-xl">Linked Family:<span className="font-bold"> {familyDetails.familyName }</span></p>
+                    <Box h="10px"></Box>
+
                     <p>(Family Uuid : {user.linkedFamily})</p>
                     <Box h="10px"></Box>
-                    <p>Server Admin : {user.isAdmin ? (<p className="font-bold text-green-600">Yes</p>): (<p className="font-bold text-red-700">No</p>)}</p>
-                    <p>Family Admin : {user.isFamilyAdmin ? (<p className="font-bold text-green-600">Yes</p>): (<p className="font-bold text-red-700">No</p>)}</p>
+                    <p>Server Admin : {user.isAdmin ? (<span className="font-bold text-green-600">Yes</span>): (<span className="font-bold text-red-700">No</span>)}</p>
+                    <p>Family Admin : {user.isFamilyAdmin ? (<span className="font-bold text-green-600">Yes</span>): (<span className="font-bold text-red-700">No</span>)}</p>
                     <Box h="10px"></Box>
                     <p>Registered : {user.created}</p>
                 </section>
