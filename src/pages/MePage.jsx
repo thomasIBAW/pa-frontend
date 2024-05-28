@@ -56,7 +56,7 @@ function MePage() {
         }
         getFamDetails()
 
-    }, [])
+    }, [user])
 
     // const auth = useAuthUser()
 
