@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import '@fontsource/julius-sans-one';
 import {Fragment, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import DateTime from "./DateTime.jsx";
 import {IoPersonCircleOutline} from "react-icons/io5";
@@ -36,17 +36,12 @@ function Header({onLogout}) {
             const response = await fetch(`${backendURI}/logout`, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
-                // // cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
                 credentials: "include", // include, *same-origin, omit
                 headers: {
                     "Content-Type": "application/json",
                 },
-                //redirect: "follow", // manual, *follow, error
-                //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                //body: {"user":"demo"}, // body data type must match "Content-Type" header
-            });
 
-            // console.log("Received Feedback from Logout fetch -> code:", response.status)
+            });
 
             if (response.status !== 200) {
                 console.log(response)
@@ -60,7 +55,6 @@ function Header({onLogout}) {
                 navigate("/login")
             }, 500)
 
-            // onLogout()
             }
             catch(e) {
             console.log(e)
@@ -87,13 +81,7 @@ function Header({onLogout}) {
                                 </Disclosure.Button>
                             </div>
                             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                                <div className="flex flex-shrink-0 items-center">
-                                    {/*<img*/}
-                                    {/*    className="h-8 w-auto"*/}
-                                    {/*    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"*/}
-                                    {/*    alt="Your Company"*/}
-                                    {/*/>*/}
-                                </div>
+
                                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                                     {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent border-indigo-500 text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
                                     <Box as={Link} to="/home" className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" fontFamily='Julius Sans One'
@@ -108,12 +96,7 @@ function Header({onLogout}) {
                                     >
                                         ToDo's
                                     </Box>
-                                    {/*<Box as={Link}*/}
-                                    {/*    to="/calendar"*/}
-                                    {/*    className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" fontFamily='Julius Sans One'*/}
-                                    {/*>*/}
-                                    {/*    Calendar*/}
-                                    {/*</Box>*/}
+
                                 </div>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -125,8 +108,8 @@ function Header({onLogout}) {
                                 {/*    <span className="sr-only">View notifications</span>*/}
                                 {/*    <BellIcon className="h-6 w-6" aria-hidden="true" />*/}
                                 {/*</button>*/}
-                                <DateTime></DateTime>
-                                {/* Profile dropdown */}
+                                <DateTime />
+                                 {/*Profile dropdown */}
                                 <Menu as="div" className="relative ml-3">
                                     <div>
                                         <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
@@ -177,7 +160,7 @@ function Header({onLogout}) {
                                                     </Box>
                                                 )}
                                             </Menu.Item>
-                                            { !user.isAdmin &&
+                                            { (!user.isAdmin || user.isAdmin ) &&
                                             (<Menu.Item>
                                                 {({ active }) => (
                                                     <Box as={Link}
@@ -257,13 +240,7 @@ function Header({onLogout}) {
                             >
                                 ToDo's
                             </Disclosure.Button>
-                            {/*<Disclosure.Button*/}
-                            {/*    as={Link}*/}
-                            {/*    to="/calendar"*/}
-                            {/*    className="julius block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"  fontFamily='Julius Sans One'*/}
-                            {/*>*/}
-                            {/*    Calendar*/}
-                            {/*</Disclosure.Button>*/}
+
                         </div>
                     </Disclosure.Panel>
                 </>
@@ -271,42 +248,7 @@ function Header({onLogout}) {
         </Disclosure>
 
         </>
-    //     <>
-    //     <Box display="flex"  flexWrap="wrap" alignItems="center" justifyContent="space-between" fontFamily='Julius Sans One'>
-    //     <Center bg={bgColor} w='100%' p={2} color='black'>
-    //     <Breadcrumb separator='|'>
-    //         <BreadcrumbItem>
-    //             <Box m={2}>
-    //                 <BreadcrumbLink as={Link} to='/'>Home</BreadcrumbLink>
-    //             </Box>
-    //         </BreadcrumbItem>
-    //         <BreadcrumbItem>
-    //             <Box m={2}>
-    //                 <BreadcrumbLink as={Link} to='/appointments'>Appointments</BreadcrumbLink>
-    //             </Box>
-    //         </BreadcrumbItem>
-    //         <BreadcrumbItem>
-    //              <Box m={2}>
-    //                 <BreadcrumbLink as={Link} to='/todos'>ToDos</BreadcrumbLink>
-    //              </Box>
-    //         </BreadcrumbItem>
-    //         <BreadcrumbItem>
-    //             <Box m={2}>
-    //                 <BreadcrumbLink as={Link} to='/me'><i className="fa-solid fa-gears"></i></BreadcrumbLink>
-    //             </Box>
-    //         </BreadcrumbItem>
-    //     </Breadcrumb>
-    //
-    //     </Center>
-    //
-    //     </Box>
-    // <Center display="flex" bg={bgColor} w='100%' p={1} color='black' alignItems="center" justifyContent="space-evenly" fontFamily='Julius Sans One' fontSize='smaller'>
-    //     <Box>User : {user}</Box>
-    //     <Box>|</Box>
-    //     <Box>Family : {user}</Box>
-    // </Center>
-    //
-    //     </>
+
     )
 }
 
